@@ -171,10 +171,3 @@ class neural_space_8depth_4action_greyscale():
         if (self.layer0[self.output04] < self.output04_thresh_negative):
             take_action = take_action * 19
         return take_action
-
-    
-cantor = neural_space_8depth_4action_greyscale()
-for i in range(100):
-    input_image_fake = np.random.randint(0, 255, (256,256))
-    next_action = cantor.update(input_image_fake)
-    print(next_action)
