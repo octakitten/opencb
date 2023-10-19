@@ -1,6 +1,6 @@
 import numpy as np
 
-class neural_space_16depth_1action_greyscale():
+class d16a1gs():
 
     # dimensions of the neural space
     width = 256

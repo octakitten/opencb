@@ -1,6 +1,6 @@
 import numpy as np
 
-class neural_space_8depth_4action_greyscale():
+class d8a4gs():
 
     # dimensions of the neural space
     width = 256
