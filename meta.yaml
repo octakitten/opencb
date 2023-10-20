@@ -10,6 +10,7 @@ requirements:
     - python
     - numpy
     - Pillow
+    - Xlib
 
   run:
     - python

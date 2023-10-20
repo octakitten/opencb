@@ -1,1 +1,1 @@
-import screenshot
+from . import screen

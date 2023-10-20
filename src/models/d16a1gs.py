@@ -3,8 +3,8 @@ import numpy as np
 class d16a1gs():
 
     # dimensions of the neural space
-    width = 256
-    height = 256
+    width = 255
+    height = 255
     depth = 16
     # num_controls = 4
 
@@ -109,6 +109,7 @@ class d16a1gs():
 
 
     def update(self, input_image):
+        print("update started...")
         # add in the input image
         np.add(self.layer0[:, :, 1],  input_image)
 
