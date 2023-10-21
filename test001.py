@@ -1,13 +1,16 @@
 import numpy as np
 import sys
 from pathlib import Path
+
 print(sys.path)
 sys.path.insert(0, str(Path(__file__).parent.parent))
 print(sys.path)
+
 import cantor
 from cantor.src.models.d8a4gs import d8a4gs
 from cantor.src.models.d16a1gs import d16a1gs
 from cantor.src.utilities.screen import screen
+
 '''
 cantor01 = d8a4gs()
 for i in range(100):
@@ -15,6 +18,7 @@ for i in range(100):
     next_action = cantor01.update(input_image_fake)
     print(next_action)
 '''
+
 cantor02 = d16a1gs()
 a, b = 50, 50
 w, h = 255, 255
