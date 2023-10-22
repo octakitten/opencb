@@ -23,7 +23,7 @@ cantor02 = d16a1gs()
 a, b = 50, 50
 w, h = 255, 255
 for i in range(3):
-    input_image_real = screen.screenshot(a, b, w, h)
+    input_image_real = screen.screenshot_desktop(a, b, w, h)
     next_action = cantor02.update(input_image_real)
     if next_action == 2:
         print(next_action)
