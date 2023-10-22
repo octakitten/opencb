@@ -10,7 +10,7 @@ class screen():
     def __init__():
         return
 
-    def screenshot(a, b, w, h):
+    def screenshot_desktop(a, b, w, h):
         # a,b = top left corner of the box
         # w,h = width and height of the box
         # returns a numpy array
@@ -37,3 +37,13 @@ class screen():
             val = np.array(im).astype(np.uint8)[:,:,0]
         
         return val
+    
+    def game_screen(val):
+        # returns a numpy array
+        if (np.array(val).shape == ()):
+            return val
+        else:
+            return -1
+    
+    
+    
