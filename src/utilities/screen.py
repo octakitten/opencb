@@ -38,9 +38,11 @@ class screen():
         
         return val
     
-    def game_screen(val):
+    def save_screen(val):
         # returns a numpy array
         if (np.array(val).shape == ()):
+            img = Image.fromarray(val)
+            img.save('output_file.png')
             return val
         else:
             return -1

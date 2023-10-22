@@ -23,20 +23,22 @@ class find_food_01(game):
         self.height = h
         self.starting_screen = np.zeros((self.width, self.height))
         self.game_screen = np.zeros((self.width, self.height))
-        self.victory_condition = np.zeros((self.idth, self.height))
+        self.victory_condition = np.zeros((self.width, self.height))
         self.victory_condition[0,0] = 255
+        x, y = self.choose_starting_location()
+        self.game_screen[x, y] = 255
         return
     
     def victory(self):
-        if (self.game_screen[0.0] == self.victory_condition[0,0]):
+        if (self.game_screen[0,0] == self.victory_condition[0,0]):
             return True
         else:
             return False
     
-    def screen_update(imarray, x, y):
-        np.roll(imarray, x, axis=0)
-        np.roll(imarray, y, axis=1)
-        return imarray
+    def screen_update(self, x, y):
+        np.roll(self.game_screen, x, axis=0)
+        np.roll(self.game_screen, y, axis=1)
+        return
     
     def starting_screen(self):
         self.game_screen = self.starting_screen
@@ -50,7 +52,7 @@ class find_food_01(game):
         return rand_x, rand_y
     
 
-    def blob_action(action):
+    def blob_action(self, action):
         # decide on the action to take based on the input and 
         # convert that to an appropriate action for this game
         x, y = 0, 0

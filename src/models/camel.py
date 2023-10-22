@@ -124,11 +124,11 @@ class camel():
 
         # apply the firing values to each of the near neighbors
         self.layer0 += np.roll(pos_fire_amt, 1, axis=0)
-        self.layer0 += np.roll(pos_fire_amt, -1, axis=0)
+        self.layer0 += np.roll(neg_fire_amt, -1, axis=0)
         self.layer0 += np.roll(pos_fire_amt, 1, axis=1)
-        self.layer0 += np.roll(pos_fire_amt, -1, axis=1)
+        self.layer0 += np.roll(neg_fire_amt, -1, axis=1)
         self.layer0 += np.roll(pos_fire_amt, 1, axis=2)
-        self.layer0 += np.roll(pos_fire_amt, -1, axis=2)
+        self.layer0 += np.roll(neg_fire_amt, -1, axis=2)
 
         # update the threshold layers
         self.layer1 += positive_firing * self.layer1_1
@@ -170,4 +170,5 @@ class camel():
             take_action = take_action * 17
         if (self.layer0[self.output04] < self.output04_thresh_negative):
             take_action = take_action * 19
+        print(take_action)
         return take_action
