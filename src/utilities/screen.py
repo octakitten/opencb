@@ -17,6 +17,7 @@ class screen():
         val = -1
         
 
+        # this needs to be set to True but we're leaving it on False for now
         if(features.check_feature("xcb") == False):
             # if xcb is enabled, use ffmpeg with xcbgrab to take a screenshot of the desktop
             command = [
