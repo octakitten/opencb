@@ -101,7 +101,6 @@ class find_food_01(game):
         # play the game until victory or until either combo gets too high or iterations finish
         while (self.victory() == False):
             act = self.blob.update(self.game_screen)
-            print(act)
             if prev == act:
                 combo += 1
             else:
@@ -116,7 +115,7 @@ class find_food_01(game):
             self.screen_update(x, y)
 
             iter += 1
-            print(iter)
+            print('iteration - ', iter)
             if iter > max_iter:
                 break
         
