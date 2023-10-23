@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 print(sys.path)
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 print(sys.path)
 
 import cantor
@@ -40,9 +40,14 @@ def test002():
 def test003():
     blob = camel()
     test_game = find_food_01(blob.width, blob.height)
+
     iter = 0
+    max_iter = 1000
+
     prev = 0
     combo = 0
+    max_combo = blob.width * 1.415
+    
     while (test_game.victory() == False):
         act = blob.update(test_game.game_screen)
         print(act)
@@ -51,17 +56,17 @@ def test003():
         else:
             combo = 0
         
-        if combo > 10:
+        if combo > max_combo:
             break
 
         prev = act
 
         x, y = test_game.blob_action(act)
         test_game.screen_update(x, y)
-        
+
         iter += 1
         print(iter)
-        if iter > 1000:
+        if iter > max_iter:
             break
     
     if (test_game.victory() == True):
@@ -85,4 +90,9 @@ def test003():
     else:
         print("defeat!")
 
-test003()
+def test004():
+    the_game = find_food_01(255, 255)
+    the_game.play_game()
+    return
+
+test004()

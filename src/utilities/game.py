@@ -1,4 +1,5 @@
 import numpy as np
+from cantor.src.models.camel import camel
 
 class game():
 
@@ -17,6 +18,7 @@ class game():
 class find_food_01(game):
     # the condition the blob has to meet to win the game
     victory_condition = 0
+    blob = 0
 
     def __init__(self, w, h):
         self.width = w
@@ -27,6 +29,7 @@ class find_food_01(game):
         self.victory_condition[0,0] = 255
         x, y = self.choose_starting_location()
         self.game_screen[x, y] = 255
+        self.blob = camel()
         return
     
     def victory(self):
@@ -81,3 +84,64 @@ class find_food_01(game):
             action = action / 19
             y += 1
         return x, y
+    
+    def play_game(self):
+
+        # number of iterations the game will run for at max
+        iter = 0
+        max_iter = 1000
+
+        # the previous action taken
+        prev = 0
+        # how many times the previous action has been the same as the current one
+        combo = 0
+        # how many times we'll allow it to combo the same action in a row
+        max_combo = self.blob.width * 1.415
+        
+        # play the game until victory or until either combo gets too high or iterations finish
+        while (self.victory() == False):
+            act = self.blob.update(self.game_screen)
+            print(act)
+            if prev == act:
+                combo += 1
+            else:
+                combo = 0
+            
+            if combo > max_combo:
+                break
+
+            prev = act
+
+            x, y = self.blob_action(act)
+            self.screen_update(x, y)
+
+            iter += 1
+            print(iter)
+            if iter > max_iter:
+                break
+        
+        # the blob satisfies the victory condition, which is to put the white dot at 0,0, the top left corner
+        # then we win, and we print out the personality layers
+
+        # otherwise we lose, and just do nothing with it.
+        if (self.victory() == True):
+            print("victory!")
+            print('Personality layer 1')
+            print(self.blob.layer1_1_1)
+            print('Personality layer 2')
+            print(self.blob.layer1_1_2)
+            print('Personality layer 3')
+            print(self.blob.layer1_2_1)
+            print('Personality layer 4')
+            print(self.blob.layer1_2_2)
+            print('Personality layer 5')
+            print(self.blob.layer2_1_1)
+            print('Personality layer 6')
+            print(self.blob.layer2_1_2)
+            print('Personality layer 7')
+            print(self.blob.layer2_2_1)
+            print('Personality layer 8')
+            print(self.blob.layer2_2_2)
+        else:
+            print("defeat!")
+        return

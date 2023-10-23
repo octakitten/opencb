@@ -47,6 +47,7 @@ class camel():
     layer2_2 = np.zeros((width, height, depth))
 
     # personality layers
+
     # positive thresh firing is used
     layer1_1_1 = np.zeros((width, height, depth))
     # positive thresh firing is unused
@@ -64,25 +65,28 @@ class camel():
     # negative thresh resting is unused
     layer2_2_2 = np.zeros((width, height, depth))
 
+    # range of propensity to fire for personality layers
+    propensity = 20
+
     def __init__(self):
             
         # personality layers
         # positive thresh firing is used
-        self.layer1_1_1 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer1_1_1 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # positive thresh firing is unused
-        self.layer1_1_2 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer1_1_2 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # positive thresh resting is used
-        self.layer1_2_1 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer1_2_1 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # positive thresh resting is unused
-        self.layer1_2_2 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer1_2_2 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # negative thresh firing is used
-        self.layer2_1_1 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer2_1_1 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # negative thresh firing is unused
-        self.layer2_1_2 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer2_1_2 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # negative thresh resting is used
-        self.layer2_2_1 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer2_2_1 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         # negative thresh resting is unused
-        self.layer2_2_2 = np.random.uniform(low=-2, high=2, size=(self.width, self.height, self.depth))
+        self.layer2_2_2 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         return
         
     def byop(self, personality1_1_1, personality1_1_2, personality1_2_1, 
@@ -119,8 +123,8 @@ class camel():
         negative_resting = np.greater_equal(self.layer0, self.layer2)
 
         # keep track of the values of the firing neurons
-        pos_fire_amt = positive_firing * self.layer1
-        neg_fire_amt = negative_firing * self.layer2
+        pos_fire_amt = np.multiply(positive_firing, self.layer1)
+        neg_fire_amt = np.multiply(negative_firing, self.layer2)
 
         # apply the firing values to each of the near neighbors
         self.layer0 += np.roll(pos_fire_amt, 1, axis=0)
@@ -131,18 +135,23 @@ class camel():
         self.layer0 += np.roll(neg_fire_amt, -1, axis=2)
 
         # update the threshold layers
-        self.layer1 += positive_firing * self.layer1_1
-        self.layer1 += positive_resting * self.layer1_2
-        self.layer2 += negative_firing * self.layer2_1
-        self.layer2 += negative_resting * self.layer2_2
+        self.layer1 += np.multiply(positive_firing, self.layer1_1)
+        self.layer1 += np.multiply(positive_resting, self.layer1_2)
+        self.layer2 += np.multiply(negative_firing, self.layer2_1)
+        self.layer2 += np.multiply(negative_resting, self.layer2_2)
 
         # figure out which emotions were used and which weren't
         # and then update them
+        self.layer1_1 = np.add(np.multiply(positive_firing, self.layer1_1_1), np.multiply(positive_resting, self.layer1_2_1))
+        self.layer1_2 = np.add(np.multiply(positive_resting, self.layer1_1_2), np.multiply(positive_firing, self.layer1_2_2))
+        self.layer2_1 = np.add(np.multiply(negative_firing, self.layer2_1_1), np.multiply(negative_resting, self.layer2_2_1))
+        self.layer2_2 = np.add(np.multiply(negative_resting, self.layer2_1_2), np.multiply(negative_firing, self.layer2_2_2))
+        '''
         self.layer1_1 += positive_firing * self.layer1_1_1 + positive_resting * self.layer1_2_1
         self.layer1_2 += positive_resting * self.layer1_1_2 + positive_firing * self.layer1_2_2
         self.layer2_1 += negative_firing * self.layer2_1_1 + negative_resting * self.layer2_2_1
         self.layer2_2 += negative_resting * self.layer2_1_2 + negative_firing * self.layer2_2_2
-
+        '''
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         # the primes are just an easy way to return multiple values as an integer,
@@ -158,16 +167,19 @@ class camel():
         # action 2
         if (self.layer0[self.output02] > self.output02_thresh_positive):
             take_action = take_action * 5
+        # negative of action 2
         if (self.layer0[self.output02] < self.output02_thresh_negative):
             take_action = take_action * 7
         # action 3
         if (self.layer0[self.output03] > self.output03_thresh_positive):
             take_action = take_action * 11
+        # negative of action 3
         if (self.layer0[self.output03] < self.output03_thresh_negative):
             take_action = take_action * 13
         # action 4
         if (self.layer0[self.output04] > self.output04_thresh_positive):
             take_action = take_action * 17
+        # negative of action 4
         if (self.layer0[self.output04] < self.output04_thresh_negative):
             take_action = take_action * 19
         print(take_action)
