@@ -1,6 +1,6 @@
-import numpy as np
+import torch
 
-class camel():
+class grizzlybear():
 
     # dimensions of the neural space
     width = 255
@@ -28,42 +28,42 @@ class camel():
     output04_thresh_negative = -180
 
     # neuron layer
-    layer0 = np.zeros((width, height, depth))
+    layer0 = torch.zeros((width, height, depth))
     print(layer0.shape)
     # threshold layers
     # positive thresh
-    layer1 = np.zeros((width, height, depth))
+    layer1 = torch.zeros((width, height, depth))
     # negative thresh
-    layer2 = np.zeros((width, height, depth))
+    layer2 = torch.zeros((width, height, depth))
 
     # emotion layers
     # positive thresh firing
-    emotion1 = np.zeros((width, height, depth))
+    emotion1 = torch.zeros((width, height, depth))
     # positive thresh resting
-    emotion2 = np.zeros((width, height, depth))
+    emotion2 = torch.zeros((width, height, depth))
     # negative thresh firing
-    emotion3 = np.zeros((width, height, depth))
+    emotion3 = torch.zeros((width, height, depth))
     # negative thresh resting
-    emotion4 = np.zeros((width, height, depth))
+    emotion4 = torch.zeros((width, height, depth))
 
     # personality layers
 
     # positive thresh firing is used
-    personality1 = np.zeros((width, height, depth))
+    personality1 = torch.zeros((width, height, depth))
     # positive thresh firing is unused
-    personality2 = np.zeros((width, height, depth))
+    personality2 = torch.zeros((width, height, depth))
     # positive thresh resting is used
-    personality3 = np.zeros((width, height, depth))
+    personality3 = torch.zeros((width, height, depth))
     # positive thresh resting is unused
-    personality4 = np.zeros((width, height, depth))
+    personality4 = torch.zeros((width, height, depth))
     # negative thresh firing is used
-    personality5 = np.zeros((width, height, depth))
+    personality5 = torch.zeros((width, height, depth))
     # negative thresh firing is unused
-    personality6 = np.zeros((width, height, depth))
+    personality6 = torch.zeros((width, height, depth))
     # negative thresh resting is used
-    personality7 = np.zeros((width, height, depth))
+    personality7 = torch.zeros((width, height, depth))
     # negative thresh resting is unused
-    personality8 = np.zeros((width, height, depth))
+    personality8 = torch.zeros((width, height, depth))
 
     # range of propensity to fire for personality layers
     propensity = 20
@@ -72,21 +72,21 @@ class camel():
             
         # personality layers
         # positive thresh firing is used
-        self.personality1 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality1 = torch.rand(self.width, self.height, self.depth)
         # positive thresh firing is unused
-        self.personality2 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality2 = torch.rand(self.width, self.height, self.depth)
         # positive thresh resting is used
-        self.personality3 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality3 = torch.rand(self.width, self.height, self.depth)
         # positive thresh resting is unused
-        self.personality4 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality4 = torch.rand(self.width, self.height, self.depth)
         # negative thresh firing is used
-        self.personality5 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality5 = torch.rand(self.width, self.height, self.depth)
         # negative thresh firing is unused
-        self.personality6 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality6 = torch.rand(self.width, self.height, self.depth)
         # negative thresh resting is used
-        self.personality7 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality7 = torch.rand(self.width, self.height, self.depth)
         # negative thresh resting is unused
-        self.personality8 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
+        self.personality8 = torch.rand(self.width, self.height, self.depth)
         return
         
     def byop(self, personality1_1_1, personality1_1_2, personality1_2_1, 
@@ -114,38 +114,38 @@ class camel():
 
     def update(self, input_image):
         # add in the input image
-        np.add(self.layer0[:, :, 1],  input_image)
+        torch.add(self.layer0[:, :, 1],  input_image)
 
         #check which neurons are firing and which arent, do the stuff
-        positive_firing = np.greater(self.layer0, self.layer1)
-        positive_resting = np.less_equal(self.layer0, self.layer1)
-        negative_firing = np.less(self.layer0, self.layer2)
-        negative_resting = np.greater_equal(self.layer0, self.layer2)
+        positive_firing = torch.greater(self.layer0, self.layer1)
+        positive_resting = torch.less_equal(self.layer0, self.layer1)
+        negative_firing = torch.less(self.layer0, self.layer2)
+        negative_resting = torch.greater_equal(self.layer0, self.layer2)
 
         # keep track of the values of the firing neurons
-        pos_fire_amt = np.multiply(positive_firing, self.layer1)
-        neg_fire_amt = np.multiply(negative_firing, self.layer2)
+        pos_fire_amt = torch.multiply(positive_firing, self.layer1)
+        neg_fire_amt = torch.multiply(negative_firing, self.layer2)
 
         # apply the firing values to each of the near neighbors
-        self.layer0 = np.add(self.layer0, np.roll(pos_fire_amt, 1, axis=0))
-        self.layer0 = np.add(self.layer0, np.roll(neg_fire_amt, -1, axis=0))
-        self.layer0 = np.add(self.layer0, np.roll(pos_fire_amt, 1, axis=1))
-        self.layer0 = np.add(self.layer0, np.roll(neg_fire_amt, -1, axis=1))
-        self.layer0 = np.add(self.layer0, np.roll(pos_fire_amt, 1, axis=2))
-        self.layer0 = np.add(self.layer0, np.roll(neg_fire_amt, -1, axis=2))
+        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 0))
+        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 0))
+        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 1))
+        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 1))
+        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 2))
+        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 2))
 
         # update the threshold layers
-        self.layer1 = np.add(self.layer1, np.multiply(positive_firing, self.emotion1))
-        self.layer1 = np.add(self.layer1, np.multiply(positive_resting, self.emotion2))
-        self.layer2 = np.add(self.layer1, np.multiply(negative_firing, self.emotion3))
-        self.layer2 = np.add(self.layer1, np.multiply(negative_resting, self.emotion4))
+        self.layer1 = torch.add(self.layer1, torch.multiply(positive_firing, self.emotion1))
+        self.layer1 = torch.add(self.layer1, torch.multiply(positive_resting, self.emotion2))
+        self.layer2 = torch.add(self.layer1, torch.multiply(negative_firing, self.emotion3))
+        self.layer2 = torch.add(self.layer1, torch.multiply(negative_resting, self.emotion4))
 
         # figure out which emotions were used and which weren't
         # and then update them
-        self.emotion1 = np.add(np.multiply(positive_firing, self.personality1), np.multiply(positive_resting, self.personality3))
-        self.emotion2 = np.add(np.multiply(positive_resting, self.personality2), np.multiply(positive_firing, self.personality4))
-        self.emotion3 = np.add(np.multiply(negative_firing, self.personality5), np.multiply(negative_resting, self.personality7))
-        self.emotion4 = np.add(np.multiply(negative_resting, self.personality6), np.multiply(negative_firing, self.personality8))
+        self.emotion1 = torch.add(torch.multiply(positive_firing, self.personality1), torch.multiply(positive_resting, self.personality3))
+        self.emotion2 = torch.add(torch.multiply(positive_resting, self.personality2), torch.multiply(positive_firing, self.personality4))
+        self.emotion3 = torch.add(torch.multiply(negative_firing, self.personality5), torch.multiply(negative_resting, self.personality7))
+        self.emotion4 = torch.add(torch.multiply(negative_resting, self.personality6), torch.multiply(negative_firing, self.personality8))
         '''
         self.emotion1 += positive_firing * self.personality1 + positive_resting * self.personality3
         self.emotion2 += positive_resting * self.personality2 + positive_firing * self.personality4

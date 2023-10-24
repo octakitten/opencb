@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import sys
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from cantor.src.utilities.screen import screen
 from cantor.src.models.camel import camel
 from cantor.src.utilities.game import game
 from cantor.src.utilities.game import find_food_01
+from cantor.src.utilities.game import find_food_02
 
 def test001():
     cantor01 = d8a4gs()
@@ -95,4 +97,10 @@ def test004():
     the_game.play_game()
     return
 
-test004()
+def test005():
+    the_game = find_food_02(255, 255)
+    the_game.play_game()
+    return
+
+# print(torch.cuda.is_available())
+test005()

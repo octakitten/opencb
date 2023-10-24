@@ -3,8 +3,8 @@ import numpy as np
 class d8a4gs():
 
     # dimensions of the neural space
-    width = 256
-    height = 256
+    width = 255
+    height = 255
     depth = 8
     # num_controls = 4
 
