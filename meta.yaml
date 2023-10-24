@@ -11,7 +11,7 @@ requirements:
     - numpy
     - Pillow
     - Xlib
-    - opencv-python
+    - pytorch
 
   run:
     - python
