@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "cantor"
+version = "0.1.0"
+description = "Open-Source Computer Behavior"
+authors = ["Octakitten <raspberry2425@gmail.com>"]
+license = "GNU Affero Public License v3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+numpy = ">=1.26.1"
+xlib = ">=0.21"
+Pillow = ">=10.1.0"
+torch = ">=2.1.0"
+
+[tool.poetry.group.dev.dependencies]
+python = ">=3.9"
+numpy = ">=1.26.1"
+Pillow = ">=10.1.0"
+xlib = ">=0.21"
+torch = ">=2.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
