@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 
 class grizzlybear():
 
@@ -8,24 +9,26 @@ class grizzlybear():
     depth = 32
     # num_controls = 4
 
+    threshhold = np.random.random()
 
     # controls output layer
     # 36 x 36
     output01 = (32,32,20)
-    output01_thresh_positive = 180
-    output01_thresh_negative = -180
+    output01_thresh_positive = threshhold
+    output01_thresh_negative = -threshhold
+    print(output01_thresh_negative)
     # 36 x 96
     output02 = (32,96,20)
-    output02_thresh_positive = 180
-    output02_thresh_negative = -180
+    output02_thresh_positive = threshhold
+    output02_thresh_negative = -threshhold
     # 96 x 36
     output03 = (96,32,20)
-    output03_thresh_positive = 180
-    output03_thresh_negative = -180
+    output03_thresh_positive = threshhold
+    output03_thresh_negative = -threshhold
     # 96 x 96
     output04 = (96,96,20)
-    output04_thresh_positive = 180
-    output04_thresh_negative = -180
+    output04_thresh_positive = threshhold
+    output04_thresh_negative = -threshhold
 
     # neuron layer
     layer0 = torch.zeros((width, height, depth))
@@ -66,27 +69,37 @@ class grizzlybear():
     personality8 = torch.zeros((width, height, depth))
 
     # range of propensity to fire for personality layers
-    propensity = 20
+    pos_propensity = 20
+    neg_propensity = -20
 
     def __init__(self):
             
         # personality layers
         # positive thresh firing is used
-        self.personality1 = torch.rand(self.width, self.height, self.depth)
+        random_gen = torch.Generator()
+        random_gen.seed()
+        self.personality1 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # positive thresh firing is unused
-        self.personality2 = torch.rand(self.width, self.height, self.depth)
+        self.personality2 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # positive thresh resting is used
-        self.personality3 = torch.rand(self.width, self.height, self.depth)
+        self.personality3 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # positive thresh resting is unused
-        self.personality4 = torch.rand(self.width, self.height, self.depth)
+        self.personality4 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # negative thresh firing is used
-        self.personality5 = torch.rand(self.width, self.height, self.depth)
+        self.personality5 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # negative thresh firing is unused
-        self.personality6 = torch.rand(self.width, self.height, self.depth)
+        self.personality6 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # negative thresh resting is used
-        self.personality7 = torch.rand(self.width, self.height, self.depth)
+        self.personality7 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         # negative thresh resting is unused
-        self.personality8 = torch.rand(self.width, self.height, self.depth)
+        self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         return
         
     def byop(self, personality1_1_1, personality1_1_2, personality1_2_1, 
@@ -110,6 +123,9 @@ class grizzlybear():
         # negative thresh resting is unused
         self.personality8 = personality2_2_2
         return
+    
+    def get_a_personality(self):
+        return (self.personality1, self.personality2, self.personality3, self.personality4, self.personality5, self.personality6, self.personality7, self.personality8)
 
 
     def update(self, input_image):

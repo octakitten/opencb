@@ -15,6 +15,7 @@ from cantor.src.models.camel import camel
 from cantor.src.utilities.game import game
 from cantor.src.utilities.game import find_food_01
 from cantor.src.utilities.game import find_food_02
+from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
 
 def test001():
     cantor01 = d8a4gs()
@@ -102,5 +103,10 @@ def test005():
     the_game.play_game()
     return
 
+def test006():
+    winner = grizzlybear_routine.run_routine()
+    print(winner)
+    return
+
 # print(torch.cuda.is_available())
-test005()
+test006()

@@ -15,8 +15,8 @@ class game():
     def __init__(self):
         return
     
-    def screen(imarray):
-        return imarray
+    def screen(self):
+        return self.game_screen
     
 class find_food_01(game):
     # the condition the blob has to meet to win the game
@@ -199,39 +199,39 @@ class find_food_02(game):
             x += 1
         if action % 3 == 0:
             action = action / 3
-            x += -1
+            x += 0
         if action % 5 == 0:
             action = action / 5
             x += -1
         if action % 7 == 0:
             action = action / 7
-            x += 1
+            x += 0
         if action % 11 == 0:
             action = action / 11
             y += 1
         if action % 13 == 0:
             action = action / 13
-            y += -1
+            y += 0
         if action % 17 == 0:
             action = action / 17
             y += -1
         if action % 19 == 0:
             action = action / 19
-            y += 1
+            y += 0
         return x, y
     
     def play_game(self):
 
         # number of iterations the game will run for at max
         iter = 0
-        max_iter = 1000
+        max_iter = 10000
 
         # the previous action taken
         prev = 0
         # how many times the previous action has been the same as the current one
         combo = 0
         # how many times we'll allow it to combo the same action in a row
-        max_combo = self.blob.width * 1.415
+        max_combo = self.blob.width * 20
         
         # play the game until victory or until either combo gets too high or iterations finish
         while (self.victory() == False):
