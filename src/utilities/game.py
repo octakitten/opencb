@@ -231,7 +231,7 @@ class find_food_02(game):
         # how many times the previous action has been the same as the current one
         combo = 0
         # how many times we'll allow it to combo the same action in a row
-        max_combo = self.blob.width * 20
+        max_combo = self.blob.width * 3
         
         # play the game until victory or until either combo gets too high or iterations finish
         while (self.victory() == False):
