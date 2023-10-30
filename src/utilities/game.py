@@ -276,7 +276,10 @@ class find_food_02(game):
             print(self.blob.personality7)
             print('Personality layer 8')
             print(self.blob.personality8)
-            return self.personality1, self.personality2, self.personality3, self.personality4, self.personality5, self.personality6, self.personality7, self.personality8
+            return (self.personality1, self.personality2, 
+                    self.personality3, self.personality4, 
+                    self.personality5, self.personality6, 
+                    self.personality7, self.personality8)
         else:
             print("defeat!")
         return False

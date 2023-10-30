@@ -2,6 +2,9 @@ import numpy as np
 
 class d16a1gs():
 
+
+    # this is just a test model, not meant to be used for anything
+
     # dimensions of the neural space
     width = 255
     height = 255
@@ -29,7 +32,7 @@ class d16a1gs():
 
     # neuron layer
     layer0 = np.zeros((width, height, depth))
-    print(layer0.shape)
+    #print(layer0.shape)
     # threshold layers
     # positive thresh
     layer1 = np.zeros((width, height, depth))

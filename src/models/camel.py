@@ -12,24 +12,25 @@ class camel():
     # controls output layer
     # 36 x 36
     output01 = (32,32,20)
-    output01_thresh_positive = 180
-    output01_thresh_negative = -180
+    threshold = np.random.uniform(low=-255, high=255)
+    output01_thresh_positive = threshold
+    output01_thresh_negative = -threshold
     # 36 x 96
     output02 = (32,96,20)
-    output02_thresh_positive = 180
-    output02_thresh_negative = -180
+    output02_thresh_positive = threshold
+    output02_thresh_negative = -threshold
     # 96 x 36
     output03 = (96,32,20)
-    output03_thresh_positive = 180
-    output03_thresh_negative = -180
+    output03_thresh_positive = threshold
+    output03_thresh_negative = -threshold
     # 96 x 96
     output04 = (96,96,20)
-    output04_thresh_positive = 180
-    output04_thresh_negative = -180
+    output04_thresh_positive = threshold
+    output04_thresh_negative = -threshold
 
     # neuron layer
     layer0 = np.zeros((width, height, depth))
-    print(layer0.shape)
+    #print(layer0.shape)
     # threshold layers
     # positive thresh
     layer1 = np.zeros((width, height, depth))
@@ -66,7 +67,9 @@ class camel():
     personality8 = np.zeros((width, height, depth))
 
     # range of propensity to fire for personality layers
-    propensity = 20
+    propensity = np.random.uniform(low=1, high=255)
+    #print('propensity')
+    #print(propensity)
 
     def __init__(self):
             
@@ -89,31 +92,31 @@ class camel():
         self.personality8 = np.random.uniform(low=-self.propensity, high=self.propensity, size=(self.width, self.height, self.depth))
         return
         
-    def byop(self, personality1_1_1, personality1_1_2, personality1_2_1, 
-                        personality1_2_2, personality2_1_1, personality2_1_2, 
-                        personality2_2_1, personality2_2_2):
+    def byop(self, personality_tuple):
         # personality layers
         # positive thresh firing is used
-        self.personality1 = personality1_1_1
+        self.personality1 = personality_tuple[0]
         # positive thresh firing is unused
-        self.personality2 = personality1_1_2
+        self.personality2 = personality_tuple[1]
         # positive thresh resting is used
-        self.personality3 = personality1_2_1
+        self.personality3 = personality_tuple[2]
         # positive thresh resting is unused
-        self.personality4 = personality1_2_2
+        self.personality4 = personality_tuple[3]
         # negative thresh firing is used
-        self.personality5 = personality2_1_1
+        self.personality5 = personality_tuple[4]
         # negative thresh firing is unused
-        self.personality6 = personality2_1_2
+        self.personality6 = personality_tuple[5]
         # negative thresh resting is used
-        self.personality7 = personality2_2_1
+        self.personality7 = personality_tuple[6]
         # negative thresh resting is unused
-        self.personality8 = personality2_2_2
+        self.personality8 = personality_tuple[7]
         return
 
 
     def update(self, input_image):
         # add in the input image
+        if (isinstance(input_image, np.ndarray) == False):
+            return -1
         np.add(self.layer0[:, :, 1],  input_image)
 
         #check which neurons are firing and which arent, do the stuff
@@ -182,5 +185,5 @@ class camel():
         # negative of action 4
         if (self.layer0[self.output04] < self.output04_thresh_negative):
             take_action = take_action * 19
-        print(take_action)
+        #print(take_action)
         return take_action

@@ -16,7 +16,7 @@ class grizzlybear():
     output01 = (32,32,20)
     output01_thresh_positive = threshhold
     output01_thresh_negative = -threshhold
-    print(output01_thresh_negative)
+    #print(output01_thresh_negative)
     # 36 x 96
     output02 = (32,96,20)
     output02_thresh_positive = threshhold
@@ -32,7 +32,7 @@ class grizzlybear():
 
     # neuron layer
     layer0 = torch.zeros((width, height, depth))
-    print(layer0.shape)
+    #print(layer0.shape)
     # threshold layers
     # positive thresh
     layer1 = torch.zeros((width, height, depth))
@@ -198,5 +198,5 @@ class grizzlybear():
         # negative of action 4
         if (self.layer0[self.output04] < self.output04_thresh_negative):
             take_action = take_action * 19
-        print(take_action)
+        #print(take_action)
         return take_action
