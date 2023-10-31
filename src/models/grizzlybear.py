@@ -129,6 +129,8 @@ class grizzlybear():
 
 
     def update(self, input_image):
+        if (isinstance(input_image, torch.tensor) == False):
+            return -1
         # add in the input image
         torch.add(self.layer0[:, :, 1],  input_image)
 

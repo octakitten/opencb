@@ -2,6 +2,7 @@ from PIL import Image
 from PIL import ImageGrab
 from PIL import features
 import numpy as np
+import torch
 import subprocess
 
 
@@ -10,7 +11,7 @@ class screen():
     def __init__():
         return
 
-    def screenshot_desktop(a, b, w, h):
+    def snap_desktop(a, b, w, h):
         # a,b = top left corner of the box
         # w,h = width and height of the box
         # returns a numpy array
@@ -27,23 +28,29 @@ class screen():
             '-f', 'x11grab',
             '-i', ':0.0+{a},{b}',
             '-vframes', '1',
-            'output_file.png'
+            'snap.png'
             ]
             subprocess.run(command)
-            val = np.array(Image.open('output_file.png'))
+            val = np.array(Image.open('snap.png'))
         else:
-            # otherwise, use PIL's ImageGrab to take a screenshot of the desktop, which will probably default to gnome-screenshot
+            # otherwise, use PIL's ImageGrab to take a screenshot of the desktop, 
+            # which will probably default to gnome-screenshot
             im = ImageGrab.grab(bbox =(a, b, a+w, b+h))
             val = np.array(im).astype(np.uint8)[:,:,0]
         
         return val
     
-    def save_screen(val):
-        # returns a numpy array
-        if (np.array(val).shape == ()):
+    def save(val, name):
+        # save a numpy array or torch tensor as a png image
+        # name should not have an extension
+        if (isinstance(val, np.ndarray) == True):
             img = Image.fromarray(val)
-            img.save('output_file.png')
-            return val
+            img.save(name, 'PNG')
+            return 1
+        elif (isinstance(val, torch.tensor) == True):
+            img = Image.fromarray(val.numpy())
+            img.save(name, 'PNG')
+            return 2
         else:
             return -1
     

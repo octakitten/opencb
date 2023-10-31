@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from cantor.src.models.camel import camel
 from cantor.src.models.grizzlybear import grizzlybear
+from . import screen
 
 
 class game():
@@ -164,6 +165,7 @@ class find_food_02(game):
         self.victory_condition[0,0] = 255
         x, y = self.choose_starting_location()
         self.game_screen[x, y] = 255
+        screen.save(self.game_screen, 'start_screen')
         self.blob = grizzlybear()
         return
     
@@ -282,4 +284,5 @@ class find_food_02(game):
                     self.personality7, self.personality8)
         else:
             print("defeat!")
+            screen.save(self.game_screen, 'end_screen')
         return False
