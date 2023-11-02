@@ -1,2 +1,2 @@
-from . import camel_routine
-from . import grizzlybear_routine
+from .camel_routine import *
+from .grizzlybear_routine import *

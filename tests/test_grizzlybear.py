@@ -3,8 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-import cantor
-from cantor.src.models.grizzlybear import grizzlybear
+from cantor import grizzlybear
 import torch
 
 def test_grizzlybear_initialization():
@@ -31,7 +30,8 @@ def test_grizzlybear_initialization():
 def test_byop():
     g = grizzlybear()
     personalities = (1, 2, 3, 4, 5, 6, 7, 8)
-    g.byop(personalities)
+    thresholds = (1, 2, 3, 4, 5, 6, 7, 8)
+    g.byop(personalities, thresholds)
     assert g.personality1 == 1
     assert g.personality2 == 2
     assert g.personality3 == 3
@@ -40,6 +40,14 @@ def test_byop():
     assert g.personality6 == 6
     assert g.personality7 == 7
     assert g.personality8 == 8
+    assert g.output01_thresh_positive == 1
+    assert g.output01_thresh_negative == 2
+    assert g.output02_thresh_positive == 3
+    assert g.output02_thresh_negative == 4
+    assert g.output03_thresh_positive == 5
+    assert g.output03_thresh_negative == 6
+    assert g.output04_thresh_positive == 7
+    assert g.output04_thresh_negative == 8
     return
 
 def test_update():

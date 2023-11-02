@@ -9,26 +9,26 @@ class grizzlybear():
     depth = 32
     # num_controls = 4
 
-    threshhold = np.random.random()
+    threshhold_max = np.random.uniform(low=1, high=255)
 
     # controls output layer
     # 36 x 36
     output01 = (32,32,20)
-    output01_thresh_positive = threshhold
-    output01_thresh_negative = -threshhold
+    output01_thresh_positive = np.random.uniform(low=1, high=threshhold_max)
+    output01_thresh_negative = -np.random.uniform(low=1, high=threshhold_max)
     #print(output01_thresh_negative)
     # 36 x 96
     output02 = (32,96,20)
-    output02_thresh_positive = threshhold
-    output02_thresh_negative = -threshhold
+    output02_thresh_positive = np.random.uniform(low=1, high=threshhold_max)
+    output02_thresh_negative = -np.random.uniform(low=1, high=threshhold_max)
     # 96 x 36
     output03 = (96,32,20)
-    output03_thresh_positive = threshhold
-    output03_thresh_negative = -threshhold
+    output03_thresh_positive = np.random.uniform(low=1, high=threshhold_max)
+    output03_thresh_negative = -np.random.uniform(low=1, high=threshhold_max)
     # 96 x 96
     output04 = (96,96,20)
-    output04_thresh_positive = threshhold
-    output04_thresh_negative = -threshhold
+    output04_thresh_positive = np.random.uniform(low=1, high=threshhold_max)
+    output04_thresh_negative = -np.random.uniform(low=1, high=threshhold_max)
 
     # neuron layer
     layer0 = torch.zeros((width, height, depth))
@@ -70,7 +70,7 @@ class grizzlybear():
 
     # range of propensity to fire for personality layers
     pos_propensity = np.random.uniform(low=1, high=255)
-    neg_propensity = -1*np.random.uniform(low=1, high=255)
+    neg_propensity = -np.random.uniform(low=1, high=255)
 
     def __init__(self):
             
@@ -102,7 +102,7 @@ class grizzlybear():
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         return
         
-    def byop(self, pers):
+    def byop(self, pers, thresh):
         # personality layers
         # positive thresh firing is used
         self.personality1 = pers[0]
@@ -120,6 +120,23 @@ class grizzlybear():
         self.personality7 = pers[6]
         # negative thresh resting is unused
         self.personality8 = pers[7]
+        # threshold layers
+        # positive thresh 1
+        self.output01_thresh_positive = thresh[0]
+        # negative thresh 1
+        self.output01_thresh_negative = thresh[1]
+        # positive thresh 2
+        self.output02_thresh_positive = thresh[2]
+        # negative thresh 2
+        self.output02_thresh_negative = thresh[3]
+        # positive thresh 3
+        self.output03_thresh_positive = thresh[4]
+        # negative thresh 3
+        self.output03_thresh_negative = thresh[5]
+        # positive thresh 4
+        self.output04_thresh_positive = thresh[6]
+        # negative thresh 4
+        self.output04_thresh_negative = thresh[7]
         return
     
     def get_a_personality(self):

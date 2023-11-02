@@ -9,9 +9,7 @@ class game():
 
     # the game's screen dimensions are defined here:
     width, height = 0, 0
-    # the starting screen is here
-    starting_screen = 0
-    #the actual screen is here
+    #the screen is here
     game_screen = 0
     def __init__(self):
         return
@@ -154,45 +152,47 @@ class find_food_01(game):
 class find_food_02(game):
     # the condition the blob has to meet to win the game
     victory_condition = 0
+    # the instance of grizzlybear that'll play the game
     blob = 0
 
     def __init__(self, w, h):
         self.width = w
         self.height = h
-        self.starting_screen = torch.zeros((self.width, self.height))
-        self.game_screen = torch.zeros((self.width, self.height))
-        self.victory_condition = torch.zeros((self.width, self.height))
-        self.victory_condition[0,0] = 255
-        x, y = self.choose_starting_location()
-        self.game_screen[x, y] = 255
+        self.__create_starting_screen()
+        self.__create_victory_condition()
         screen.save(self.game_screen, 'start_screen')
         self.blob = grizzlybear()
         return
     
-    def victory(self):
+    def __create_victory_condition(self):
+        self.victory_condition = torch.zeros((self.width, self.height))
+        self.victory_condition[0,0] = 255
+        return
+    
+    def __victory(self):
         if (self.game_screen[0,0] == self.victory_condition[0,0]):
             return True
         else:
             return False
     
-    def screen_update(self, x, y):
+    def __screen_update(self, x, y):
         torch.roll(self.game_screen, x, 0)
         torch.roll(self.game_screen, y, 1)
         return
     
-    def starting_screen(self):
-        self.game_screen = self.starting_screen
-        x, y = self.choose_starting_location()
+    def __create_starting_screen(self):
+        self.game_screen = torch.zeros((self.width, self.height))
+        x, y = self.__choose_starting_location()
         self.game_screen[x, y] = 255
         return
     
-    def choose_starting_location(self):
+    def __choose_starting_location(self):
         rand_x = np.random.randint(1, self.width)
         rand_y = np.random.randint(1, self.height)
         return rand_x, rand_y
     
 
-    def blob_action(self, action):
+    def __blob_action(self, action):
         # decide on the action to take based on the input and 
         # convert that to an appropriate action for this game
         x, y = 0, 0
@@ -236,7 +236,7 @@ class find_food_02(game):
         max_combo = self.blob.width * 3
         
         # play the game until victory or until either combo gets too high or iterations finish
-        while (self.victory() == False):
+        while (self.__victory() == False):
             act = self.blob.update(self.game_screen)
             if prev == act:
                 combo += 1
@@ -248,8 +248,8 @@ class find_food_02(game):
 
             prev = act
 
-            x, y = self.blob_action(act)
-            self.screen_update(x, y)
+            x, y = self.__blob_action(act)
+            self.__screen_update(x, y)
 
             iter += 1
             print('iteration - ', iter)
@@ -260,7 +260,7 @@ class find_food_02(game):
         # then we win, and we print out the personality layers
 
         # otherwise we lose, and just do nothing with it.
-        if (self.victory() == True):
+        if (self.__victory() == True):
             print("victory!")
             print('Personality layer 1')
             print(self.blob.personality1)
@@ -281,7 +281,10 @@ class find_food_02(game):
             return (self.personality1, self.personality2, 
                     self.personality3, self.personality4, 
                     self.personality5, self.personality6, 
-                    self.personality7, self.personality8)
+                    self.personality7, self.personality8), (self.blob.output01_thresh_positive, self.blob.output01_thresh_negative, 
+                    self.blob.output02_thresh_positive, self.blob.output02_thresh_negative, 
+                    self.blob.output03_thresh_positive, self.blob.output03_thresh_negative, 
+                    self.blob.output04_thresh_positive, self.blob.output04_thresh_negative)
         else:
             print("defeat!")
             screen.save(self.game_screen, 'end_screen')

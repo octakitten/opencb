@@ -1,2 +1,2 @@
-from . import screen
-from . import game
+from .screen import *
+from .game import *

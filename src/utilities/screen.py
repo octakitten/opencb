@@ -47,9 +47,10 @@ class screen():
             img = Image.fromarray(val)
             img.save(name, 'PNG')
             return 1
-        elif (isinstance(val, torch.tensor) == True):
+        elif (torch.is_tensor(val) == True):
             img = Image.fromarray(val.numpy())
-            img.save(name, 'PNG')
+            grey = img.convert('L')
+            grey.save(name, 'PNG')
             return 2
         else:
             return -1
