@@ -69,8 +69,8 @@ class grizzlybear():
     personality8 = torch.zeros((width, height, depth))
 
     # range of propensity to fire for personality layers
-    pos_propensity = 20
-    neg_propensity = -20
+    pos_propensity = np.random.uniform(low=1, high=255)
+    neg_propensity = -1*np.random.uniform(low=1, high=255)
 
     def __init__(self):
             
@@ -102,26 +102,24 @@ class grizzlybear():
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         return
         
-    def byop(self, personality1_1_1, personality1_1_2, personality1_2_1, 
-                        personality1_2_2, personality2_1_1, personality2_1_2, 
-                        personality2_2_1, personality2_2_2):
+    def byop(self, pers):
         # personality layers
         # positive thresh firing is used
-        self.personality1 = personality1_1_1
+        self.personality1 = pers[0]
         # positive thresh firing is unused
-        self.personality2 = personality1_1_2
+        self.personality2 = pers[1]
         # positive thresh resting is used
-        self.personality3 = personality1_2_1
+        self.personality3 = pers[2]
         # positive thresh resting is unused
-        self.personality4 = personality1_2_2
+        self.personality4 = pers[3]
         # negative thresh firing is used
-        self.personality5 = personality2_1_1
+        self.personality5 = pers[4]
         # negative thresh firing is unused
-        self.personality6 = personality2_1_2
+        self.personality6 = pers[5]
         # negative thresh resting is used
-        self.personality7 = personality2_2_1
+        self.personality7 = pers[6]
         # negative thresh resting is unused
-        self.personality8 = personality2_2_2
+        self.personality8 = pers[7]
         return
     
     def get_a_personality(self):
@@ -129,7 +127,7 @@ class grizzlybear():
 
 
     def update(self, input_image):
-        if (isinstance(input_image, torch.tensor) == False):
+        if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
         torch.add(self.layer0[:, :, 1],  input_image)

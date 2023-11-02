@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
 
-print(sys.path)
+#print(sys.path)
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-print(sys.path)
+#print(sys.path)
 
 import cantor
 from cantor.src.models.camel import camel
