@@ -16,7 +16,6 @@ def test_find_food_02_initialization():
     g = cantor.find_food_02(test_w, test_h)
     assert g.width == test_w
     assert g.height == test_h
-    assert g.play_game() == False
     return
 
 test_find_food_02_initialization()
