@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from cantor.src.models.camel import camel
-from cantor.src.models.grizzlybear import grizzlybear
+from cantor.src.models import horse
 from . import screen
 
 
@@ -161,7 +161,7 @@ class find_food_02(game):
         self.__create_starting_screen()
         self.__create_victory_condition()
         screen.save(self.game_screen, 'start_screen')
-        self.blob = grizzlybear()
+        self.blob = horse()
         return
     
     def __create_victory_condition(self):
@@ -201,25 +201,25 @@ class find_food_02(game):
             x += 1
         if action % 3 == 0:
             action = action / 3
-            x += 0
+            x += -1
         if action % 5 == 0:
             action = action / 5
             x += -1
         if action % 7 == 0:
             action = action / 7
-            x += 0
+            x += 1
         if action % 11 == 0:
             action = action / 11
             y += 1
         if action % 13 == 0:
             action = action / 13
-            y += 0
+            y += -1
         if action % 17 == 0:
             action = action / 17
             y += -1
         if action % 19 == 0:
             action = action / 19
-            y += 0
+            y += 1
         return x, y
     
     def play_game(self):

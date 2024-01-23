@@ -7,15 +7,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
-import cantor
 from cantor.src.models.d8a4gs import d8a4gs
 from cantor.src.models.d16a1gs import d16a1gs
-from cantor.src.utilities.screen import screen
+from cantor.src.utilities import screen
 from cantor.src.models.camel import camel
-from cantor.src.utilities.game import game
 from cantor.src.utilities.game import find_food_01
 from cantor.src.utilities.game import find_food_02
 from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
+from cantor.src.routines.horse_routine import horse_routine
 
 def test001():
     cantor01 = d8a4gs()
@@ -108,5 +107,10 @@ def test006():
     print(winner)
     return
 
-# print(torch.cuda.is_available())
-test006()
+def test007():
+    winner = horse_routine.run_routine()
+    print(winner)
+    return
+
+print(torch.cuda.is_available())
+test007()
