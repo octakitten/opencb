@@ -75,7 +75,7 @@ class horse():
     neg_propensity = -np.random.uniform(low=1, high=255)
 
     def __init__(self):
-            
+        
         # personality layers
         # positive thresh firing is used
         random_gen = torch.Generator()
@@ -104,7 +104,7 @@ class horse():
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         return
         
-    def byop(self, pers, thresh):
+    def set_personality(self, pers, thresh):
         # personality layers
         # positive thresh firing is used
         self.personality1 = pers[0]
@@ -139,6 +139,36 @@ class horse():
         self.output04_thresh_positive = thresh[6]
         # negative thresh 4
         self.output04_thresh_negative = thresh[7]
+        return
+    
+    def new_personality(self):
+        
+        # personality layers
+        # positive thresh firing is used
+        random_gen = torch.Generator()
+        random_gen.seed()
+        self.personality1 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # positive thresh firing is unused
+        self.personality2 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # positive thresh resting is used
+        self.personality3 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # positive thresh resting is unused
+        self.personality4 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # negative thresh firing is used
+        self.personality5 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # negative thresh firing is unused
+        self.personality6 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # negative thresh resting is used
+        self.personality7 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
+        # negative thresh resting is unused
+        self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         return
     
     def get_a_personality(self):
@@ -181,12 +211,7 @@ class horse():
         self.emotion2 = torch.add(torch.multiply(positive_resting, self.personality2), torch.multiply(positive_firing, self.personality4))
         self.emotion3 = torch.add(torch.multiply(negative_firing, self.personality5), torch.multiply(negative_resting, self.personality7))
         self.emotion4 = torch.add(torch.multiply(negative_resting, self.personality6), torch.multiply(negative_firing, self.personality8))
-        '''
-        self.emotion1 += positive_firing * self.personality1 + positive_resting * self.personality3
-        self.emotion2 += positive_resting * self.personality2 + positive_firing * self.personality4
-        self.emotion3 += negative_firing * self.personality5 + negative_resting * self.personality7
-        self.emotion4 += negative_resting * self.personality6 + negative_firing * self.personality8
-        '''
+        
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         # the primes are just an easy way to return multiple values as an integer,

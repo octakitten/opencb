@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 from cantor.src.models.camel import camel
-from cantor.src.models import horse
-from . import screen
+from cantor.src.models.horse import horse
+from cantor.src.utilities.screen import screen
 
 
 class game():
@@ -152,7 +152,7 @@ class find_food_01(game):
 class find_food_02(game):
     # the condition the blob has to meet to win the game
     victory_condition = 0
-    # the instance of grizzlybear that'll play the game
+    # the instance of horse that'll play the game
     blob = 0
 
     def __init__(self, w, h):
@@ -162,6 +162,7 @@ class find_food_02(game):
         self.__create_victory_condition()
         screen.save(self.game_screen, 'start_screen')
         self.blob = horse()
+        self.blob.new_personality()
         return
     
     def __create_victory_condition(self):
@@ -197,28 +198,28 @@ class find_food_02(game):
         # convert that to an appropriate action for this game
         x, y = 0, 0
         if action % 2 == 0:
-            action = action / 2
+            print('x + 1')
             x += 1
         if action % 3 == 0:
-            action = action / 3
+            print('x - 1')
             x += -1
         if action % 5 == 0:
-            action = action / 5
+            print('x - 1')
             x += -1
         if action % 7 == 0:
-            action = action / 7
+            print('x + 1')
             x += 1
         if action % 11 == 0:
-            action = action / 11
+            print('y + 1')
             y += 1
         if action % 13 == 0:
-            action = action / 13
+            print('y - 1')
             y += -1
         if action % 17 == 0:
-            action = action / 17
+            print('y - 1')
             y += -1
         if action % 19 == 0:
-            action = action / 19
+            print('y + 1')
             y += 1
         return x, y
     
