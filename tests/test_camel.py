@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
 import cantor
-from cantor import camel
+from cantor.src.models.camel import camel
 import numpy as np
 
 def test_camel_initialization():

@@ -3,21 +3,21 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from cantor import horse
+from cantor.src.models.horse import horse
 import torch
 
 def test_horse_initialization():
     g = horse()
-    assert g.width == 1024
-    assert g.height == 1024
-    assert g.depth == 32
+    assert g.width == 255
+    assert g.height == 255
+    assert g.depth == 255
     assert g.output01 == (32,32,20)
     assert g.output02 == (32,96,20)
     assert g.output03 == (96,32,20)
     assert g.output04 == (96,96,20)
     assert g.output01_thresh_positive >= -255
     assert g.output01_thresh_positive <= 255
-    assert g.layer0.shape == (255,255,32)
+    assert g.layer0.shape == (255,255,255)
     assert g.layer0[200, 100, 21] == 0
     assert g.pos_propensity >= 1
     assert g.pos_propensity <= 255
@@ -31,7 +31,7 @@ def test_byop():
     g = horse()
     personalities = (1, 2, 3, 4, 5, 6, 7, 8)
     thresholds = (1, 2, 3, 4, 5, 6, 7, 8)
-    g.byop(personalities, thresholds)
+    g.set_personality(personalities, thresholds)
     assert g.personality1 == 1
     assert g.personality2 == 2
     assert g.personality3 == 3

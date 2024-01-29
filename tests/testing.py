@@ -16,6 +16,7 @@ from cantor.src.utilities.game import find_food_01
 from cantor.src.utilities.game import find_food_02
 from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
 from cantor.src.routines.horse_routine import horse_routine
+from cantor.src.models.general import general
 
 def test001():
     cantor01 = d8a4gs()
@@ -124,6 +125,26 @@ def test008():
         print('restarting...')
     pers = game.blob.get_a_personality()
     print(pers)
+    
+def test009():
+    model = general()
+    model.create(255, 255, 100, 4)
+    game = find_food_02(model)
+    iters = 0
+    while (True):
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        model.create(255, 255, 100, 4)
+        game = find_food_02(model)
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + '/saved_models/')
+    
 
-print(torch.cuda.is_available())
-test008()
+test009()

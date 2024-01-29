@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from cantor import grizzlybear
+from cantor.src.models.grizzlybear import grizzlybear
 import torch
 
 def test_grizzlybear_initialization():

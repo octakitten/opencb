@@ -6,16 +6,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
 import cantor
-from cantor import game
-from cantor import find_food_02
-from cantor import horse
+from cantor.src.utilities.game import game
+from cantor.src.utilities.game import find_food_02
+from cantor.src.models.horse import horse
 import numpy as np
 
 def test_find_food_02_initialization():
     test_w = 255
     test_h = 255
     m = horse()
-    g = cantor.find_food_02(test_w, test_h)
+    g = find_food_02(m)
     assert g.width == test_w
     assert g.height == test_h
     return
