@@ -162,8 +162,8 @@ cython_debug/
 
 # PROJECT SPECIFIC IGNORES
 # ignore the start and end screen images
-start_screen.png
-end_screen.png
+start_screen
+end_screen
 dist/
 .venv/
 __pychache__/
