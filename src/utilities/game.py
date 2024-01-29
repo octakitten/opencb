@@ -155,14 +155,13 @@ class find_food_02(game):
     # the instance of horse that'll play the game
     blob = 0
 
-    def __init__(self, w, h):
-        self.width = w
-        self.height = h
+    def __init__(self, model):
+        self.blob = model
+        self.width = self.blob.width
+        self.height = self.blob.height
         self.__create_starting_screen()
         self.__create_victory_condition()
         screen.save(self.game_screen, 'start_screen')
-        self.blob = horse()
-        self.blob.new_personality()
         return
     
     def __create_victory_condition(self):
@@ -222,6 +221,23 @@ class find_food_02(game):
             print('y + 1')
             y += 1
         return x, y
+    
+    def __set_x(self, w):
+        self.x = w
+        return
+    
+    def __set_y(self, h):
+        self.y = h
+        return
+    
+    def set_model(self, model):
+        self.blob = model
+        self.width = self.blob.width
+        self.height = self.blob.height
+        self.__create_starting_screen()
+        self.__create_victory_condition()
+        screen.save(self.game_screen, 'start_screen')
+        return
     
     def play_game(self):
 

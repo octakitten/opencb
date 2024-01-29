@@ -11,6 +11,7 @@ from cantor.src.models.d8a4gs import d8a4gs
 from cantor.src.models.d16a1gs import d16a1gs
 from cantor.src.utilities import screen
 from cantor.src.models.camel import camel
+from cantor.src.models.horse import horse
 from cantor.src.utilities.game import find_food_01
 from cantor.src.utilities.game import find_food_02
 from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
@@ -112,5 +113,17 @@ def test007():
     print(winner)
     return
 
+def test008():
+    model = horse()
+    game = find_food_02(model)
+    iters = 0
+    while (game.play_game() == False):
+        iters+=1
+        print('game over! number of tries:')
+        print(iters)
+        print('restarting...')
+    pers = game.blob.get_a_personality()
+    print(pers)
+
 print(torch.cuda.is_available())
-test007()
+test008()
