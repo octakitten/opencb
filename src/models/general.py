@@ -148,7 +148,7 @@ class general():
     def __new_thresholds(self):
         self.thresholds_pos = []
         self.thresholds_neg = []
-        threshhold_max = np.random.uniform(low=1, high=255)
+        threshhold_max = np.random.uniform(low=1, high=self.range)
         for i in range(0, self.num_controls):
             self.thresholds_pos.append(np.random.uniform(low=1, high=threshhold_max))
             self.thresholds_neg.append(np.random.uniform(low=1, high=threshhold_max))
@@ -227,8 +227,8 @@ class general():
         return
     
     def __new_propensity(self):
-        self.pos_propensity = np.random.uniform(low=1, high=255)
-        self.neg_propensity = -np.random.uniform(low=1, high=255)
+        self.pos_propensity = np.random.uniform(low=1, high=self.range)
+        self.neg_propensity = -np.random.uniform(low=1, high=self.range)
         return
     
     def permute(self, degree):
@@ -238,26 +238,26 @@ class general():
         model.__new_propensity()
         model.__new_personality()
         for i in range(0, degree):
-            self.thresholds_pos = np.add(self.thresholds_pos, model.thresholds_pos)
-            self.thresholds_neg = np.add(self.thresholds_neg, model.thresholds_neg)
-            self.personality1 = torch.add(self.personality1, model.personality1)
-            self.personality2 = torch.add(self.personality2, model.personality2)
-            self.personality3 = torch.add(self.personality3, model.personality3)
-            self.personality4 = torch.add(self.personality4, model.personality4)
-            self.personality5 = torch.add(self.personality5, model.personality5)
-            self.personality6 = torch.add(self.personality6, model.personality6)
-            self.personality7 = torch.add(self.personality7, model.personality7)
-            self.personality8 = torch.add(self.personality8, model.personality8)
-        self.thresholds_pos = np.divide(self.thresholds_pos, degree + 1)
-        self.thresholds_neg = np.divide(self.thresholds_neg, degree + 1)
-        self.personality1 = torch.divide(self.personality1, degree + 1)
-        self.personality2 = torch.divide(self.personality2, degree + 1)
-        self.personality3 = torch.divide(self.personality3, degree + 1)
-        self.personality4 = torch.divide(self.personality4, degree + 1)
-        self.personality5 = torch.divide(self.personality5, degree + 1)
-        self.personality6 = torch.divide(self.personality6, degree + 1)
-        self.personality7 = torch.divide(self.personality7, degree + 1)
-        self.personality8 = torch.divide(self.personality8, degree + 1)
+            np.add(self.thresholds_pos, model.thresholds_pos, out=self.thresholds_pos)
+            np.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)
+            torch.add(self.personality1, model.personality1, out=self.personality1)
+            torch.add(self.personality2, model.personality2, out=self.personality2)
+            torch.add(self.personality3, model.personality3, out=self.personality3)
+            torch.add(self.personality4, model.personality4, out=self.personality4)
+            torch.add(self.personality5, model.personality5, out=self.personality5)
+            torch.add(self.personality6, model.personality6, out=self.personality6)
+            torch.add(self.personality7, model.personality7, out=self.personality7)
+            torch.add(self.personality8, model.personality8, out=self.personality8)
+        np.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
+        np.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
+        torch.divide(self.personality1, degree + 1, out=self.personality1)
+        torch.divide(self.personality2, degree + 1, out=self.personality2)
+        torch.divide(self.personality3, degree + 1, out=self.personality3)
+        torch.divide(self.personality4, degree + 1, out=self.personality4)
+        torch.divide(self.personality5, degree + 1, out=self.personality5)
+        torch.divide(self.personality6, degree + 1, out=self.personality6)
+        torch.divide(self.personality7, degree + 1, out=self.personality7)
+        torch.divide(self.personality8, degree + 1, out=self.personality8)
         return
     
     def save(self, path):
@@ -293,12 +293,16 @@ class general():
         torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 1), alpha=1, out=self.layer0)
         torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 2), alpha=1, out=self.layer0)
         torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 2), alpha=1, out=self.layer0)
+        
+        # once a neuron has fired, its value needs to be lowered by the firing amount
+        torch.subtract(self.layer0, self.pos_fire_amt, alpha=1, out=self.layer0)
+        torch.add(self.layer0, self.neg_fire_amt, alpha=1, out=self.layer0)
 
-        # update the threshold layers
+        # update the emotion (threshold) layers
         torch.add(self.layer1, torch.multiply(self.positive_firing, self.emotion1), alpha=1, out=self.layer1)
         torch.add(self.layer1, torch.multiply(self.positive_resting, self.emotion2), alpha=1, out=self.layer1)
-        torch.add(self.layer1, torch.multiply(self.negative_firing, self.emotion3), alpha=1, out=self.layer2)
-        torch.add(self.layer1, torch.multiply(self.negative_resting, self.emotion4), alpha=1, out=self.layer2)
+        torch.add(self.layer2, torch.multiply(self.negative_firing, self.emotion3), alpha=1, out=self.layer2)
+        torch.add(self.layer2, torch.multiply(self.negative_resting, self.emotion4), alpha=1, out=self.layer2)
 
         # figure out which emotions were used and which weren't
         # and then update them
@@ -312,14 +316,13 @@ class general():
         take_action = []
         
         for i in range(0, self.num_controls):
+            print(self.layer0[self.controls[i]].item())
             if (self.layer0[self.controls[i]].item() > self.thresholds_pos[i]):
                 take_action.append(True)
                 self.layer0[self.controls[i]] = self.layer0[self.controls[i]] - self.thresholds_pos[i]
-                print(self.layer0[self.controls[i]].item())
             else:
                 if (self.layer0[self.controls[i]].item() > self.thresholds_neg[i]):
                     take_action.append(False)
-                    print(self.layer0[self.controls[i]].item())
                 else:
                     take_action.append(-1)
         #print(take_action)
