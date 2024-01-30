@@ -7,6 +7,7 @@ class general():
     width = 0
     height = 0
     depth = 0
+    range = 255
     
     # how many control neurons there are
     num_controls = 0
@@ -42,6 +43,16 @@ class general():
     # range of propensity to fire for personality layers
     pos_propensity = 0
     neg_propensity = 0
+    
+    positive_firing = 0
+    positive_resting = 0
+    negative_firing = 0
+    negative_resting = 0
+
+    # keep track of the values of the firing neurons
+    pos_fire_amt = 0
+    neg_fire_amt = 0
+
 
     def __init__(self):
         return
@@ -122,10 +133,11 @@ class general():
     perform a certain task that requires, for instance, controlling 4 seperate keyboard keypresses, 
     then you would want a model with 4 controls.
     '''
-    def create(self, w, h, d, num_controls):
+    def create(self, w, h, d, r, num_controls):
         self.width = w
         self.height = h
         self.depth = d
+        self.range = r
         self.num_controls = num_controls
         self.__new_controls()
         self.__new_thresholds()
@@ -139,7 +151,7 @@ class general():
         threshhold_max = np.random.uniform(low=1, high=255)
         for i in range(0, self.num_controls):
             self.thresholds_pos.append(np.random.uniform(low=1, high=threshhold_max))
-            self.thresholds_neg.append(-np.random.uniform(low=1, high=threshhold_max))
+            self.thresholds_neg.append(np.random.uniform(low=1, high=threshhold_max))
         return
     
     def __new_controls(self):
@@ -177,6 +189,14 @@ class general():
         self.personality7 = torch.zeros((self.width, self.height, self.depth))
         # negative thresh resting is unused
         self.personality8 = torch.zeros((self.width, self.height, self.depth))
+        
+        self.positive_firing = torch.zeros((self.width, self.height, self.depth))
+        self.positive_resting = torch.zeros((self.width, self.height, self.depth))
+        self.negative_firing = torch.zeros((self.width, self.height, self.depth))
+        self.negative_resting = torch.zeros((self.width, self.height, self.depth))
+        self.pos_fire_amt = torch.zeros((self.width, self.height, self.depth))
+        self.neg_fire_amt = torch.zeros((self.width, self.height, self.depth))
+        
         # personality layers
         # positive thresh firing is used
         random_gen = torch.Generator()
@@ -203,6 +223,7 @@ class general():
         random_gen.seed()
         # negative thresh resting is unused
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        
         return
     
     def __new_propensity(self):
@@ -247,38 +268,44 @@ class general():
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
-        torch.add(self.layer0[:, :, 1],  input_image)
+        torch.add(self.layer0[:, :, 1],  input_image, alpha=1, out=self.layer0[:, :, 1])
 
         #check which neurons are firing and which arent, do the stuff
-        positive_firing = torch.greater(self.layer0, self.layer1)
-        positive_resting = torch.less_equal(self.layer0, self.layer1)
-        negative_firing = torch.less(self.layer0, self.layer2)
-        negative_resting = torch.greater_equal(self.layer0, self.layer2)
+        torch.greater(self.layer0, self.layer1, out=self.positive_firing)
+        torch.less_equal(self.layer0, self.layer1, out=self.positive_resting)
+        torch.greater(self.layer0, self.layer2, out=self.negative_firing)
+        torch.less_equal(self.layer0, self.layer2, out=self.negative_resting)
 
         # keep track of the values of the firing neurons
-        pos_fire_amt = torch.multiply(positive_firing, self.layer1)
-        neg_fire_amt = torch.multiply(negative_firing, self.layer2)
+        torch.multiply(self.positive_firing, self.layer1, out=self.pos_fire_amt)
+        torch.multiply(self.negative_firing, self.layer2, out=self.neg_fire_amt)
 
         # apply the firing values to each of the near neighbors
-        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 0))
-        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 0))
-        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 1))
-        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 1))
-        self.layer0 = torch.add(self.layer0, torch.roll(pos_fire_amt, 1, 2))
-        self.layer0 = torch.add(self.layer0, torch.roll(neg_fire_amt, -1, 2))
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 0), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 0), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 1), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 1), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 2), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 2), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 0), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 0), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 1), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 1), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 2), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 2), alpha=1, out=self.layer0)
 
         # update the threshold layers
-        self.layer1 = torch.add(self.layer1, torch.multiply(positive_firing, self.emotion1))
-        self.layer1 = torch.add(self.layer1, torch.multiply(positive_resting, self.emotion2))
-        self.layer2 = torch.add(self.layer1, torch.multiply(negative_firing, self.emotion3))
-        self.layer2 = torch.add(self.layer1, torch.multiply(negative_resting, self.emotion4))
+        torch.add(self.layer1, torch.multiply(self.positive_firing, self.emotion1), alpha=1, out=self.layer1)
+        torch.add(self.layer1, torch.multiply(self.positive_resting, self.emotion2), alpha=1, out=self.layer1)
+        torch.add(self.layer1, torch.multiply(self.negative_firing, self.emotion3), alpha=1, out=self.layer2)
+        torch.add(self.layer1, torch.multiply(self.negative_resting, self.emotion4), alpha=1, out=self.layer2)
 
         # figure out which emotions were used and which weren't
         # and then update them
-        self.emotion1 = torch.add(torch.multiply(positive_firing, self.personality1), torch.multiply(positive_resting, self.personality3))
-        self.emotion2 = torch.add(torch.multiply(positive_resting, self.personality2), torch.multiply(positive_firing, self.personality4))
-        self.emotion3 = torch.add(torch.multiply(negative_firing, self.personality5), torch.multiply(negative_resting, self.personality7))
-        self.emotion4 = torch.add(torch.multiply(negative_resting, self.personality6), torch.multiply(negative_firing, self.personality8))
+        torch.add(torch.multiply(self.positive_firing, self.personality1), torch.multiply(self.positive_resting, self.personality3), alpha=1, out=self.emotion1)
+        torch.add(torch.multiply(self.positive_resting, self.personality2), torch.multiply(self.positive_firing, self.personality4), alpha=1, out=self.emotion2)
+        torch.add(torch.multiply(self.negative_firing, self.personality5), torch.multiply(self.negative_resting, self.personality7), alpha=1, out=self.emotion3)
+        torch.add(torch.multiply(self.negative_resting, self.personality6), torch.multiply(self.negative_firing, self.personality8), alpha=1, out=self.emotion4)
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
@@ -287,9 +314,12 @@ class general():
         for i in range(0, self.num_controls):
             if (self.layer0[self.controls[i]].item() > self.thresholds_pos[i]):
                 take_action.append(True)
+                self.layer0[self.controls[i]] = self.layer0[self.controls[i]] - self.thresholds_pos[i]
+                print(self.layer0[self.controls[i]].item())
             else:
-                if (self.layer0[self.controls[i]].item() < self.thresholds_neg[i]):
+                if (self.layer0[self.controls[i]].item() > self.thresholds_neg[i]):
                     take_action.append(False)
+                    print(self.layer0[self.controls[i]].item())
                 else:
                     take_action.append(-1)
         #print(take_action)

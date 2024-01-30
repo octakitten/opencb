@@ -128,7 +128,7 @@ def test008():
     
 def test009():
     model = general()
-    model.create(255, 255, 100, 4)
+    model.create(255, 255, 100, 1024, 4)
     game = find_food_02(model)
     iters = 0
     while (True):
@@ -139,7 +139,7 @@ def test009():
             print('restarting...')
         else:
             break
-        model.create(255, 255, 100, 4)
+        model.create(255, 255, 100, 1024, 4)
         game = find_food_02(model)
     print('victory! it took this many iterations:')
     print(iters)

@@ -359,26 +359,22 @@ class find_food_02(game):
             print('x + 1')
             x += 1
         if action[0] == False:
-            print('x - 1')
-            x += -1
+            print('x + 0')
         if action[1] == True:
             print('x - 1')
             x += -1
         if action[1] == False:
-            print('x + 1')
-            x += 1
+            print('x - 0')
         if action[2] == True:
             print('y + 1')
             y += 1
         if action[2] == False:
-            print('y - 1')
-            y += -1
+            print('y + 0')
         if action[3] == True:
             print('y - 1')
             y += -1
         if action[3] == False:
-            print('y + 1')
-            y += 1
+            print('y - 0')
         return x, y
     
     def __set_x(self, w):
