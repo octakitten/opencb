@@ -16,6 +16,12 @@ class general():
     # array of those controls' positive and negative firing thresholds
     thresholds_pos = []
     thresholds_neg = []
+
+    # how many sensation neurons there are
+    num_sensations = 0
+    # array of those neurons
+    sensations = []
+
     
     # neuron layer
     layer0 = 0
@@ -230,7 +236,59 @@ class general():
         self.pos_propensity = np.random.uniform(low=1, high=self.range)
         self.neg_propensity = -np.random.uniform(low=1, high=self.range)
         return
-    
+
+    def __new_sensations(self):
+        self.sensations = []
+        for i in range(0, self.num_sensations):
+            self.sensations.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
+        return
+
+    def __pos_sensation(self, sense_num, amt):
+        torch.add(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        return
+
+    def __neg_sensation(self, sense_num, amt):
+        torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        return
+    '''
+    Train the model by giving it feedback on its actions.
+
+    Parameters:
+    sense_num (int): the index of the sensation neuron to train
+    amt (float): the amount to train the sensation neuron by
+    pos (bool): whether the sensation is positive or negative
+
+    Returns:
+    none
+
+    Comments: Call this function whenever the model either does something right or makes a mistake.
+    set pos to True if the sensation is positive, and False if the sensation is negative.
+    You'll need to set conditions in your game that call this function automatically while it's playing.
+    This function is also intended to be used later on in the training process, when the model is
+    being used by a user on real world tasks and needs feedback.
+    '''
+    def train(self, sense_num, amt, pos):
+        if (pos):
+            self.__pos_sensation(sense_num, amt)
+        else:
+            self.__neg_sensation(sense_num, amt)
+        return
+    '''
+    Permute the model's personality by a certain degree.
+
+    Parameters:
+    degree (int): the degree to permute the model's personality by
+
+    Returns:
+    none
+
+    Comments: You will absolutely need to trial and error with the degree to see what works best for your use case.
+    This function will enable iterating on the personality traits of a model which has already proven useful.
+    You'll want to use this to make small, incremental improvements to a model and then test it to see whether to move 
+    forward with the changes or roll back to a previous version.
+
+    Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
+    '''
     def permute(self, degree):
         model = general()
         model.copy(self)
@@ -260,10 +318,33 @@ class general():
         torch.divide(self.personality8, degree + 1, out=self.personality8)
         return
     
+    # save the model to a specified file
     def save(self, path):
         torch.save(self, path)
         return
 
+    '''
+    Main control function for the model.
+
+    Parameters:
+    input_image (tensor): the image to input into the model
+
+    Returns:
+    take_action (list): a list of booleans representing whether the controls should be activated or not
+
+    Comments: This function is what makes the model 'act'. It takes an image as input and processes it by firing neurons.
+    Usually a single image will not be enough to cause the model to take any action - you'll need to feed it a continuous
+    stream of images that the model can react to and see its reactions change things in the image, as well. This style of 
+    model doesn't work if it can't interact with its environment, so you'll need to have the model play a predefined game
+    of your design or choosing, otherwise it won't do anything useful. 
+
+    The game which you use or create should give the model a tensor image and then call this function to get the model's
+    next action. The model will then return a list of booleans, each representing whether each control it has should be activated or not.
+    It's up to you to make those controls do something in its environment.
+
+    Provided in this library are some simple example games to get you started. You can also look at the testing scripts to see how to 
+    implement them.
+    '''
     def update(self, input_image):
         if (torch.is_tensor(input_image) == False):
             return -1
