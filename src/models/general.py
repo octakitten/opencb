@@ -139,16 +139,18 @@ class general():
     perform a certain task that requires, for instance, controlling 4 seperate keyboard keypresses, 
     then you would want a model with 4 controls.
     '''
-    def create(self, w, h, d, r, num_controls):
+    def create(self, w, h, d, r, num_controls, num_sensations):
         self.width = w
         self.height = h
         self.depth = d
         self.range = r
         self.num_controls = num_controls
+        self.num_sensations = num_sensations
         self.__new_controls()
         self.__new_thresholds()
         self.__new_propensity()
         self.__new_personality()
+        self.__new_sensations()
         return
     
     def __new_thresholds(self):

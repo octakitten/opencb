@@ -410,6 +410,9 @@ class find_food_02(game):
         combo = 0
         # how many times we'll allow it to combo the same action in a row
         max_combo = self.blob.width * 3
+        # the previous x and y values
+        prev_x = 0
+        prev_y = 0
         
         # play the game until victory or until either combo gets too high or iterations finish
         while (self.__victory() == False):
@@ -423,10 +426,21 @@ class find_food_02(game):
                 break
 
             prev = act
-
+            
             x, y = self.__blob_action(act)
             self.__screen_update(x, y)
-
+            
+            if (x < prev_x):
+                self.blob.train(0, 1, True)
+            if ( x > prev_x):
+                self.blob.train(0, 1, False)
+            if (y < prev_y):
+                self.blob.train(1, 1, True)
+            if (y > prev_y):
+                self.blob.train(1, 1, False)
+            
+            prev_x = x
+            prev_y = y
             iter += 1
             print('iteration - ', iter)
             if iter > max_iter:
