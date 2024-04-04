@@ -336,7 +336,7 @@ class find_food_02(game):
         return
     
     def __victory(self):
-        if (torch.equals(self.game_screen, self.victory_condition):
+        if (torch.all(torch.eq(self.game_screen, self.victory_condition))):
             return True
         else:
             return False
