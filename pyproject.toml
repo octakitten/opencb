@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cantor"
-version = "0.1.0"
+version = "0.2.0"
 description = "Open-Source Computer Behavior"
 authors = ["Octakitten <raspberry2425@gmail.com>"]
 license = "GNU Affero Public License v3.0"

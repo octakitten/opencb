@@ -331,8 +331,8 @@ class find_food_02(game):
     
     def __create_victory_condition(self):
         self.victory_condition = torch.zeros((self.width, self.height))
-        victory_x, victory_y = self.__choose_starting_location()
-        self.victory_condition[victory_x,victory_y] = 255
+        self.victory_x, self.victory_y = self.__choose_starting_location()
+        self.victory_condition[self.victory_x,self.victory_y] = 255
         return
     
     def __victory(self):
@@ -409,7 +409,7 @@ class find_food_02(game):
 
         # number of iterations the game will run for at max
         iter = 0
-        max_iter = 10000
+        max_iter = 5000
 
         # the previous action taken
         prev = 0
@@ -440,27 +440,28 @@ class find_food_02(game):
             x, y = self.__blob_action(act)
             self.__screen_update(x, y)
             
+            x = np.abs(x - self.victory_x)
+            y = np.abs(y - self.victory_y)
             if (x < prev_x):
-                self.blob.train(0, 1, True)
-                min_dx -= 1
+                self.blob.train(0, 255, True)
             if ( x > prev_x):
-                self.blob.train(0, 1, False)
-                min_dx += 1
+                self.blob.train(0, 255, False)
             if (y < prev_y):
-                self.blob.train(1, 1, True)
-                min_dy -= 1
+                self.blob.train(1, 255, True)
             if (y > prev_y):
-                self.blob.train(1, 1, False)
-                min_dy += 1
+                self.blob.train(1, 255, False)
             
-            prev_x = x
-            prev_y = y
+            if (x + y < self.min_dx + self.min_dy):
+                self.min_dx = x
+                self.min_dy = y
+            self.prev_x = x
+            self.prev_y = y
             iter += 1
             print('iteration - ', iter)
             if iter > max_iter:
                 break
         
-        # the blob satisfies the victory condition, which is to put the white dot at 0,0, the top left corner
+        # the blob satisfies the victory condition, which is to put the white dot at the location of the victory condition
         # then we win, and we print out the personality layers
 
         # otherwise we lose, and just do nothing with it.
