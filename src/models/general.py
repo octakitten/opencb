@@ -2,6 +2,10 @@ import torch
 import numpy as np
 
 class general():
+    
+    # records for how fast the model completes the game find_food_02
+    min_dx = -1
+    min_dy = -1
 
     # dimensions of the neural space
     width = 0
@@ -279,7 +283,8 @@ class general():
     Permute the model's personality by a certain degree.
 
     Parameters:
-    degree (int): the degree to permute the model's personality by
+    degree (int): positive integer which increases how much the permutation changes the model
+    fraction (int): positive integer which lessens the degree of the permutation as it receives higher values
 
     Returns:
     none
@@ -288,15 +293,29 @@ class general():
     This function will enable iterating on the personality traits of a model which has already proven useful.
     You'll want to use this to make small, incremental improvements to a model and then test it to see whether to move 
     forward with the changes or roll back to a previous version.
+    
+    If you want the model to change quickly, set the degree to a high number, and the fraction to 1.
+    If you want the model to change slowly (and in most cases you will want this), set the degree to 1 and
+    the fraction to higher numbers. The higher fraction goes, the slower the model will change with each iteration.
 
     Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
     '''
-    def permute(self, degree):
+    def permute(self, degree, fraction):
         model = general()
         model.copy(self)
         model.__new_thresholds()
         model.__new_propensity()
         model.__new_personality()
+        np.divide(model.thresholds_pos, fraction, out=model.thresholds_pos)
+        np.divide(model.thresholds_neg, fraction, out=model.thresholds_neg)
+        torch.divide(model.personality1, fraction, out=model.personality1)
+        torch.divide(model.personality2, fraction, out=model.personality2)
+        torch.divide(model.personality3, fraction, out=model.personality3)
+        torch.divide(model.personality4, fraction, out=model.personality4)
+        torch.divide(model.personality5, fraction, out=model.personality5)
+        torch.divide(model.personality6, fraction, out=model.personality6)
+        torch.divide(model.personality7, fraction, out=model.personality7)
+        torch.divide(model.personality8, fraction, out=model.personality8)
         for i in range(0, degree):
             np.add(self.thresholds_pos, model.thresholds_pos, out=self.thresholds_pos)
             np.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)
@@ -308,6 +327,7 @@ class general():
             torch.add(self.personality6, model.personality6, out=self.personality6)
             torch.add(self.personality7, model.personality7, out=self.personality7)
             torch.add(self.personality8, model.personality8, out=self.personality8)
+        degree = degree / fraction
         np.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
         np.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
         torch.divide(self.personality1, degree + 1, out=self.personality1)

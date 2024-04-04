@@ -312,6 +312,12 @@ class find_food_02(game):
     victory_condition = 0
     # the instance of horse that'll play the game
     blob = 0
+    victory_x = 0
+    victory_y = 0
+    starting_x = 0
+    starting_y = 0
+    min_dx = 0
+    min_dy = 0
 
     #initializing the game requires giving it a model to play with
     def __init__(self, model):
@@ -325,11 +331,12 @@ class find_food_02(game):
     
     def __create_victory_condition(self):
         self.victory_condition = torch.zeros((self.width, self.height))
-        self.victory_condition[0,0] = 255
+        victory_x, victory_y = self.__choose_starting_location()
+        self.victory_condition[victory_x,victory_y] = 255
         return
     
     def __victory(self):
-        if (self.game_screen[0,0] == self.victory_condition[0,0]):
+        if (torch.equals(self.game_screen, self.victory_condition):
             return True
         else:
             return False
@@ -341,8 +348,8 @@ class find_food_02(game):
     
     def __create_starting_screen(self):
         self.game_screen = torch.zeros((self.width, self.height))
-        x, y = self.__choose_starting_location()
-        self.game_screen[x, y] = 255
+        starting_x, starting_y = self.__choose_starting_location()
+        self.game_screen[starting_x, starting_y] = 255
         return
     
     def __choose_starting_location(self):
@@ -414,6 +421,9 @@ class find_food_02(game):
         prev_x = 0
         prev_y = 0
         
+        min_dx = np.abs(self.victory_x - self.starting_x)
+        min_dy = np.abs(self.victory_y - self.starting_y)
+        
         # play the game until victory or until either combo gets too high or iterations finish
         while (self.__victory() == False):
             act = self.blob.update(self.game_screen)
@@ -432,12 +442,16 @@ class find_food_02(game):
             
             if (x < prev_x):
                 self.blob.train(0, 1, True)
+                min_dx -= 1
             if ( x > prev_x):
                 self.blob.train(0, 1, False)
+                min_dx += 1
             if (y < prev_y):
                 self.blob.train(1, 1, True)
+                min_dy -= 1
             if (y > prev_y):
                 self.blob.train(1, 1, False)
+                min_dy += 1
             
             prev_x = x
             prev_y = y

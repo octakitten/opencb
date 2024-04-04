@@ -139,12 +139,42 @@ def test009():
             print('restarting...')
         else:
             break
-        model.create(255, 255, 100, 1024, 4)
+        model.create(255, 255, 100, 1024, 4, 2)
         game = find_food_02(model)
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + '/saved_models/latest.pth')
+    
+def test010():
+    model = general()
+    prev_model = 0
+    model.create(255, 255, 100, 1024, 4, 2)
+    iters = 0
+    first_attempt = True
+    while (True):
+        game = find_food_02(model)
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model
+                model.permute 
+            else:
+                model = prev_model
+                model.permute
+        first_attempt = False
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')
     model.save(sys.path[0] + '/saved_models/')
     
-
 test009()
