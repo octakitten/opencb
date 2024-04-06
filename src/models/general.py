@@ -204,11 +204,19 @@ class general():
         # threshold layers
         self.layer1 = torch.zeros((self.width, self.height, self.depth))
         self.layer2 = torch.zeros((self.width, self.height, self.depth))
+        #multiplier layers
+        self.layer3 = torch.zeros((self.width, self.height, self.depth))
+        self.layer4 = torch.zeros((self.width, self.height, self.depth))
         # emotion layers
         self.emotion1 = torch.zeros((self.width, self.height, self.depth))
         self.emotion2 = torch.zeros((self.width, self.height, self.depth))
         self.emotion3 = torch.zeros((self.width, self.height, self.depth))
         self.emotion4 = torch.zeros((self.width, self.height, self.depth))
+        self.emotion5 = torch.zeros((self.width, self.height, self.depth))
+        self.emotion6 = torch.zeros((self.width, self.height, self.depth))
+        self.emotion7 = torch.zeros((self.width, self.height, self.depth))
+        self.emotion8 = torch.zeros((self.width, self.height, self.depth))
+        
         # personality layers
         # positive thresh firing is used
         self.personality1 = torch.zeros((self.width, self.height, self.depth))
@@ -268,14 +276,21 @@ class general():
         random_gen.seed()
         # negative thresh resting is unused
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
-        
+        random_gen.seed()
         self.personality9 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality10 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality11 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality12 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality13 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality14 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality15 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        random_gen.seed()
         self.personality16 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         
         return
