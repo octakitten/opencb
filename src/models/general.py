@@ -34,13 +34,23 @@ class general():
     layer1 = 0
     layer2 = 0
     
-    # emotion layers
+    # neuron firing multipliers
+    layer3 = 0
+    layer4 = 0
+    
+    # threshhold emotion layers
     emotion1 = 0
     emotion2 = 0
     emotion3 = 0
     emotion4 = 0
     
-    # personality layers
+    # multiplier emotion layers
+    emotion5 = 0
+    emotion6 = 0
+    emotion7 = 0
+    emotion8 = 0
+    
+    # threshold personality layers
     personality1 = 0
     personality2 = 0
     personality3 = 0
@@ -49,6 +59,17 @@ class general():
     personality6 = 0
     personality7 = 0
     personality8 = 0
+    
+    # multiplier personality layers
+    personality9 = 0
+    personality10 = 0
+    personality11 = 0
+    personality12 = 0
+    personality13 = 0
+    personality14 = 0
+    personality15 = 0
+    personality16 = 0
+    
     
     # range of propensity to fire for personality layers
     pos_propensity = 0
@@ -62,6 +83,10 @@ class general():
     # keep track of the values of the firing neurons
     pos_fire_amt = 0
     neg_fire_amt = 0
+    
+    # keep track of the values of the firing neurons when multiplied by layers 3 and 4
+    pos_fire_amt_mult = 0
+    neg_fire_amt_mult = 0
 
 
     def __init__(self):
@@ -201,6 +226,14 @@ class general():
         self.personality7 = torch.zeros((self.width, self.height, self.depth))
         # negative thresh resting is unused
         self.personality8 = torch.zeros((self.width, self.height, self.depth))
+        self.personality9 = torch.zeros((self.width, self.height, self.depth))
+        self.personality10 = torch.zeros((self.width, self.height, self.depth))
+        self.personality11 = torch.zeros((self.width, self.height, self.depth))
+        self.personality12 = torch.zeros((self.width, self.height, self.depth))
+        self.personality13 = torch.zeros((self.width, self.height, self.depth))
+        self.personality14 = torch.zeros((self.width, self.height, self.depth))
+        self.personality15 = torch.zeros((self.width, self.height, self.depth))
+        self.personality16 = torch.zeros((self.width, self.height, self.depth))
         
         self.positive_firing = torch.zeros((self.width, self.height, self.depth))
         self.positive_resting = torch.zeros((self.width, self.height, self.depth))
@@ -235,6 +268,15 @@ class general():
         random_gen.seed()
         # negative thresh resting is unused
         self.personality8 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        
+        self.personality9 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality10 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality11 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality12 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality13 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality14 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality15 = torch.multiply(self.pos_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
+        self.personality16 = torch.multiply(self.neg_propensity, torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32))
         
         return
     
@@ -316,6 +358,14 @@ class general():
         torch.divide(model.personality6, fraction, out=model.personality6)
         torch.divide(model.personality7, fraction, out=model.personality7)
         torch.divide(model.personality8, fraction, out=model.personality8)
+        torch.divide(model.personality9, fraction, out=model.personality9)
+        torch.divide(model.personality10, fraction, out=model.personality10)
+        torch.divide(model.personality11, fraction, out=model.personality11)
+        torch.divide(model.personality12, fraction, out=model.personality12)
+        torch.divide(model.personality13, fraction, out=model.personality13)
+        torch.divide(model.personality14, fraction, out=model.personality14)
+        torch.divide(model.personality15, fraction, out=model.personality15)
+        torch.divide(model.personality16, fraction, out=model.personality16)
         for i in range(0, degree):
             np.add(self.thresholds_pos, model.thresholds_pos, out=self.thresholds_pos)
             np.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)
@@ -327,6 +377,14 @@ class general():
             torch.add(self.personality6, model.personality6, out=self.personality6)
             torch.add(self.personality7, model.personality7, out=self.personality7)
             torch.add(self.personality8, model.personality8, out=self.personality8)
+            torch.add(self.personality9, model.personality9, out=self.personality9)
+            torch.add(self.personality10, model.personality10, out=self.personality10)
+            torch.add(self.personality11, model.personality11, out=self.personality11)
+            torch.add(self.personality12, model.personality12, out=self.personality12)
+            torch.add(self.personality13, model.personality13, out=self.personality13)
+            torch.add(self.personality14, model.personality14, out=self.personality14)
+            torch.add(self.personality15, model.personality15, out=self.personality15)
+            torch.add(self.personality16, model.personality16, out=self.personality16)
         degree = degree / fraction
         np.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
         np.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
@@ -338,6 +396,15 @@ class general():
         torch.divide(self.personality6, degree + 1, out=self.personality6)
         torch.divide(self.personality7, degree + 1, out=self.personality7)
         torch.divide(self.personality8, degree + 1, out=self.personality8)
+        torch.divide(self.personality9, degree + 1, out=self.personality9)
+        torch.divide(self.personality10, degree + 1, out=self.personality10)
+        torch.divide(self.personality11, degree + 1, out=self.personality11)
+        torch.divide(self.personality12, degree + 1, out=self.personality12)
+        torch.divide(self.personality13, degree + 1, out=self.personality13)
+        torch.divide(self.personality14, degree + 1, out=self.personality14)
+        torch.divide(self.personality15, degree + 1, out=self.personality15)
+        torch.divide(self.personality16, degree + 1, out=self.personality16)
+        
         return
     
     # save the model to a specified file
@@ -379,40 +446,27 @@ class general():
         torch.greater(self.layer0, self.layer2, out=self.negative_firing)
         torch.less_equal(self.layer0, self.layer2, out=self.negative_resting)
 
-        # keep track of the values of the firing neurons
+        # keep track of the threshold values of the firing neurons
         torch.multiply(self.positive_firing, self.layer1, out=self.pos_fire_amt)
         torch.multiply(self.negative_firing, self.layer2, out=self.neg_fire_amt)
+        
+        # use the firing multipliers to change the output values of the firing neurons
+        torch.multiply(self.pos_fire_amt, self.layer3, out=self.pos_fire_amt_mult)
+        torch.multiply(self.neg_fire_amt, self.layer4, out=self.neg_fire_amt_mult)
 
         # apply the firing values to each of the near neighbors
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 0), alpha=1, out=self.layer0)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 0), alpha=1, out=self.layer0)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 1), alpha=1, out=self.layer0)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 1), alpha=1, out=self.layer0)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, 1, 2), alpha=1, out=self.layer0)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt, -1, 2), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 0), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 0), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 1), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 1), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, 1, 2), alpha=1, out=self.layer0)
-        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt, -1, 2), alpha=1, out=self.layer0)
-        
-        # once a neuron has fired, its value needs to be lowered by the firing amount
-        torch.subtract(self.layer0, self.pos_fire_amt, alpha=1, out=self.layer0)
-        torch.add(self.layer0, self.neg_fire_amt, alpha=1, out=self.layer0)
-
-        # update the emotion (threshold) layers
-        torch.add(self.layer1, torch.multiply(self.positive_firing, self.emotion1), alpha=1, out=self.layer1)
-        torch.add(self.layer1, torch.multiply(self.positive_resting, self.emotion2), alpha=1, out=self.layer1)
-        torch.add(self.layer2, torch.multiply(self.negative_firing, self.emotion3), alpha=1, out=self.layer2)
-        torch.add(self.layer2, torch.multiply(self.negative_resting, self.emotion4), alpha=1, out=self.layer2)
-
-        # figure out which emotions were used and which weren't
-        # and then update them
-        torch.add(torch.multiply(self.positive_firing, self.personality1), torch.multiply(self.positive_resting, self.personality3), alpha=1, out=self.emotion1)
-        torch.add(torch.multiply(self.positive_resting, self.personality2), torch.multiply(self.positive_firing, self.personality4), alpha=1, out=self.emotion2)
-        torch.add(torch.multiply(self.negative_firing, self.personality5), torch.multiply(self.negative_resting, self.personality7), alpha=1, out=self.emotion3)
-        torch.add(torch.multiply(self.negative_resting, self.personality6), torch.multiply(self.negative_firing, self.personality8), alpha=1, out=self.emotion4)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 0), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 0), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 1), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 1), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 2), alpha=1, out=self.layer0)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 2), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 0), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 0), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 1), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 1), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 2), alpha=1, out=self.layer0)
+        torch.subtract(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 2), alpha=1, out=self.layer0)
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
@@ -428,5 +482,35 @@ class general():
                     take_action.append(False)
                 else:
                     take_action.append(-1)
+        
+        # once a neuron has fired, its value needs to be lowered by the threshold amount
+        torch.subtract(self.layer0, self.pos_fire_amt, alpha=1, out=self.layer0)
+        torch.add(self.layer0, self.neg_fire_amt, alpha=1, out=self.layer0)
+
+        # update the emotion (threshold) layers
+        torch.add(self.layer1, torch.multiply(self.positive_firing, self.emotion1), alpha=1, out=self.layer1)
+        torch.add(self.layer1, torch.multiply(self.positive_resting, self.emotion2), alpha=1, out=self.layer1)
+        torch.add(self.layer2, torch.multiply(self.negative_firing, self.emotion3), alpha=1, out=self.layer2)
+        torch.add(self.layer2, torch.multiply(self.negative_resting, self.emotion4), alpha=1, out=self.layer2)
+        
+        # update the emotion (multiplier) layers
+        torch.add(self.layer3, torch.multiply(self.positive_firing, self.emotion5), alpha=1, out=self.layer3)
+        torch.add(self.layer3, torch.multiply(self.positive_resting, self.emotion6), alpha=1, out=self.layer3)
+        torch.add(self.layer4, torch.multiply(self.negative_firing, self.emotion7), alpha=1, out=self.layer4)
+        torch.add(self.layer4, torch.multiply(self.negative_resting, self.emotion8), alpha=1, out=self.layer4)
+
+        # figure out which emotions (thresholds) were used and which weren't
+        # and then update them
+        torch.add(torch.multiply(self.positive_firing, self.personality1), torch.multiply(self.positive_resting, self.personality3), alpha=1, out=self.emotion1)
+        torch.add(torch.multiply(self.positive_resting, self.personality2), torch.multiply(self.positive_firing, self.personality4), alpha=1, out=self.emotion2)
+        torch.add(torch.multiply(self.negative_firing, self.personality5), torch.multiply(self.negative_resting, self.personality7), alpha=1, out=self.emotion3)
+        torch.add(torch.multiply(self.negative_resting, self.personality6), torch.multiply(self.negative_firing, self.personality8), alpha=1, out=self.emotion4)
+        
+        # do the same for the emotion multipliers
+        torch.add(torch.multiply(self.positive_firing, self.personality9), torch.multiply(self.positive_resting, self.personality11), alpha=1, out=self.emotion5)
+        torch.add(torch.multiply(self.positive_resting, self.personality10), torch.multiply(self.positive_firing, self.personality12), alpha=1, out=self.emotion6)
+        torch.add(torch.multiply(self.negative_firing, self.personality13), torch.multiply(self.negative_resting, self.personality15), alpha=1, out=self.emotion7)
+        torch.add(torch.multiply(self.negative_resting, self.personality14), torch.multiply(self.negative_firing, self.personality16), alpha=1, out=self.emotion8)
+        
         #print(take_action)
         return take_action
