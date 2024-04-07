@@ -249,6 +249,8 @@ class general():
         self.negative_resting = torch.zeros((self.width, self.height, self.depth))
         self.pos_fire_amt = torch.zeros((self.width, self.height, self.depth))
         self.neg_fire_amt = torch.zeros((self.width, self.height, self.depth))
+        self.pos_fire_amt_mult = torch.zeros((self.width, self.height, self.depth))
+        self.neg_fire_amt_mult = torch.zeros((self.width, self.height, self.depth))
         
         # personality layers
         # positive thresh firing is used
