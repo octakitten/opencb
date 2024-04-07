@@ -409,7 +409,7 @@ class find_food_02(game):
 
         # number of iterations the game will run for at max
         iter = 0
-        max_iter = 5000
+        max_iter = 750
 
         # the previous action taken
         prev = 0
