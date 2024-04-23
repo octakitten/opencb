@@ -149,7 +149,7 @@ def test009():
 def test010():
     model = general()
     prev_model = 0
-    model.create(255, 255, 255, 2048, 4, 2)
+    model.create(255, 255, 255, 4, 4, 2)
     iters = 0
     first_attempt = True
     while (True):
