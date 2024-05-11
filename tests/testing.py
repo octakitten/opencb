@@ -17,6 +17,7 @@ from cantor.src.utilities.game import find_food_02
 from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
 from cantor.src.routines.horse_routine import horse_routine
 from cantor.src.models.general import general
+from cantor.src.models.general_dev import general_dev
 
 def test001():
     cantor01 = d8a4gs()
@@ -177,4 +178,37 @@ def test010():
     print('saving to disk...')
     model.save(sys.path[0] + '/saved_models/')
     
-test010()
+
+def test011():
+    model = general_dev()
+    prev_model = 0
+    model.create(255, 255, 255, 2, 4, 2)
+    iters = 0
+    first_attempt = True
+    while (True):
+        game = find_food_02(model)
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute(2,1)
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model(1,2)
+                model.permute 
+            else:
+                model = prev_model
+                model.permute(2,1)
+        first_attempt = False
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + '/saved_models/')
+
+# run test for the in development general model
+test011()
