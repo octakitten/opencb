@@ -20,7 +20,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install python-poetry
       run: |
-        pip install python-poetry -y
+        pip install python-poetry
     - name: Pull the repository from github
       run: |
         git clone https://github.com/octakitten/cantor.git
@@ -40,7 +40,7 @@ jobs:
       run: |
         cd dist
         NAME=ls *.whl -t | head -n1
-        echo conda install $(NAME) -y
+        echo conda install $(NAME)
     - name: Test with pytest (installed by poetry)
       run: |
         cd ..
