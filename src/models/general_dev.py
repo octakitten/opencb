@@ -11,6 +11,12 @@ class general_dev():
     width = 0
     height = 0
     depth = 0
+    bounds = 0
+    
+    colors = 255
+    
+    maleability = 1.1
+
     range_high = 2.0
     range_low = 1/range_high
     
@@ -90,6 +96,7 @@ class general_dev():
     neg_fire_amt_mult = 0
 
     propensity = 0
+    
 
     def __init__(self):
         return
@@ -101,10 +108,16 @@ class general_dev():
         torch.save(self.layer0, path)
         torch.save(self.layer1, path)
         torch.save(self.layer2, path)
+        torch.save(self.layer3, path)
+        torch.save(self.layer4, path)
         torch.save(self.emotion1, path)
         torch.save(self.emotion2, path)
         torch.save(self.emotion3, path)
         torch.save(self.emotion4, path)
+        torch.save(self.emotion5, path)
+        torch.save(self.emotion6, path)
+        torch.save(self.emotion7, path)
+        torch.save(self.emotion8, path)
         torch.save(self.personality1, path)
         torch.save(self.personality2, path)
         torch.save(self.personality3, path)
@@ -128,6 +141,7 @@ class general_dev():
         self.width = model.width
         self.height = model.height
         self.depth = model.depth
+        self.bounds = model.bounds
         self.range_high = model.range_high
         self.range_low = model.range_low
         self.num_controls = model.num_controls
@@ -172,18 +186,29 @@ class general_dev():
     perform a certain task that requires, for instance, controlling 4 seperate keyboard keypresses, 
     then you would want a model with 4 controls.
     '''
-    def create(self, w, h, d, r, num_controls, num_sensations):
+    def create(self, w, h, d, b, num_controls, num_sensations):
         self.width = w
+        print('assigned width')
         self.height = h
+        print('assigned height')
         self.depth = d
-        self.__new_range(r)
+        print('assigned depth')
+        self.bounds = b
+        print('assigned bounds')
         self.num_controls = num_controls
+        print('assigned controls')
         self.num_sensations = num_sensations
+        print('assigned values')
         self.__new_controls()
+        print('new controls')
         self.__new_thresholds()
+        print('new thresholds')
         self.__new_propensity()
+        print('new propensity')
         self.__new_personality()
+        print('new personality')
         self.__new_sensations()
+        print('new sensations')
         return
    
     def __new_range(self, r): 
@@ -194,14 +219,17 @@ class general_dev():
         return
     
     def __new_thresholds(self):
-        threshhold_max = np.random.uniform(low=self.range_low, high=self.range_high)
+        # threshhold_max = np.random.uniform(low=self.range_low, high=self.range_high)
         random_gen = torch.Generator(device=torch.device('cuda'))
         random_gen.seed()
         self.thresholds_pos = torch.tensor(data=1, device=torch.device('cuda'))
         self.thresholds_neg = torch.tensor(data=1, device=torch.device('cuda'))
         self.thresholds_pos = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=torch.device('cuda'))
-        torch.mul(self.thresholds_pos, threshhold_max)
+        torch.add(torch.mul(self.thresholds_pos, self.bounds, out=self.thresholds_pos), 1, out=self.thresholds_pos)
+        random_gen.seed()
         self.thresholds_neg = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=torch.device('cuda'))
+        torch.subtract(1, torch.divide(self.thresholds_neg, self.bounds, out=self.thresholds_neg), out=self.thresholds_neg)
+
         #self.thresholds_pos = torch.rand()
         #for i in range(0, self.num_controls):
         #    self.thresholds_pos.append(np.random.uniform(low=1, high=threshhold_max))
@@ -214,112 +242,160 @@ class general_dev():
             self.controls.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
         return
     
+    '''
+    Initialize the model's personality layers.
+
+    Parameters:
+    none
+
+    Returns:
+    none
+
+    Comments: the personality layers are the only parts of the model that don't change over time. we initialize all the layers here,
+    from layer0 to emotion8 to personality8, but the personality layers we initialize to random values. These random values
+    should range from 1 to n for the positive personality layers, and 1 to 1/n for the negative personality layers. in order to 
+    achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
+    the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
+    '''
     def __new_personality(self):
         
+        self.layer0 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.layer1 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.layer2 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.layer3 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.layer4 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion1 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion2 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion3 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion4 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion5 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion6 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion7 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.emotion8 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality1 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality2 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality3 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality4 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality5 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality6 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality7 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality8 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality9 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality10 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality11 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality12 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality13 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality14 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality15 = torch.tensor(data=1, device=torch.device('cuda'))
+        self.personality16 = torch.tensor(data=1, device=torch.device('cuda'))
+        '''
+        print(self.layer0)
+        print(self.emotion1)
+        print(self.personality1)
+        '''
         # neuron layer
-        self.layer0 = torch.ones(size=(self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.layer1 = torch.ones(size=(self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.layer2 = torch.ones(size=(self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
+        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        # threshold layers
+        self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
         #multiplier layers
-        self.layer3 = torch.ones(size=(self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.layer4 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
+        self.layer3 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.layer4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
         # emotion layers
-        self.emotion1 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion2 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion3 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion4 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion5 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion6 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion7 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.emotion8 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
+        self.emotion1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion5 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion6 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion7 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.emotion8 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
         
         # personality layers
-        # positive thresh firing is used
-        self.personality1 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # positive thresh firing is unused
-        self.personality2 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # positive thresh resting is used
-        self.personality3 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # positive thresh resting is unused
-        self.personality4 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # negative thresh firing is used
-        self.personality5 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # negative thresh firing is unused
-        self.personality6 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # negative thresh resting is used
-        self.personality7 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        # negative thresh resting is unused
-        self.personality8 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        '''self.personality9 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality10 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality11 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality12 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality13 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality14 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality15 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.personality16 = torch.ones((self.width, self.height, self.depth), dtype=torch.float16,device=torch.device('cuda'))
-        '''
-        self.positive_firing= torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.positive_resting = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.negative_firing = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.negative_resting = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.pos_fire_amt = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.neg_fire_amt = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.pos_fire_amt_mult = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
-        self.neg_fire_amt_mult = torch.ones((self.width, self.height, self.depth), dtype=torch.float16, device=torch.device('cuda'))
+        self.personality1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality5 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality6 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality7 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality8 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality9 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality10 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality11 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality12 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality13 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality14 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality15 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.personality16 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16,device=torch.device('cuda'))
+        
+        #print(self.layer0)
+        #print(self.emotion1)
+        #print(self.personality1)
+        self.positive_firing= torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.positive_resting = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.negative_firing = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.negative_resting = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.pos_fire_amt = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.neg_fire_amt = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.pos_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
+        self.neg_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=torch.device('cuda'))
         
         # personality layers
         # positive thresh firing is used
         random_gen = torch.Generator(device=torch.device('cuda'))
         random_gen.seed()
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality1)
+        self.personality1 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # positive thresh firing is unused
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality2)
+        self.personality2 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # positive thresh resting is used
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality3)
+        self.personality3 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # positive thresh resting is unused
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality4)
+        self.personality4 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # negative thresh firing is used
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality5)
+        self.personality5 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # negative thresh firing is unused
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality6)
+        self.personality6 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # negative thresh resting is used
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality7)
+        self.personality7 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        # negative thresh resting is unused
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality8)
+        self.personality8 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        '''torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality9)
+        self.personality9 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality10)
+        self.personality10 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality11)
+        self.personality11 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality12)
+        self.personality12 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality13)
+        self.personality13 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality14)
+        self.personality14 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.pos_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality15)
+        self.personality15 = torch.multiply(other=self.pos_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
         random_gen.seed()
-        torch.multiply(other=self.neg_propensity[0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float16, device=torch.device('cuda')), out=self.personality16)
-        '''
+        self.personality16 = torch.multiply(other=self.neg_propensity[0,0], input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=torch.device('cuda'))).to(dtype=torch.int16)
+        random_gen.seed()
+        #print(self.layer0)
+        #print(self.emotion1)
+        #print(self.personality1)
         return
     
     def __new_propensity(self):
         random_gen = torch.Generator(device=torch.device('cuda'))
         random_gen.seed()
-        nep = torch.rand(size=(2,2), generator=random_gen, dtype=torch.float16, device=torch.device('cuda'))
-        pep = torch.ones(size=(2,2), device=torch.device('cuda'))
-        self.pos_propensity = torch.divide(nep[1,:], pep[1,:])
-        self.neg_propensity = nep[0,:]
+        self.pos_propensity = torch.tensor(data=1, device=torch.device('cuda'))
+        self.neg_propensity = torch.tensor(data=1, device=torch.device('cuda'))
+        self.pos_propensity = torch.rand(size=(2,2), generator=random_gen, device=torch.device('cuda'))
+        self.pos_propensity = torch.add(torch.mul(self.pos_propensity, self.bounds, out=self.pos_propensity), 1).to(dtype=torch.int16)
+        random_gen.seed()
+        self.neg_propensity = torch.rand(size=(2, 2), generator=random_gen, device=torch.device('cuda'))
+        self.neg_propensity = torch.subtract(-1, torch.mul(self.neg_propensity, self.bounds, out=self.neg_propensity)).to(dtype=torch.int16)
+        #nep = torch.rand(size=(2,2), generator=random_gen, dtype=torch.int16, device=torch.device('cuda'))
+        #pep = torch.ones(size=(2,2), device=torch.device('cuda'))
+        #self.pos_propensity = torch.divide(nep[1,:], pep[1,:])
+        #self.neg_propensity = nep[0,:]
         #nep = np.random.uniform(low=self.range_low, high=1)
         #pep = np.divide(1, self.neg_propensity)
         #prop = torch.Tensor([nep, pep])
@@ -335,11 +411,11 @@ class general_dev():
         return
 
     def __pos_sensation(self, sense_num, amt):
-        torch.mul(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.add(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
         return
 
     def __neg_sensation(self, sense_num, amt):
-        torch.divide(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
         return
     '''
     Train the model by giving it feedback on its actions.
@@ -393,7 +469,23 @@ class general_dev():
         model.__new_personality()
         torch.divide(model.thresholds_pos, fraction, out=model.thresholds_pos)
         torch.divide(model.thresholds_neg, fraction, out=model.thresholds_neg)
-        torch.divide(model.personality1, fraction, out=model.personality1)
+        model.personality1 = torch.divide(model.personality1, fraction,).to(dtype=torch.int16)
+        model.personality2 = torch.divide(model.personality2, fraction,).to(dtype=torch.int16)
+        model.personality3 = torch.divide(model.personality3, fraction,).to(dtype=torch.int16)
+        model.personality4 = torch.divide(model.personality4, fraction,).to(dtype=torch.int16)
+        model.personality5 = torch.divide(model.personality5, fraction,).to(dtype=torch.int16)
+        model.personality6 = torch.divide(model.personality6, fraction,).to(dtype=torch.int16)
+        model.personality7 = torch.divide(model.personality7, fraction,).to(dtype=torch.int16)
+        model.personality8 = torch.divide(model.personality8, fraction,).to(dtype=torch.int16)
+        model.personality9 = torch.divide(model.personality9, fraction,).to(dtype=torch.int16)
+        model.personality10 = torch.divide(model.personality10, fraction,).to(dtype=torch.int16)
+        model.personality11 = torch.divide(model.personality11, fraction,).to(dtype=torch.int16)
+        model.personality12 = torch.divide(model.personality12, fraction,).to(dtype=torch.int16)
+        model.personality13 = torch.divide(model.personality13, fraction,).to(dtype=torch.int16)
+        model.personality14 = torch.divide(model.personality14, fraction,).to(dtype=torch.int16)
+        model.personality15 = torch.divide(model.personality15, fraction,).to(dtype=torch.int16)
+        model.personality16 = torch.divide(model.personality16, fraction,).to(dtype=torch.int16)
+        '''
         torch.divide(model.personality2, fraction, out=model.personality2)
         torch.divide(model.personality3, fraction, out=model.personality3)
         torch.divide(model.personality4, fraction, out=model.personality4)
@@ -401,14 +493,14 @@ class general_dev():
         torch.divide(model.personality6, fraction, out=model.personality6)
         torch.divide(model.personality7, fraction, out=model.personality7)
         torch.divide(model.personality8, fraction, out=model.personality8)
-        #torch.divide(model.personality9, fraction, out=model.personality9)
-        #torch.divide(model.personality10, fraction, out=model.personality10)
-        #torch.divide(model.personality11, fraction, out=model.personality11)
-        #torch.divide(model.personality12, fraction, out=model.personality12)
-        #torch.divide(model.personality13, fraction, out=model.personality13)
-        #torch.divide(model.personality14, fraction, out=model.personality14)
-        #torch.divide(model.personality15, fraction, out=model.personality15)
-        #torch.divide(model.personality16, fraction, out=model.personality16)
+        torch.divide(model.personality9, fraction, out=model.personality9)
+        torch.divide(model.personality10, fraction, out=model.personality10)
+        torch.divide(model.personality11, fraction, out=model.personality11)
+        torch.divide(model.personality12, fraction, out=model.personality12)
+        torch.divide(model.personality13, fraction, out=model.personality13)
+        torch.divide(model.personality14, fraction, out=model.personality14)
+        torch.divide(model.personality15, fraction, out=model.personality15)
+        torch.divide(model.personality16, fraction, out=model.personality16)'''
         for i in range(0, degree):
             torch.add(self.thresholds_pos, model.thresholds_pos, out=self.thresholds_pos)
             torch.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)
@@ -420,17 +512,34 @@ class general_dev():
             torch.add(self.personality6, model.personality6, out=self.personality6)
             torch.add(self.personality7, model.personality7, out=self.personality7)
             torch.add(self.personality8, model.personality8, out=self.personality8)
-            #torch.add(self.personality9, model.personality9, out=self.personality9)
-            #torch.add(self.personality10, model.personality10, out=self.personality10)
-            #torch.add(self.personality11, model.personality11, out=self.personality11)
-            #torch.add(self.personality12, model.personality12, out=self.personality12)
-            #torch.add(self.personality13, model.personality13, out=self.personality13)
-            #torch.add(self.personality14, model.personality14, out=self.personality14)
-            #torch.add(self.personality15, model.personality15, out=self.personality15)
-            #torch.add(self.personality16, model.personality16, out=self.personality16)
-        degree = degree / fraction
-        torch.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
-        torch.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
+            torch.add(self.personality9, model.personality9, out=self.personality9)
+            torch.add(self.personality10, model.personality10, out=self.personality10)
+            torch.add(self.personality11, model.personality11, out=self.personality11)
+            torch.add(self.personality12, model.personality12, out=self.personality12)
+            torch.add(self.personality13, model.personality13, out=self.personality13)
+            torch.add(self.personality14, model.personality14, out=self.personality14)
+            torch.add(self.personality15, model.personality15, out=self.personality15)
+            torch.add(self.personality16, model.personality16, out=self.personality16)
+        deg = degree / fraction
+        torch.divide(self.thresholds_pos, deg + 1, out=self.thresholds_pos)
+        torch.divide(self.thresholds_neg, deg + 1, out=self.thresholds_neg)
+        self.personality1 = torch.divide(self.personality1, deg + 1).to(dtype=torch.int16)
+        self.personality2 = torch.divide(self.personality2, deg + 1).to(dtype=torch.int16)
+        self.personality3 = torch.divide(self.personality3, deg + 1).to(dtype=torch.int16)
+        self.personality4 = torch.divide(self.personality4, deg + 1).to(dtype=torch.int16)
+        self.personality5 = torch.divide(self.personality5, deg + 1).to(dtype=torch.int16)
+        self.personality6 = torch.divide(self.personality6, deg + 1).to(dtype=torch.int16)
+        self.personality7 = torch.divide(self.personality7, deg + 1).to(dtype=torch.int16)
+        self.personality8 = torch.divide(self.personality8, deg + 1).to(dtype=torch.int16)
+        self.personality9 = torch.divide(self.personality9, deg + 1).to(dtype=torch.int16)
+        self.personality10 = torch.divide(self.personality10, deg + 1).to(dtype=torch.int16)
+        self.personality11 = torch.divide(self.personality11, deg + 1).to(dtype=torch.int16)
+        self.personality12 = torch.divide(self.personality12, deg + 1).to(dtype=torch.int16)
+        self.personality13 = torch.divide(self.personality13, deg + 1).to(dtype=torch.int16)
+        self.personality14 = torch.divide(self.personality14, deg + 1).to(dtype=torch.int16)
+        self.personality15 = torch.divide(self.personality15, deg + 1).to(dtype=torch.int16)
+        self.personality16 = torch.divide(self.personality16, deg + 1).to(dtype=torch.int16)
+        '''
         torch.divide(self.personality1, degree + 1, out=self.personality1)
         torch.divide(self.personality2, degree + 1, out=self.personality2)
         torch.divide(self.personality3, degree + 1, out=self.personality3)
@@ -439,15 +548,15 @@ class general_dev():
         torch.divide(self.personality6, degree + 1, out=self.personality6)
         torch.divide(self.personality7, degree + 1, out=self.personality7)
         torch.divide(self.personality8, degree + 1, out=self.personality8)
-        #torch.divide(self.personality9, degree + 1, out=self.personality9)
-        #torch.divide(self.personality10, degree + 1, out=self.personality10)
-        #torch.divide(self.personality11, degree + 1, out=self.personality11)
-        #torch.divide(self.personality12, degree + 1, out=self.personality12)
-        #torch.divide(self.personality13, degree + 1, out=self.personality13)
-        #torch.divide(self.personality14, degree + 1, out=self.personality14)
-        #torch.divide(self.personality15, degree + 1, out=self.personality15)
-        #torch.divide(self.personality16, degree + 1, out=self.personality16)
-        
+        torch.divide(self.personality9, degree + 1, out=self.personality9)
+        torch.divide(self.personality10, degree + 1, out=self.personality10)
+        torch.divide(self.personality11, degree + 1, out=self.personality11)
+        torch.divide(self.personality12, degree + 1, out=self.personality12)
+        torch.divide(self.personality13, degree + 1, out=self.personality13)
+        torch.divide(self.personality14, degree + 1, out=self.personality14)
+        torch.divide(self.personality15, degree + 1, out=self.personality15)
+        torch.divide(self.personality16, degree + 1, out=self.personality16)
+        '''
         return
     
     # save the model to a specified file
@@ -483,79 +592,138 @@ class general_dev():
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
-        input_image.to(dtype=torch.float16, device=torch.device('cuda'))
-        input_tensor = torch.tensor(input_image, device=torch.device('cuda'))
+        input_image.to(dtype=torch.int16, device=torch.device('cuda'))
+        input_tensor = torch.tensor(data=1, device=torch.device('cuda'))
+        
+        input_tensor = torch.clone(input_image, ).detach()
         #print(input_image.device)
-        #print(input_tensor.device)
-        torch.add(input_tensor, torch.ones(size=input_image.size(), device=torch.device('cuda')), out=input_tensor)
-        torch.mul(self.layer0[:, :, 1],  input_tensor, out=self.layer0[:, :, 1])
+        #print(input_tensor)
+        #torch.div(input_tensor, 255, out=input_tensor)
+        #torch.mul(input_tensor, self.bounds, out=input_tensor)
+        #torch.add(input_tensor, torch.ones(size=input_image.size(), device=torch.device('cuda')), out=input_tensor)
+        #print(input_tensor)
+        #print('layer0')
+        #print(self.layer0)
+        torch.add(self.layer0[:, :, 1],  input_tensor, out=self.layer0[:, :, 1])
+        #print("1")
+        #print('layer0')
+        #print(self.layer0)
+        #print(self.layer0)
 
         #check which neurons are firing and which arent, do the stuff
         torch.greater(self.layer0, self.layer1, out=self.positive_firing)
         torch.less_equal(self.layer0, self.layer1, out=self.positive_resting)
         torch.greater(self.layer0, self.layer2, out=self.negative_firing)
         torch.less_equal(self.layer0, self.layer2, out=self.negative_resting)
+        #print("2")
+        #print('layer0')
+        #print(self.layer0)
 
         # keep track of the threshold values of the firing neurons
         torch.multiply(self.positive_firing, self.layer1, out=self.pos_fire_amt)
         torch.multiply(self.negative_firing, self.layer2, out=self.neg_fire_amt)
+        #print('2 - 1')
+        #print(self.positive_firing)
+        #print(self.negative_firing)
+        #print(self.pos_fire_amt)
+        #print(self.neg_fire_amt)
+        
+        self.pos_fre_amt = torch.div(self.pos_fire_amt, 6).to(dtype=torch.int16)
+        self.neg_fire_amt = torch.div(self.neg_fire_amt, 6).to(dtype=torch.int16)
         
         # use the firing multipliers to change the output values of the firing neurons
-        torch.multiply(self.pos_fire_amt, self.layer3, out=self.pos_fire_amt_mult)
-        torch.multiply(self.neg_fire_amt, self.layer4, out=self.neg_fire_amt_mult)
-
-        
-        pos_firing_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.float16)
-        pos_resting_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.float16)
-        neg_firing_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.float16)
-        neg_resting_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.float16)
+        torch.add(self.pos_fire_amt, self.layer3, out=self.pos_fire_amt_mult)
+        torch.sub(self.neg_fire_amt, self.layer4, out=self.neg_fire_amt_mult)
+        #print('2 - 2')
+        #print(self.pos_fire_amt_mult)
+        #print(self.neg_fire_amt_mult)
+        '''
+        pos_firing_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
+        pos_resting_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
+        neg_firing_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
+        neg_resting_NOT = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
         torch.logical_not(self.positive_firing, out=pos_firing_NOT)
         torch.logical_not(self.positive_resting, out=pos_resting_NOT)
         torch.logical_not(self.negative_firing, out=neg_firing_NOT)
         torch.logical_not(self.negative_resting, out=neg_resting_NOT)
+        print('2 - 3')
+        print(pos_firing_NOT)
+        print(pos_resting_NOT)
+        print(neg_firing_NOT)
+        print(neg_resting_NOT)'''
 
         #ensure that default values are 1 and not 0 for multiplication and division purposes from here forward
-        torch.add(self.pos_fire_amt_mult, pos_firing_NOT)
-        torch.add(self.neg_fire_amt_mult, neg_firing_NOT)
+        #torch.add(self.pos_fire_amt_mult, pos_firing_NOT, out=self.pos_fire_amt_mult)
+        #torch.add(self.neg_fire_amt_mult, neg_firing_NOT, out=self.neg_fire_amt_mult)
+        #print('2 - 4')
+        #print(self.pos_fire_amt_mult)
+        #print(self.neg_fire_amt_mult)
+        #print('layer0')
+        #print(self.layer0)
 
         # apply the firing values to each of the near neighbors
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 0), out=self.layer0)
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 0), out=self.layer0)
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 1), out=self.layer0)
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 1), out=self.layer0)
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 2), out=self.layer0)
-        torch.multiply(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 2), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 0), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 0), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 1), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 1), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 2), out=self.layer0)
-        torch.divide(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 2), out=self.layer0)
+        temp = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 0), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 0), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 1), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 1), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 2), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 2), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 0), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 0), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 1), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 1), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 2), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 2), out=temp)
+        torch.add(self.layer0, temp, out=self.layer0)
+        '''print("3")
+        print('layer0')
+        print(self.layer0)'''
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         take_action = []
         
-        print(self.layer0)
+        #print(self.layer0)
+        #print('layer0')
         for i in range(0, self.num_controls):
-            print(self.layer0[self.controls[i]])
+            #print(self.layer0[self.controls[i]])
             if (self.layer0[self.controls[i]].item() > self.thresholds_pos[i, 0].item()):
                 take_action.append(True)
-                self.layer0[self.controls[i]] = self.layer0[self.controls[i]] - self.thresholds_pos[i]
+                self.layer0[self.controls[i]] = self.layer0[self.controls[i]] - self.thresholds_pos[i,0]
             else:
                 if (self.layer0[self.controls[i]].item() > self.thresholds_neg[i,0].item()):
                     take_action.append(False)
                 else:
                     take_action.append(-1)
         
-        # once a neuron has fired, its value needs to be lowered by the threshold amount
-        torch.divide(self.layer0, self.pos_fire_amt, out=self.layer0)
-        torch.mul(self.layer0, self.neg_fire_amt, out=self.layer0)
+        # update layer0 by setting all the firing neurons to 0
+        torch.mul(self.layer0, torch.logical_not(self.positive_firing), out=self.layer0)
+        torch.mul(self.layer0, torch.logical_not(self.negative_firing), out=self.layer0)
 
-        # update the emotion (threshold) layers
-        temp = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.float16)
-        torch.add(torch.multiply(self.positive_firing, self.emotion1), pos_firing_NOT, out=temp)
-        torch.mul(self.layer1, temp, out=self.layer1)
+        # update the threshold layers
+        torch.add(torch.mul(self.positive_firing, self.emotion1), self.layer1, out=self.layer1)
+        torch.add(torch.mul(self.positive_resting, self.emotion2), self.layer1, out=self.layer1)
+        torch.add(torch.mul(self.negative_firing, self.emotion3), self.layer2, out=self.layer2)
+        torch.add(torch.mul(self.negative_resting, self.emotion4), self.layer2, out=self.layer2)
+        torch.add(torch.mul(self.positive_firing, self.emotion5), self.layer3, out=self.layer3)
+        torch.add(torch.mul(self.positive_resting, self.emotion6), self.layer3, out=self.layer3)
+        torch.add(torch.mul(self.negative_firing, self.emotion7), self.layer4, out=self.layer4)
+        torch.add(torch.mul(self.negative_resting, self.emotion8), self.layer4, out=self.layer4)
+        
+        '''
+        #temp = torch.zeros(size=(self.width, self.height, self.depth), device=torch.device('cuda'), dtype=torch.int16)
+        
+        #torch.mul(self.layer1, torch.mul(self.emotion1, torch.add(self.positive_firing, pos_firing_NOT)), out=self.layer1)
+        #torch.mul(self.layer1, torch.mul(self.emotion2, torch.add(self.positive_resting, pos_resting_NOT)), out=self.layer1)
+        #torch.mul(self.layer2, torch.mul(self.emotion3, torch.add(self.negative_firing, neg_firing_NOT)), out=self.layer2)
+        #torch.mul(self.layer2, torch.mul(self.emotion4, torch.add(self.negative_resting, neg_firing_NOT)), out=self.layer2)
+        #torch.mul(self.layer3, torch.mul(self.emotion5, torch.add(self.positive_firing, pos_firing_NOT)), out=self.layer3)
+        #torch.mul(self.layer3, torch.mul(self.emotion6, torch.add(self.positive_resting, pos_resting_NOT)), out=self.layer3)
+        #torch.mul(self.layer4, torch.mul(self.emotion7, torch.add(self.negative_firing, neg_firing_NOT)), out=self.layer4)
+        #torch.mul(self.layer4, torch.mul(self.emotion8, torch.add(self.negative_resting, neg_firing_NOT)), out=self.layer4)
+        
+        #torch.add(torch.multiply(self.positive_firing, self.emotion1), pos_firing_NOT, out=temp)
         torch.add(torch.multiply(self.positive_resting, self.emotion2), pos_resting_NOT, out=temp)
         torch.mul(self.layer1, temp, out=self.layer1)
         torch.add(torch.multiply(self.negative_firing, self.emotion3), neg_firing_NOT, out=temp)
@@ -572,10 +740,31 @@ class general_dev():
         torch.mul(self.layer4, temp, out=self.layer4)
         torch.add(torch.multiply(self.negative_resting, self.emotion8), neg_resting_NOT, out=temp)
         torch.mul(self.layer4, temp, out=self.layer4)
-
-        # figure out which emotions (thresholds) were used and which weren't
-        # and then update them
+        '''
+        # figure out which emotions were used and which weren't
+        # and then update them according to the personality values
         
+        torch.add(torch.mul(self.positive_firing, self.personality1), self.emotion1, out=self.emotion1)
+        torch.add(torch.mul(self.positive_resting, self.personality2), self.emotion1, out=self.emotion1)
+        torch.add(torch.mul(self.negative_firing, self.personality3), self.emotion2, out=self.emotion2)
+        torch.add(torch.mul(self.negative_resting, self.personality4), self.emotion2, out=self.emotion2)
+        torch.add(torch.mul(self.positive_firing, self.personality5), self.emotion3, out=self.emotion3)
+        torch.add(torch.mul(self.positive_resting, self.personality6), self.emotion3, out=self.emotion3)
+        torch.add(torch.mul(self.negative_firing, self.personality7), self.emotion4, out=self.emotion4)
+        torch.add(torch.mul(self.negative_resting, self.personality8), self.emotion4, out=self.emotion4)
+        torch.add(torch.mul(self.positive_firing, self.personality9), self.emotion5, out=self.emotion5)
+        torch.add(torch.mul(self.positive_resting, self.personality10), self.emotion5, out=self.emotion5)
+        torch.add(torch.mul(self.negative_firing, self.personality11), self.emotion6, out=self.emotion6)
+        torch.add(torch.mul(self.negative_resting, self.personality12), self.emotion6, out=self.emotion6)
+        torch.add(torch.mul(self.positive_firing, self.personality13), self.emotion7, out=self.emotion7)
+        torch.add(torch.mul(self.positive_resting, self.personality14), self.emotion7, out=self.emotion7)
+        torch.add(torch.mul(self.negative_firing, self.personality15), self.emotion8, out=self.emotion8)
+        torch.add(torch.mul(self.negative_resting, self.personality16), self.emotion8, out=self.emotion8)
+        
+        # then do the same for the mult layers
+        
+        
+        '''
         torch.mul(self.emotion1, torch.add(torch.multiply(self.positive_firing, self.personality1), pos_firing_NOT), out=self.emotion1)
         torch.mul(self.emotion2, torch.add(torch.multiply(self.positive_resting, self.personality2), pos_resting_NOT), out=self.emotion2)
         torch.mul(self.emotion3, torch.add(torch.multiply(self.negative_firing, self.personality3), neg_firing_NOT), out=self.emotion3)
@@ -593,6 +782,28 @@ class general_dev():
         #torch.mul(torch.multiply(self.positive_resting, self.personality10), torch.multiply(self.positive_firing, self.personality12), out=self.emotion6)
         #torch.mul(torch.multiply(self.negative_firing, self.personality13), torch.multiply(self.negative_resting, self.personality15), out=self.emotion7)
         #torch.mul(torch.multiply(self.negative_resting, self.personality14), torch.multiply(self.negative_firing, self.personality16), out=self.emotion8)
+        torch.mul(self.positive_firing, self.maleability, out=self.positive_firing)
+        torch.div(self.positive_resting, self.maleability, out=self.positive_resting)
+        torch.mul(self.negative_firing, self.maleability, out=self.negative_firing)
+        torch.div(self.negative_resting, self.maleability, out=self.negative_resting)
+        torch.add(self.positive_firing, pos_firing_NOT, out=self.positive_firing)
+        torch.add(self.positive_resting, pos_resting_NOT, out=self.positive_resting)
+        torch.add(self.negative_firing, neg_firing_NOT, out=self.negative_firing)
+        torch.add(self.negative_resting, neg_resting_NOT, out=self.negative_resting)
+        torch.mul(self.positive_firing, self.personality1, out=self.personality1)
+        torch.mul(self.positive_resting, self.personality2, out=self.personality2)
+        torch.mul(self.negative_firing, self.personality3, out=self.personality3)
+        torch.mul(self.negative_resting, self.personality4, out=self.personality4)
+        torch.mul(self.positive_firing, self.personality5, out=self.personality5)
+        torch.mul(self.positive_resting, self.personality6, out=self.personality6)
+        torch.mul(self.negative_firing, self.personality7, out=self.personality7)
+        torch.mul(self.negative_resting, self.personality8, out=self.personality8)
         
+        # once a neuron has fired, its value needs to be lowered by the threshold amount
+        torch.add(self.pos_fire_amt, pos_firing_NOT, out=self.pos_fire_amt)
+        torch.add(self.neg_fire_amt, neg_firing_NOT, out=self.neg_fire_amt)
+        torch.divide(self.layer0, self.pos_fire_amt, out=self.layer0)
+        torch.mul(self.layer0, self.neg_fire_amt, out=self.layer0)
+        input()'''
         #print(take_action)
         return take_action

@@ -168,7 +168,7 @@ It also does not work with the general model, as it sends the wrong input format
 class find_food_02(game):
     # the condition the blob has to meet to win the game
     victory_condition = 0
-    # the instance of horse that'll play the game
+    # the instance of the model that'll play the game
     blob = 0
 
     #initializing the game requires giving it a model to play with
@@ -264,7 +264,7 @@ class find_food_02(game):
 
         # number of iterations the game will run for at max
         iter = 0
-        max_iter = 10000
+        max_iter = 2000
 
         # the previous action taken
         prev = 0
@@ -307,7 +307,7 @@ class find_food_02(game):
         return False
     
     
-class find_food_02(game):
+class find_food_03(game):
     # the condition the blob has to meet to win the game
     victory_condition = 0
     # the instance of horse that'll play the game
@@ -330,7 +330,7 @@ class find_food_02(game):
         return
     
     def __create_victory_condition(self):
-        self.victory_condition = torch.zeros((self.width, self.height))
+        self.victory_condition = torch.zeros((self.width, self.height), device=torch.device('cuda'), dtype=torch.int16)
         self.victory_x, self.victory_y = self.__choose_starting_location()
         self.victory_condition[self.victory_x,self.victory_y] = 255
         return
@@ -347,7 +347,7 @@ class find_food_02(game):
         return
     
     def __create_starting_screen(self):
-        self.game_screen = torch.zeros((self.width, self.height))
+        self.game_screen = torch.zeros((self.width, self.height), device=torch.device('cuda'), dtype=torch.int16)
         starting_x, starting_y = self.__choose_starting_location()
         self.game_screen[starting_x, starting_y] = 255
         return

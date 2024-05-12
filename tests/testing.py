@@ -18,6 +18,7 @@ from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
 from cantor.src.routines.horse_routine import horse_routine
 from cantor.src.models.general import general
 from cantor.src.models.general_dev import general_dev
+from cantor.src.utilities.game import find_food_03
 
 def test001():
     cantor01 = d8a4gs()
@@ -182,11 +183,11 @@ def test010():
 def test011():
     model = general_dev()
     prev_model = 0
-    model.create(255, 255, 255, 2, 4, 2)
+    model.create(255, 255, 255, 1000, 4, 2)
     iters = 0
     first_attempt = True
     while (True):
-        game = find_food_02(model)
+        game = find_food_03(model)
         if (game.play_game() == False):
             iters+=1
             print('game over! number of tries:')
