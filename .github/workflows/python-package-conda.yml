@@ -27,7 +27,7 @@ jobs:
         conda install -c conda-forge hatch
     - name: Pull the repository from github
       run: |
-        git clone https://github.com/octakitten/ocb.git
+        git clone https://github.com/octakitten/opencb.git
         cd ocb
     - name: Lint with flake8
       run: |
@@ -44,3 +44,8 @@ jobs:
         cd dist
         NAME=ls *.whl -t | head -n1
         echo conda install $(NAME)
+    - name: Test the package with pytest
+      run: |
+        cd ..
+        conda install pytest
+        pytest
