@@ -27,6 +27,8 @@ jobs:
         conda install -c conda-forge hatch
     - name: Pull the repository from github
       run: |
+        mkdir project
+        cd project
         git clone https://github.com/octakitten/opencb.git
         cd ocb
     - name: Lint with flake8
