@@ -30,7 +30,7 @@ jobs:
         mkdir project
         cd project
         git clone https://github.com/octakitten/opencb.git
-        cd ocb
+        cd opencb
     - name: Lint with flake8
       run: |
         conda install flake8
