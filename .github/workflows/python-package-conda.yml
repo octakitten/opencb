@@ -1,4 +1,4 @@
-name: Python Package using Conda and Poetry
+name: Python Package using Conda and Hatch
 
 on: [push]
 
@@ -18,13 +18,17 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
-    - name: Install python-poetry
+    - name: Configure conda-forge
       run: |
-        pip install python-poetry
+        conda config --add channels conda-forge
+        conda config --set channel_priority strict
+    - name: Install hatch
+      run: |
+        conda install -c conda-forge hatch
     - name: Pull the repository from github
       run: |
-        git clone https://github.com/octakitten/cantor.git
-        cd cantor
+        git clone https://github.com/octakitten/ocb.git
+        cd ocb
     - name: Lint with flake8
       run: |
         conda install flake8
@@ -32,16 +36,11 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Build the project using Poetry
+    - name: Build the project using Hatch
       run: |
-        poetry install
-        poetry build
+        hatch build -t wheel
     - name: Install the latest cantor wheel
       run: |
         cd dist
         NAME=ls *.whl -t | head -n1
         echo conda install $(NAME)
-    - name: Test with pytest (installed by poetry)
-      run: |
-        cd ..
-        pytest

@@ -1,6 +1,6 @@
-from cantor.src.utilities.game import find_food_02
+from opencb.src.opencb.utilities.game import find_food_02
 
-class horse_routine():
+class grizzlybear_routine():
 
     @staticmethod
     def run_routine():

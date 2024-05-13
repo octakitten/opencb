@@ -1,14 +1,14 @@
-import sys
+'''import sys
 from pathlib import Path
 
 #print(sys.path)
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
-import cantor
-from cantor.src.utilities.game import game
-from cantor.src.utilities.game import find_food_02
-from cantor.src.models.horse import horse
+import cantor'''
+from opencb.src.opencb.utilities.game import game
+from opencb.src.opencb.utilities.game import find_food_02
+from opencb.src.opencb.models.horse import horse
 import numpy as np
 
 def test_find_food_02_initialization():

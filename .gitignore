@@ -167,3 +167,5 @@ end_screen
 dist/
 .venv/
 __pychache__/
+src_old/
+tests_old/

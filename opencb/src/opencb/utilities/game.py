@@ -1,8 +1,8 @@
 import numpy as np
 import torch
-from cantor.src.models.camel import camel
-from cantor.src.models.horse import horse
-from cantor.src.utilities.screen import screen
+from opencb.src.opencb.models.camel import camel
+from opencb.src.opencb.models.horse import horse
+from opencb.src.opencb.utilities.screen import screen
 
 
 class game():

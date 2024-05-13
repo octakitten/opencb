@@ -1,19 +1,74 @@
-[tool.poetry]
-name = "cantor"
-version = "0.3.1"
-description = "Open-Source Computer Behavior"
-authors = ["Octakitten <raspberry2425@gmail.com>"]
-license = "GNU Affero Public License v3.0"
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.9,<3.13"
-numpy = ">=1.26.1"
-xlib = ">=0.21"
-Pillow = ">=10.1.0"
-torch = ">=2.1.0"
-pytest = ">=7.4.3"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opencb"
+dynamic = ["version"]
+description = "Open-Source Computer Behavior"
+authors = [
+  { name = "octakitten", email = "raspberry2425@gmail.com"},
+  ]
+license = "agpl-3.0-or-later"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "python>=3.9",
+    "numpy>=1.26.1",
+    "xlib>=0.21",
+    "Pillow>=10.1.0",
+    "torch>=2.1.0",
+    "pytest>=7.4.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/octakitten/opencb"
+Issues = "https://github.com/octakitten/opencb/issues"
+Wiki = "https://github.com/octakitten/opencb/wiki"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "screen.py",
+    "general.py",
+    "general_dev.py",
+    "game.py",
+]
+exclude = [
+    "/dist",
+    "/tests",
+    "poetry.lock"
+]
+
+[tool.hatch.version]
+path = "opencb/src/opencb/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/OpenCB tests}"
+
+[tool.coverage.run]
+source_pkgs = ["opencb", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/opencb/__about__.py",
+]
+
+[tool.coverage.paths]
+opencb = ["src/opencb", "*/opencb/src/opencb"]
+tests = ["tests", "*/opencb/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]

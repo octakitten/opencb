@@ -1,4 +1,4 @@
-# cantor
+# opencb
 Open-Source Computer Behavior
 
 What is this?

@@ -1,39 +1,39 @@
 import numpy as np
 import torch
 import sys
-from pathlib import Path
+#from pathlib import Path
 
 #print(sys.path)
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+#sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
-from cantor.src.models.d8a4gs import d8a4gs
-from cantor.src.models.d16a1gs import d16a1gs
-from cantor.src.utilities import screen
-from cantor.src.models.camel import camel
-from cantor.src.models.horse import horse
-from cantor.src.utilities.game import find_food_01
-from cantor.src.utilities.game import find_food_02
-from cantor.src.routines.grizzlybear_routine import grizzlybear_routine
-from cantor.src.routines.horse_routine import horse_routine
-from cantor.src.models.general import general
-from cantor.src.models.general_dev import general_dev
-from cantor.src.utilities.game import find_food_03
+from opencb.src.opencb.models.d8a4gs import d8a4gs
+from opencb.src.opencb.models.d16a1gs import d16a1gs
+from opencb.src.opencb.utilities import screen
+from opencb.src.opencb.models.camel import camel
+from opencb.src.opencb.models.horse import horse
+from opencb.src.opencb.utilities.game import find_food_01
+from opencb.src.opencb.utilities.game import find_food_02
+from opencb.src.opencb.routines.grizzlybear_routine import grizzlybear_routine
+from opencb.src.opencb.routines.horse_routine import horse_routine
+from opencb.src.opencb.models.general import general
+from opencb.src.opencb.models.general_dev import general_dev
+from opencb.src.opencb.utilities.game import find_food_03
 
 def test001():
-    cantor01 = d8a4gs()
+    model01 = d8a4gs()
     for i in range(100):
         input_image_fake = np.random.randint(0, 255, (256,256))
-        next_action = cantor01.update(input_image_fake)
+        next_action = model01.update(input_image_fake)
         print(next_action)
 
 def test002():
-    cantor02 = d16a1gs()
+    model02 = d16a1gs()
     a, b = 50, 50
     w, h = 255, 255
     for i in range(3):
         input_image_real = screen.screenshot_desktop(a, b, w, h)
-        next_action = cantor02.update(input_image_real)
+        next_action = model02.update(input_image_real)
         if next_action == 2:
             print(next_action)
             a += 1
@@ -212,4 +212,4 @@ def test011():
     model.save(sys.path[0] + '/saved_models/')
 
 # run test for the in development general model
-test011()
+# test011()
