@@ -10,8 +10,6 @@ Welcome to opencb's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-Check out the :doc:'usage' section for basic :doc:'usage' and :ref:'installation <installation>' instructions.
-
 
 Indices and tables
 ==================
