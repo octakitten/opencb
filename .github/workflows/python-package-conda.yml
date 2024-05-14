@@ -35,10 +35,8 @@ jobs:
         hatch build -t wheel
     - name: Publish the latest wheel to the develop branch of the repo
       run: |
-        cd dist
-        NAME=ls *.whl -t | head -n1
+        NAME=ls dist/*.whl -t | head -n1
         git add $NAME
-        cd ..
         VERSION='hatch version'
         git config --global user.name 'version-bump'
         git config --global user.email 'raspberry19413'
