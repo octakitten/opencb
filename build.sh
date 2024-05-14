@@ -11,3 +11,6 @@ mv "$NAME" "opencb-$VERSION.whl"
 echo "Built package: opencb-$VERSION.whl"
 cd ..
 echo "Build complete"
+echo "Building Sphinx documentation"
+make html
+echo "Documentation built"
