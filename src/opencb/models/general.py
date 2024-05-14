@@ -365,8 +365,11 @@ class general():
         model.__new_thresholds()
         model.__new_propensity()
         model.__new_personality()
-        np.divide(model.thresholds_pos, fraction, out=model.thresholds_pos)
-        np.divide(model.thresholds_neg, fraction, out=model.thresholds_neg)
+        '''
+        for each in range(0, len(model.thresholds_pos)):
+            np.divide(model.thresholds_pos[each], fraction, out=model.thresholds_pos[each])
+        for each in range(0, len(model.thresholds_neg)):
+            np.divide(model.thresholds_neg[each], fraction, out=model.thresholds_neg[each])'''
         torch.divide(model.personality1, fraction, out=model.personality1)
         torch.divide(model.personality2, fraction, out=model.personality2)
         torch.divide(model.personality3, fraction, out=model.personality3)
@@ -384,8 +387,9 @@ class general():
         torch.divide(model.personality15, fraction, out=model.personality15)
         torch.divide(model.personality16, fraction, out=model.personality16)
         for i in range(0, degree):
+            '''
             np.add(self.thresholds_pos, model.thresholds_pos, out=self.thresholds_pos)
-            np.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)
+            np.add(self.thresholds_neg, model.thresholds_neg, out=self.thresholds_neg)'''
             torch.add(self.personality1, model.personality1, out=self.personality1)
             torch.add(self.personality2, model.personality2, out=self.personality2)
             torch.add(self.personality3, model.personality3, out=self.personality3)
@@ -403,8 +407,9 @@ class general():
             torch.add(self.personality15, model.personality15, out=self.personality15)
             torch.add(self.personality16, model.personality16, out=self.personality16)
         degree = degree / fraction
+        '''
         np.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
-        np.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
+        np.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)'''
         torch.divide(self.personality1, degree + 1, out=self.personality1)
         torch.divide(self.personality2, degree + 1, out=self.personality2)
         torch.divide(self.personality3, degree + 1, out=self.personality3)

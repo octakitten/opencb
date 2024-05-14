@@ -1,6 +1,10 @@
 name: Python Package using Conda and Hatch
 
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+
 
 jobs:
   build-linux:
@@ -25,29 +29,21 @@ jobs:
     - name: Install hatch
       run: |
         conda install -c conda-forge hatch
-    - name: Pull the repository from github
-      run: |
-        mkdir project
-        cd project
-        git clone https://github.com/octakitten/opencb.git
-        cd opencb
-    - name: Lint with flake8
-      run: |
-        conda install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Build the project using Hatch
       run: |
+        hatch version minor
         hatch build -t wheel
-    - name: Install the latest cantor wheel
+    - name: Publish the latest wheel to the develop branch of the repo
       run: |
         cd dist
         NAME=ls *.whl -t | head -n1
-        echo conda install $(NAME)
-    - name: Test the package with pytest
-      run: |
+        git add $NAME
         cd ..
-        conda install pytest
-        pytest
+        VERSION='hatch version'
+        git config --global user.name 'version-bump'
+        git config --global user.email 'raspberry19413'
+        git commit -m "Publishing $NAME"
+        git push origin main
+
+
+
