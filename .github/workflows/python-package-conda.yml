@@ -39,7 +39,7 @@ jobs:
         git add $NAME
         VERSION='hatch version'
         git config --global user.name 'version-bump'
-        git config --global user.email 'raspberry19413'
+        git config --global user.email 'raspberry19413@gmail.com'
         git commit -m "Publishing $NAME"
         git push origin main
 
