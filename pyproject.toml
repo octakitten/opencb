@@ -11,6 +11,7 @@ versions = [
   "python=3.9",
   "python=3.10",
   "python=3.11",
+  "python=3.12",
 ]
 description = "Open-Source Computer Behavior"
 authors = [
@@ -51,7 +52,7 @@ exclude = [
 ]
 
 [tool.hatch.version]
-path = "src/opencb/__about__.py"
+path = "opencb/__about__.py"
 
 [tool.hatch.envs.types]
 extra-dependencies = [

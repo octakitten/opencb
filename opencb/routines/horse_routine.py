@@ -1,4 +1,4 @@
-from opencb.src.opencb.utilities.game import find_food_02
+from ..utilities import find_food_02
 
 class horse_routine():
 

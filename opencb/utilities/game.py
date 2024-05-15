@@ -1,8 +1,8 @@
 import numpy as np
 import torch
-from opencb.src.opencb.models.camel import camel
-from opencb.src.opencb.models.horse import horse
-from opencb.src.opencb.utilities.screen import screen
+from ..models import camel
+from ..models import horse
+from ..utilities import screen
 
 
 class game():
