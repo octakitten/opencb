@@ -6,9 +6,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
 import cantor'''
-from opencb.src.opencb.utilities.game import game
-from opencb.src.opencb.utilities.game import find_food_02
-from opencb.src.opencb.models.horse import horse
+from opencb.utilities import game
+from opencb.utilities import find_food_02
+from opencb.models import horse
 import numpy as np
 
 def test_find_food_02_initialization():

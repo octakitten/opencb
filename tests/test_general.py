@@ -1,9 +1,9 @@
 '''import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__)parent))
 '''
-from opencb.src.opencb.models.general import general
+from opencb.models.general import general
 import torch
 
 def test_general_initialization():

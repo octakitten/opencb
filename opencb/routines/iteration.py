@@ -7,18 +7,18 @@ import sys
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
-from opencb.src.opencb.models.d8a4gs import d8a4gs
-from opencb.src.opencb.models.d16a1gs import d16a1gs
-from opencb.src.opencb.utilities import screen
-from opencb.src.opencb.models.camel import camel
-from opencb.src.opencb.models.horse import horse
-from opencb.src.opencb.utilities.game import find_food_01
-from opencb.src.opencb.utilities.game import find_food_02
-from opencb.src.opencb.routines.grizzlybear_routine import grizzlybear_routine
-from opencb.src.opencb.routines.horse_routine import horse_routine
-from opencb.src.opencb.models.general import general
-from opencb.src.opencb.models.general_dev import general_dev
-from opencb.src.opencb.utilities.game import find_food_03
+from ..models import d8a4gs
+from ..models import d16a1gs
+from ..utilities import screen
+from ..models import camel
+from ..models import horse
+from ..utilities import find_food_01
+from ..utilities import find_food_02
+from ..routines import grizzlybear_routine
+from ..routines import horse_routine
+from ..models import general
+from ..models import general_dev
+from ..utilities import find_food_03
 
 def test001():
     model01 = d8a4gs()

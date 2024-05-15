@@ -29,19 +29,14 @@ jobs:
     - name: Install hatch
       run: |
         conda install -c conda-forge hatch
-    - name: Build the project using Hatch
+    - name: Install dependencies
+      run: |
+        hatch env create
+        hatch shell
+    - name: Test using pytest
+      run: |
+        pytest
+    - name: Test build the project using Hatch
       run: |
         hatch version minor
-        hatch build -t wheel
-    - name: Publish the latest wheel to the develop branch of the repo
-      run: |
-        NAME=ls dist/*.whl -t | head -n1
-        git add $NAME
-        VERSION='hatch version'
-        git config --global user.name 'version-bump'
-        git config --global user.email 'raspberry19413'
-        git commit -m "Publishing $NAME"
-        git push origin main
-
-
-
+        hatch build -t wheel dist/
