@@ -169,3 +169,5 @@ dist/
 __pychache__/
 src_old/
 tests_old/
+_build/
+_static/
