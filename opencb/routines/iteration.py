@@ -181,6 +181,19 @@ def test010():
     
 
 def test011():
+    '''
+    :Parameters:
+    none
+    :Returns:
+    none
+    :Comments:
+    This function is a test for iterating on the general_dev model. This is the latest model as of 05-17-2024. The goal with iterating
+    on the model is to develop a set of parameters that work to have the model solve the game it's currently playing.
+    For this function we're making use of the game find_food_003, where the model is supposed to move a dot from a random 
+    location on the screen and get it to the top left corner of the screen. This function will run the game until it's won,
+    changing the models parameters each time it fails. The model's parameters will be saved to a file if it wins a game, otherwise
+    this function will run indefinitely.
+    '''
     model = general_dev()
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 2)
