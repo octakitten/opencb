@@ -173,4 +173,3 @@ _build/
 _static/
 testing_modules/
 .vscode/
-.out.hvm
