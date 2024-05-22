@@ -226,3 +226,48 @@ def test011():
 
 # run test for the in development general model
 # test011()
+
+def test012():
+    '''
+    Parameters:
+    none
+    Returns:
+    none
+    Comments:
+    Here we'll be testing a new game mode called forest. The game will have the model move a dot through a forest of dots until it 
+    reaches the goal somewhere in the image. It receives positive input when it gets closer and negative when it gets further. Also,
+    the model receives a powerful negative input when it gets too close to a tree. If it hits a tree, it dies.
+    We'll be using the general_dev model for this.
+    
+    '''
+    first_attempt = True
+    model = general_dev()
+    prev_model = 0
+    model.create(255, 255, 255, 1000, 4, 2)
+    iters = 0
+    while (True):
+        game = find_food_03(model)
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute(2,1)
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model(1,2)
+                model.permute 
+            else:
+                model = prev_model
+                model.permute(2,1)
+        first_attempt = False
+        model.save(sys.path[0] + '/saved_models/in-progress/')
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + '/saved_models/')
+    
