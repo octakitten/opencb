@@ -164,6 +164,8 @@ cython_debug/
 # ignore the start and end screen images
 start_screen
 end_screen
+victory_condition
+saved_models/
 dist/
 .venv/
 __pychache__/

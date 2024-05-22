@@ -44,20 +44,20 @@ class forest():
         return
     
     def __create_victory_condition(self):
-        self.victory_x, self.victory_y = self.__choose_starting_location()
+        self.__choose_victory_location()
         self.game_screen[self.victory_x,self.victory_y] = self.flag
         self.victory_condition = self.game_screen
         screen.save(self.victory_condition, 'victory_condition')
         return
     
     def __loss_condition(self):
-        if self.game_screen(self.player_location_x, self.player_location_y) == self.tree:
+        if self.game_screen[self.player_location_x, self.player_location_y] == self.tree:
             return True
         else:
             return False
         
     def __win_condition(self):
-        if self.game_screen(self.player_location_x, self.player_location_y) == self.victory_condition(self.player_location_x, self.player_location_y):
+        if self.game_screen[self.player_location_x, self.player_location_y] == self.victory_condition(self.player_location_x, self.player_location_y):
             return True
         else:
             return False
@@ -84,7 +84,12 @@ class forest():
         batch = []
         for i in range(-2, 2):
             for j in range(-2, 2):
-                batch.append(self.game_screen(x + i, y + j))
+                try:
+                    batch.append(self.game_screen[x + i, y + j])
+                except:
+                    #do nothing
+                    pass
+                
         
         for each in batch:
             if each == self.tree:
@@ -96,8 +101,12 @@ class forest():
         batch = []
         for i in range(-1, 1):
             for j in range(-1, 1):
-                batch.append(self.game_screen(x + i, y + j))
-        
+                try:
+                 batch.append(self.game_screen[x + i, y + j])
+                except:
+                    #do nothing
+                    pass
+                
         for each in batch:
             if each == self.tree:
                 return True
@@ -118,6 +127,14 @@ class forest():
         self.game_screen[rand_x, rand_y] = 255
         player_location_x = rand_x
         player_location_y = rand_y
+        return
+    
+    def __choose_victory_location(self):
+        rand_x = np.random.randint(1, self.width)
+        rand_y = np.random.randint(1, self.height)
+        self.game_screen[rand_x, rand_y] = 255
+        self.victory_x = rand_x
+        self.victory_y = rand_y
         return
     
 
@@ -188,7 +205,7 @@ class forest():
         min_dy = np.abs(self.victory_y - self.starting_y)
         
         # play the game until victory or until either combo gets too high or iterations finish
-        while (self.__victory() == False):
+        while (self.__victory() == False & self.__loss_condition() == False):
             act = self.blob.update(self.game_screen)
             if prev == act:
                 combo += 1
@@ -214,7 +231,7 @@ class forest():
             if (y > prev_y):
                 self.blob.train(1, 255, False)
                 
-            if (self.__check_close_to_three(self.player_location_x, self.player_location_y) == True):
+            if (self.__check_close_to_tree(self.player_location_x, self.player_location_y) == True):
                 self.blob.train(2, 1000, False)
             
             if (x + y < self.min_dx + self.min_dy):

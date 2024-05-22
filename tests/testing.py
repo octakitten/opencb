@@ -3,7 +3,7 @@ from opencb import models
 from opencb import games'''
 from opencb import routines
 
-routines.iteration.test011()
+routines.iteration.test012()
 '''import sys
 
 

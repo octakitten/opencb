@@ -3,5 +3,5 @@
 echo "Building OpenCB package"
 hatch version b
 FOLDER="dist_beta/"
-VERSION = (hatch build -t wheel $FOLDER)
-echo "Built package: $VERSION"
+hatch build -t wheel $FOLDER
+echo "Built package!"

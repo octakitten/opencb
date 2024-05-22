@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import sys
+import os
 #from pathlib import Path
 
 #print(sys.path)
@@ -19,6 +20,7 @@ from ..routines import horse_routine
 from ..models import general
 from ..models import general_dev
 from ..utilities import find_food_03
+from ..games import forest
 
 def test001():
     model01 = d8a4gs()
@@ -240,13 +242,18 @@ def test012():
     We'll be using the general_dev model for this.
     
     '''
+    
+    try:
+        os.makedirs(sys.path[0] + '/saved_models/')
+    except:
+        pass
     first_attempt = True
     model = general_dev()
     prev_model = 0
-    model.create(255, 255, 255, 1000, 4, 2)
+    model.create(255, 255, 255, 1000, 4, 3)
     iters = 0
     while (True):
-        game = find_food_03(model)
+        game = forest(model)
         if (game.play_game() == False):
             iters+=1
             print('game over! number of tries:')
@@ -265,9 +272,9 @@ def test012():
                 model = prev_model
                 model.permute(2,1)
         first_attempt = False
-        model.save(sys.path[0] + '/saved_models/in-progress/')
+        model.save(sys.path[0] + '/saved_models/in_progress.pth')
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')
-    model.save(sys.path[0] + '/saved_models/')
+    model.save(sys.path[0] + '/saved_models/victory.pth')
     
