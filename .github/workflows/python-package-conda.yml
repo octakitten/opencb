@@ -29,7 +29,3 @@ jobs:
     - name: Install hatch
       run: |
         conda install -c conda-forge hatch
-    - name: Install dependencies
-      run: |
-        hatch env create
-        hatch shell
