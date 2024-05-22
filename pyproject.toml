@@ -17,7 +17,7 @@ description = "Open-Source Computer Behavior"
 authors = [
   { author = "octakitten", email = "raspberry2425@gmail.com"},
   ]
-license = "agpl-3.0-or-later"
+license = "MIT"
 readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",

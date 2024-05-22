@@ -1,9 +1,10 @@
-import torch
+'''import torch
 from opencb import models
-from opencb import games
+from opencb import games'''
 from opencb import routines
 
-import sys
+routines.iteration.test012()
+'''import sys
 
 
 def main():
@@ -38,6 +39,5 @@ def main():
         print('saving to disk...')
         model.save(sys.path[0] + '/saved_models/')
     return
+'''
 
-
-routines.iteration.test011()

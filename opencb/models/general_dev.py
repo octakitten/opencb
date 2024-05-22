@@ -128,16 +128,16 @@ class general_dev():
         torch.save(self.personality8, path)
         return
     
-    '''
-    Copy a model's parameters to a new model.
-    
-    Parameters:
-    model (general): the model to copy
-    
-    Returns:
-    none
-    '''
     def copy(self, model):
+        '''
+        Copy a model's parameters to a new model.
+        
+        :Parameters:
+        model (general): the model to copy
+        
+        :Returns:
+        none
+        '''
         self.width = model.width
         self.height = model.height
         self.depth = model.depth
@@ -167,26 +167,27 @@ class general_dev():
         self.neg_propensity = model.neg_propensity
         return
     
-    '''
-    Create a new model with the given dimensions and number of controls.
-    
-    Parameters: 
-    w (int): width of input images in pixels
-    h (int): height of input images in pixels
-    d (int): depth of the neural space
-    num_controls (int): number of controls
-    
-    Returns:
-    none
-    
-    This function creates a new, randomly initialized model with the dimensions and number of controls given.
-    Importantly, this model will only be able to accept images of the specified width and height.
-    The depth of the model determines its complexity. With more depth, the runtime and memory usage
-    also increase dramatically. The number of controls determines what outputs the model can have. If you want it to 
-    perform a certain task that requires, for instance, controlling 4 seperate keyboard keypresses, 
-    then you would want a model with 4 controls.
-    '''
-    def create(self, w, h, d, b, num_controls, num_sensations):
+    def create(self, w, h, d, b, num_controls, num_sensations):    
+        '''
+        Create a new model with the given dimensions and number of controls.
+        
+        :Parameters: 
+        w (int): width of input images in pixels
+        h (int): height of input images in pixels
+        d (int): depth of the neural space
+        num_controls (int): number of controls
+        
+        :Returns:
+        none
+        
+        :Comments:
+        This function creates a new, randomly initialized model with the dimensions and number of controls given.
+        Importantly, this model will only be able to accept images of the specified width and height.
+        The depth of the model determines its complexity. With more depth, the runtime and memory usage
+        also increase dramatically. The number of controls determines what outputs the model can have. If you want it to 
+        perform a certain task that requires, for instance, controlling 4 seperate keyboard keypresses, 
+        then you would want a model with 4 controls.
+        '''
         self.width = w
         print('assigned width')
         self.height = h
@@ -242,23 +243,24 @@ class general_dev():
             self.controls.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
         return
     
-    '''
-    Initialize the model's personality layers.
-
-    Parameters:
-    none
-
-    Returns:
-    none
-
-    Comments: the personality layers are the only parts of the model that don't change over time. we initialize all the layers here,
-    from layer0 to emotion8 to personality8, but the personality layers we initialize to random values. These random values
-    should range from 1 to n for the positive personality layers, and 1 to 1/n for the negative personality layers. in order to 
-    achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
-    the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
-    '''
     def __new_personality(self):
-        
+            
+        '''
+        Initialize the model's personality layers.
+
+        :Parameters:
+        none
+
+        :Returns:
+        none
+
+        :Comments: 
+        the personality layers are the only parts of the model that don't change over time. we initialize all the layers here,
+        from layer0 to emotion8 to personality8, but the personality layers we initialize to random values. These random values
+        should range from 1 to n for the positive personality layers, and 1 to 1/n for the negative personality layers. in order to 
+        achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
+        the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
+        '''
         self.layer0 = torch.tensor(data=1, device=torch.device('cuda'))
         self.layer1 = torch.tensor(data=1, device=torch.device('cuda'))
         self.layer2 = torch.tensor(data=1, device=torch.device('cuda'))
@@ -417,51 +419,55 @@ class general_dev():
     def __neg_sensation(self, sense_num, amt):
         torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
         return
-    '''
-    Train the model by giving it feedback on its actions.
+    
+    def train(self, sense_num, amt, pos):    
+        '''
+        Train the model by giving it feedback on its actions.
 
-    Parameters:
-    sense_num (int): the index of the sensation neuron to train
-    amt (float): the amount to train the sensation neuron by
-    pos (bool): whether the sensation is positive or negative
+        :Parameters:
+        sense_num (int): the index of the sensation neuron to train
+        amt (float): the amount to train the sensation neuron by
+        pos (bool): whether the sensation is positive or negative
 
-    Returns:
-    none
+        :Returns:
+        none
 
-    Comments: Call this function whenever the model either does something right or makes a mistake.
-    set pos to True if the sensation is positive, and False if the sensation is negative.
-    You'll need to set conditions in your game that call this function automatically while it's playing.
-    This function is also intended to be used later on in the training process, when the model is
-    being used by a user on real world tasks and needs feedback.
-    '''
-    def train(self, sense_num, amt, pos):
+        :Comments: 
+        Call this function whenever the model either does something right or makes a mistake.
+        set pos to True if the sensation is positive, and False if the sensation is negative.
+        You'll need to set conditions in your game that call this function automatically while it's playing.
+        This function is also intended to be used later on in the training process, when the model is
+        being used by a user on real world tasks and needs feedback.
+        '''
         if (pos):
             self.__pos_sensation(sense_num, amt)
         else:
             self.__neg_sensation(sense_num, amt)
         return
-    '''
-    Permute the model's personality by a certain degree.
 
-    Parameters:
-    degree (int): positive integer which increases how much the permutation changes the model
-    fraction (int): positive integer which lessens the degree of the permutation as it receives higher values
+    def permute(self, degree, fraction):        
+        '''
+        Permute the model's personality by a certain degree.
 
-    Returns:
-    none
+        :Parameters:
+        degree (int): positive integer which increases how much the permutation changes the model
+        fraction (int): positive integer which lessens the degree of the permutation as it receives higher values
 
-    Comments: You will absolutely need to trial and error with the degree to see what works best for your use case.
-    This function will enable iterating on the personality traits of a model which has already proven useful.
-    You'll want to use this to make small, incremental improvements to a model and then test it to see whether to move 
-    forward with the changes or roll back to a previous version.
-    
-    If you want the model to change quickly, set the degree to a high number, and the fraction to 1.
-    If you want the model to change slowly (and in most cases you will want this), set the degree to 1 and
-    the fraction to higher numbers. The higher fraction goes, the slower the model will change with each iteration.
+        :Returns:
+        none
 
-    Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
-    '''
-    def permute(self, degree, fraction):
+        :Comments: 
+        You will absolutely need to trial and error with the degree to see what works best for your use case.
+        This function will enable iterating on the personality traits of a model which has already proven useful.
+        You'll want to use this to make small, incremental improvements to a model and then test it to see whether to move 
+        forward with the changes or roll back to a previous version.
+        
+        If you want the model to change quickly, set the degree to a high number, and the fraction to 1.
+        If you want the model to change slowly (and in most cases you will want this), set the degree to 1 and
+        the fraction to higher numbers. The higher fraction goes, the slower the model will change with each iteration.
+
+        Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
+        '''
         model = general_dev()
         model.copy(self)
         model.__new_thresholds()
@@ -564,31 +570,32 @@ class general_dev():
         torch.save(self, path)
         return
 
-    '''
-    Main control function for the model.
-
-    Parameters:
-    input_image (tensor): the image to input into the model
-
-    Returns:
-    take_action (list): a list of booleans representing whether the controls should be activated or not
-
-    Comments: This function is what makes the model 'act'. It takes an image as input and processes it by firing neurons.
-    Usually a single image will not be enough to cause the model to take any action - you'll need to feed it a continuous
-    stream of images that the model can react to and see its reactions change things in the image, as well. This style of 
-    model doesn't work if it can't interact with its environment, so you'll need to have the model play a predefined game
-    of your design or choosing, otherwise it won't do anything useful. 
-
-    The game which you use or create should give the model a tensor image and then call this function to get the model's
-    next action. The model will then return a list of booleans, each representing whether each control it has should be activated or not.
-    It's up to you to make those controls do something in its environment.
-
-    Provided in this library are some simple example games to get you started. You can also look at the testing scripts to see how to 
-    implement them.
-    '''
-
     # @TODO: NaNs... NaNs everywhere!
     def update(self, input_image):
+        '''
+        Main control function for the model.
+
+        :Parameters:
+        input_image (tensor): the image to input into the model
+
+        :Returns:
+        take_action (list): a list of booleans representing whether the controls should be activated or not
+
+        :Comments: 
+        This function is what makes the model 'act'. It takes an image as input and processes it by firing neurons.
+        Usually a single image will not be enough to cause the model to take any action - you'll need to feed it a continuous
+        stream of images that the model can react to and see its reactions change things in the image, as well. This style of 
+        model doesn't work if it can't interact with its environment, so you'll need to have the model play a predefined game
+        of your design or choosing, otherwise it won't do anything useful. 
+
+        The game which you use or create should give the model a tensor image and then call this function to get the model's
+        next action. The model will then return a list of booleans, each representing whether each control it has should be activated or not.
+        It's up to you to make those controls do something in its environment.
+
+        Provided in this library are some simple example games to get you started. You can also look at the testing scripts to see how to 
+        implement them.
+        '''
+
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image

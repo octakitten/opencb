@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import sys
+import os
 #from pathlib import Path
 
 #print(sys.path)
@@ -19,6 +20,7 @@ from ..routines import horse_routine
 from ..models import general
 from ..models import general_dev
 from ..utilities import find_food_03
+from ..games import forest
 
 def test001():
     model01 = d8a4gs()
@@ -181,6 +183,19 @@ def test010():
     
 
 def test011():
+    '''
+    :Parameters:
+    none
+    :Returns:
+    none
+    :Comments:
+    This function is a test for iterating on the general_dev model. This is the latest model as of 05-17-2024. The goal with iterating
+    on the model is to develop a set of parameters that work to have the model solve the game it's currently playing.
+    For this function we're making use of the game find_food_003, where the model is supposed to move a dot from a random 
+    location on the screen and get it to the top left corner of the screen. This function will run the game until it's won,
+    changing the models parameters each time it fails. The model's parameters will be saved to a file if it wins a game, otherwise
+    this function will run indefinitely.
+    '''
     model = general_dev()
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 2)
@@ -213,3 +228,53 @@ def test011():
 
 # run test for the in development general model
 # test011()
+
+def test012():
+    '''
+    Parameters:
+    none
+    Returns:
+    none
+    Comments:
+    Here we'll be testing a new game mode called forest. The game will have the model move a dot through a forest of dots until it 
+    reaches the goal somewhere in the image. It receives positive input when it gets closer and negative when it gets further. Also,
+    the model receives a powerful negative input when it gets too close to a tree. If it hits a tree, it dies.
+    We'll be using the general_dev model for this.
+    
+    '''
+    
+    try:
+        os.makedirs(sys.path[0] + '/saved_models/')
+    except:
+        pass
+    first_attempt = True
+    model = general_dev()
+    prev_model = 0
+    model.create(255, 255, 255, 1000, 4, 3)
+    iters = 0
+    while (True):
+        game = forest(model)
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute(2,1)
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model(1,2)
+                model.permute 
+            else:
+                model = prev_model
+                model.permute(2,1)
+        first_attempt = False
+        model.save(sys.path[0] + '/saved_models/in_progress.pth')
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + '/saved_models/victory.pth')
+    
