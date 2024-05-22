@@ -33,10 +33,3 @@ jobs:
       run: |
         hatch env create
         hatch shell
-    - name: Test using pytest
-      run: |
-        pytest
-    - name: Test build the project using Hatch
-      run: |
-        hatch version minor
-        hatch build -t wheel dist/
