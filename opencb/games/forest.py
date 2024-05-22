@@ -5,7 +5,8 @@ from ..models import general_dev
 
 class forest():
     # the condition the blob has to meet to win the game
-    victory_condition = 0
+    victory_condition = False
+    loss_condition = False
     # the instance of horse that'll play the game
     blob = 0
     victory_x = 0
@@ -21,7 +22,7 @@ class forest():
     # values that represent the brightness of the pixels where that object is
     tree = 0
     tile = 50
-    player = 250
+    player = 200
     flag = 255
     
     player_location_x = 0
@@ -46,18 +47,17 @@ class forest():
     def __create_victory_condition(self):
         self.__choose_victory_location()
         self.game_screen[self.victory_x,self.victory_y] = self.flag
-        self.victory_condition = self.game_screen
-        screen.save(self.victory_condition, 'victory_condition')
+        screen.save(self.game_screen, 'victory_condition')
         return
     
     def __loss_condition(self):
-        if self.game_screen[self.player_location_x, self.player_location_y] == self.tree:
+        if self.game_screen[self.player_location_x, self.player_location_y].item() == self.tree:
             return True
         else:
             return False
         
     def __win_condition(self):
-        if self.game_screen[self.player_location_x, self.player_location_y] == self.victory_condition(self.player_location_x, self.player_location_y):
+        if (self.player_location_x == self.victory_x & self.player_location_y == self.victory_y):
             return True
         else:
             return False
@@ -72,11 +72,25 @@ class forest():
         self.game_screen[self.player_location_x, self.player_location_y] = self.tile
         self.player_location_x += x
         self.player_location_y += y
-        self.game_screen[self.player_location_x, self.player_location_y] = self.player
+        if (self.player_location_x < 0):
+            self.player_location_x = 0
+        if (self.player_location_x > self.width - 1):
+            self.player_location_x = self.width - 1
+        if (self.player_location_y < 0):
+            self.player_location_y = 0
+        if (self.player_location_y > self.height - 1):
+            self.player_location_y = self.height - 1
+        
+        if (self.game_screen[self.player_location_x, self.player_location_y].item() == self.tree):
+            self.loss_condition = True
+        if (self.game_screen[self.player_location_x, self.player_location_y].item() == self.flag):
+            self.victory_condition = True
+        if (self.loss_condition == False & self.victory_condition == False):
+            self.game_screen[self.player_location_x, self.player_location_y] = self.player
         return
     
     def __create_starting_screen(self):
-        self.game_screen = torch.zeros((self.width, self.height), device=torch.device('cuda'), dtype=torch.int16)
+        self.game_screen = torch.add(torch.zeros((self.width, self.height), device=torch.device('cuda'), dtype=torch.int16), self.tile)
         self.__create_forest()
         return
     
@@ -84,49 +98,36 @@ class forest():
         batch = []
         for i in range(-2, 2):
             for j in range(-2, 2):
-                try:
-                    batch.append(self.game_screen[x + i, y + j])
-                except:
-                    #do nothing
-                    pass
-                
-        
-        for each in batch:
-            if each == self.tree:
-                return False
-            
+                if ((x + i < self.width - 1) & (y + j < self.height - 1)):
+                   if (self.game_screen[x + i, y + j].item() == self.tree):
+                       return False
         return True
     
     def __check_close_to_tree(self, x, y):
-        batch = []
         for i in range(-1, 1):
             for j in range(-1, 1):
-                try:
-                 batch.append(self.game_screen[x + i, y + j])
-                except:
-                    #do nothing
-                    pass
-                
-        for each in batch:
-            if each == self.tree:
-                return True
+               if ((x + i < self.width - 1) & (y + j < self.height - 1)):
+                   if (self.game_screen[x + i, y + j].item() == self.tree):
+                       return True
         return False
     
     def __create_forest(self):
         for i in range(0, self.width):
             for j in range(0, self.height):
                 if self.__check_valid_tree_spot(i, j):
-                    if np.random.rantint(0, 100) < 50:
+                    if np.random.randint(0, 100) < 50:
                         self.game_screen[i, j] = self.tree
+                        print('planting tree at ', i, j)
+
         return
         
     
     def __choose_starting_location(self):
         rand_x = np.random.randint(1, self.width)
         rand_y = np.random.randint(1, self.height)
-        self.game_screen[rand_x, rand_y] = 255
-        player_location_x = rand_x
-        player_location_y = rand_y
+        self.game_screen[rand_x, rand_y] = self.player
+        self.player_location_x = rand_x
+        self.player_location_y = rand_y
         return
     
     def __choose_victory_location(self):
@@ -182,6 +183,12 @@ class forest():
         screen.save(self.game_screen, 'start_screen')
         return
     
+    def restart(self):
+        self.loss_condition = False
+        self.victory_condition = False
+        self.__choose_starting_location()
+        return
+    
     # runs the game
     # if the model wins, it returns true
     # otherwise it returns false
@@ -205,7 +212,7 @@ class forest():
         min_dy = np.abs(self.victory_y - self.starting_y)
         
         # play the game until victory or until either combo gets too high or iterations finish
-        while (self.__victory() == False & self.__loss_condition() == False):
+        while ((self.victory_condition == False) & (self.loss_condition == False)):
             act = self.blob.update(self.game_screen)
             if prev == act:
                 combo += 1
@@ -243,15 +250,19 @@ class forest():
             print('iteration - ', iter)
             if iter > max_iter:
                 break
+            if (self.loss_condition == True):
+                break
+            if (self.victory_condition == True):
+                break
         
         # the blob satisfies the victory condition, which is to put the white dot at the location of the victory condition
         # then we win, and we print out the personality layers
 
         # otherwise we lose, and just do nothing with it.
-        if (self.__victory() == True):
+        if (self.victory_condition == True):
             print("victory!")
             return True
         else:
             print("defeat!")
-            screen.save(self.game_screen, 'end_screen')
+            #screen.save(self.game_screen, 'end_screen')
         return False

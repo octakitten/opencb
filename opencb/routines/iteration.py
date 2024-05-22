@@ -252,8 +252,10 @@ def test012():
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 3)
     iters = 0
+    game = forest(model)
     while (True):
-        game = forest(model)
+        if (first_attempt == False):
+            game.restart()
         if (game.play_game() == False):
             iters+=1
             print('game over! number of tries:')
@@ -272,7 +274,9 @@ def test012():
                 model = prev_model
                 model.permute(2,1)
         first_attempt = False
-        model.save(sys.path[0] + '/saved_models/in_progress.pth')
+        if (iters % 300 == 0):
+            print('saving in progress...')
+            model.save(sys.path[0] + '/saved_models/in_progress.pth')
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')
