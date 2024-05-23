@@ -274,11 +274,11 @@ def test012():
                 model = prev_model
                 model.permute(2,1)
         first_attempt = False
-        if (iters % 300 == 0):
+        if (iters % 10 == 0):
             print('saving in progress...')
-            model.save(sys.path[0] + '/saved_models/in_progress.pth')
+            model.save(sys.path[0] + '/saved_models/in_progress')
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')
-    model.save(sys.path[0] + '/saved_models/victory.pth')
+    model.save(sys.path[0] + '/saved_models/victory')
     
