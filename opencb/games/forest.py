@@ -112,12 +112,13 @@ class forest():
         return False
     
     def __create_forest(self):
+        print('creating game state...')
         for i in range(0, self.width):
             for j in range(0, self.height):
                 if self.__check_valid_tree_spot(i, j):
                     if np.random.randint(0, 100) < 50:
                         self.game_screen[i, j] = self.tree
-                        print('planting tree at ', i, j)
+                        #print('planting tree at ', i, j)
 
         return
         

@@ -176,3 +176,5 @@ _static/
 testing_modules/
 .vscode/
 saved_models/
+bend_testing/
+test_dir/

@@ -229,7 +229,7 @@ def test011():
 # run test for the in development general model
 # test011()
 
-def test012():
+def test012(dir):
     '''
     Parameters:
     none
@@ -244,7 +244,9 @@ def test012():
     '''
     
     try:
-        os.makedirs(sys.path[0] + '/saved_models/')
+        os.makedirs(sys.path[0] + dir + '/saved_models/')
+        os.makedirs(sys.path[0] + dir + '/saved_models/in_progress')
+        os.makedirs(sys.path[0] + dir + '/saved_models/victory')
     except:
         pass
     first_attempt = True
@@ -276,9 +278,71 @@ def test012():
         first_attempt = False
         if (iters % 100 == 0):
             print('saving in progress...')
-            model.save(sys.path[0] + '/saved_models/in_progress')
+            model.save(sys.path[0] + dir + '/saved_models/in_progress')
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')
-    model.save(sys.path[0] + '/saved_models/victory')
+    model.save(sys.path[0] + dir + '/saved_models/victory')
+    
+def test013(dir):
+     
+    try:
+        os.makedirs(sys.path[0] + dir + '/saved_models/')
+        os.makedirs(sys.path[0] + dir + '/saved_models/in_progress')
+        os.makedirs(sys.path[0] + dir + '/saved_models/victory')
+    except:
+        pass
+    first_attempt = True
+    model = general_dev()
+    prev_model = 0
+    if (os.path.exists(sys.path[0] + dir + '/saved_models/victory')):
+        try:
+            model.load(sys.path[0] + dir + '/saved_models/victory')
+            print('loading model from disk...')
+        except:
+            print('unable to load a winning model')
+            try:
+                model.load(sys.path[0] + dir + '/saved_models/in_progress')
+                print('loading in progress model from disk...')
+            except:
+                print('unable to load an in progress model')
+    elif (os.path.exists(sys.path[0] + dir + '/saved_models/in_progress')):
+        try:
+            model.load(sys.path[0] + dir + '/saved_models/in_progress')
+            print('loading model from disk...')
+        except:
+            print('unable to load an in progress model')
+    else:
+        model.create(255, 255, 255, 1000, 4, 3)
+        print('creatng a new model...')
+    iters = 0
+    game = forest(model)
+    while (True):
+        if (first_attempt == False):
+            game.restart()
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute(2,1)
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model
+                model.permute(1,2)
+            else:
+                model = prev_model
+                model.permute(2,1)
+        first_attempt = False
+        if (iters % 100 == 0):
+            print('saving in progress...')
+            model.save(sys.path[0] + dir + '/saved_models/in_progress')
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + dir + '/saved_models/victory')
     
