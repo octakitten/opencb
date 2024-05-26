@@ -285,13 +285,6 @@ def test012(dir):
     model.save(sys.path[0] + dir + '/saved_models/victory')
     
 def test013(dir):
-     
-    try:
-        os.makedirs(sys.path[0] + dir + '/saved_models/')
-        os.makedirs(sys.path[0] + dir + '/saved_models/in_progress')
-        os.makedirs(sys.path[0] + dir + '/saved_models/victory')
-    except:
-        pass
     first_attempt = True
     model = general_dev()
     prev_model = 0
