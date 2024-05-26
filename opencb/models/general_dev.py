@@ -221,14 +221,10 @@ class general_dev():
         self.range_low = np.load(path + '/range_low.npy')
         self.num_controls = np.load(path + '/num_controls.npy')
         self.controls = np.load(path + '/controls.npy')
-        print(self.controls)
         self.num_sensations = np.load(path + '/num_sensations.npy')
         self.sensations = np.load(path + '/sensations.npy')
-        print(self.sensations)
         self.thresholds_pos = torch.load(path + '/thresholds_pos.pth')
-        print(self.thresholds_pos)
         self.thresholds_neg = torch.load(path + '/thresholds_neg.pth')
-        print(self.thresholds_neg)
         self.layer0 = torch.load(path + '/layer0.pth')
         self.layer1 = torch.load(path + '/layer1.pth')
         self.layer2 = torch.load(path + '/layer2.pth')
@@ -728,8 +724,6 @@ class general_dev():
         #print(input_tensor)
         #print('layer0')
         #print(self.layer0)o
-        print(self.layer0.device)
-        print(input_tensor.device)
         torch.add(self.layer0[:, :, 1],  input_tensor, out=self.layer0[:, :, 1])
         #print("1")
         #print('layer0')
@@ -813,8 +807,6 @@ class general_dev():
         #print(self.layer0)
         #print('layer0')
         for i in range(0, self.num_controls):
-            print(self.controls[i])
-            print(self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item())
             if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
                 take_action.append(True)
                 self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
