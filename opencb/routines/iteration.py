@@ -299,12 +299,16 @@ def test013(dir):
                 print('loading in progress model from disk...')
             except:
                 print('unable to load an in progress model')
+                model.create(255, 255, 255, 1000, 4, 3)
+                print('creatng a new model...')
     elif (os.path.exists(sys.path[0] + dir + '/saved_models/in_progress')):
         try:
             model.load(sys.path[0] + dir + '/saved_models/in_progress')
             print('loading model from disk...')
         except:
             print('unable to load an in progress model')
+            model.create(255, 255, 255, 1000, 4, 3)
+            print('creating a new model...')
     else:
         model.create(255, 255, 255, 1000, 4, 3)
         print('creatng a new model...')
