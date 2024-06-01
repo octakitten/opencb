@@ -5,17 +5,9 @@ build-backend = "hatchling.build"
 [project]
 name = "opencb"
 dynamic = ["version"]
-versions = [
-  "python=3.7",
-  "python=3.8",
-  "python=3.9",
-  "python=3.10",
-  "python=3.11",
-  "python=3.12",
-]
 description = "Open-Source Computer Behavior"
 authors = [
-  { author = "octakitten", email = "raspberry2425@gmail.com"},
+  { name = "octakitten", email = "raspberry2425@gmail.com"},
   ]
 license = "MIT"
 readme = "README.md"

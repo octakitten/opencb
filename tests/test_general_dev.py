@@ -1,4 +1,4 @@
-from opencb.models.general_dev import general_dev
+from opencb.models.general import general_dev
 import torch
 import numpy as np
 

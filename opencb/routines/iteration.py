@@ -196,7 +196,7 @@ def test011():
     changing the models parameters each time it fails. The model's parameters will be saved to a file if it wins a game, otherwise
     this function will run indefinitely.
     '''
-    model = general_dev()
+    model = general()
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 2)
     iters = 0
@@ -250,7 +250,7 @@ def test012(dir):
     except:
         pass
     first_attempt = True
-    model = general_dev()
+    model = general()
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 3)
     iters = 0
@@ -286,7 +286,7 @@ def test012(dir):
     
 def test013(dir):
     first_attempt = True
-    model = general_dev()
+    model = general()
     prev_model = 0
     if (os.path.exists(sys.path[0] + dir + '/saved_models/victory')):
         try:
