@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 import os
-import sys
 
 class general():
         
@@ -543,9 +542,8 @@ class general():
         self.neg_propensity = torch.tensor(data=1, device=self.device)
         self.pos_propensity = torch.rand(size=(2,2), generator=random_gen, device=self.device)
         self.pos_propensity = torch.add(torch.mul(self.pos_propensity, self.bounds, out=self.pos_propensity), 1).to(dtype=torch.int16)
-        random_gen.seed()
-        self.neg_propensity = torch.rand(size=(2, 2), generator=random_gen, device=self.device)
-        self.neg_propensity = torch.subtract(-1, torch.mul(self.neg_propensity, self.bounds, out=self.neg_propensity)).to(dtype=torch.int16)
+        self.pos_propensity = torch.subtract(self.pos_propensity, torch.divide(self.pos_propensity, 2).to(dtype=torch.int16), out=self.pos_propensity)
+        self.neg_propensity = torch.clone(self.pos_propensity)
         #nep = torch.rand(size=(2,2), generator=random_gen, dtype=torch.int16, device=self.device)
         #pep = torch.ones(size=(2,2), device=self.device)
         #self.pos_propensity = torch.divide(nep[1,:], pep[1,:])
@@ -620,7 +618,7 @@ class general():
 
         Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
         '''
-        model = general_dev()
+        model = general()
         model.copy(self)
         model.__new_thresholds()
         model.__new_propensity()
