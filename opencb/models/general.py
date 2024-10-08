@@ -71,7 +71,7 @@ class general():
     personality8 = 0
     
     # multiplier personality layers
-    '''personality9 = 0
+    personality9 = 0
     personality10 = 0
     personality11 = 0
     personality12 = 0
@@ -79,7 +79,7 @@ class general():
     personality14 = 0
     personality15 = 0
     personality16 = 0
-    '''
+    
     
     # range of propensity to fire for personality layers
     pos_propensity = 0
