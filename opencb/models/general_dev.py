@@ -401,7 +401,6 @@ class general02():
         model.__new_thresholds()
         model.__new_propensity()
         model.__new_personality()
-        degree = int(1 / fraction)
         tp.div_scalar(model.thresholds_pos, fraction, model.thresholds_pos)
         tp.div_scalar(model.thresholds_neg, fraction, model.thresholds_neg)
         tp.div_scalar(model.signals_pos, fraction, model.signals_pos)
@@ -422,27 +421,27 @@ class general02():
         tp.div_scalar(model.personality1, fraction, model.personality14)
         tp.div_scalar(model.personality1, fraction, model.personality15)
         tp.div_scalar(model.personality1, fraction, model.personality16)
-        for i in range(0, degree):
-            tp.add(self.thresholds_pos, model.thresholds_pos, self.thresholds_pos)
-            tp.add(self.thresholds_neg, model.thresholds_neg, self.thresholds_neg)
-            tp.add(self.signals_pos, model.signals_pos, self.signals_pos)
-            tp.add(self.signals_neg, model.signals_neg, self.signals_neg)
-            tp.add(self.personality1, model.personality1, self.personality1)
-            tp.add(self.personality2, model.personality2, self.personality2)
-            tp.add(self.personality3, model.personality3, self.personality3)
-            tp.add(self.personality4, model.personality4, self.personality4)
-            tp.add(self.personality5, model.personality5, self.personality5)
-            tp.add(self.personality6, model.personality6, self.personality6)
-            tp.add(self.personality7, model.personality7, self.personality7)
-            tp.add(self.personality8, model.personality8, self.personality8)
-            tp.add(self.personality9, model.personality9, self.personality9)
-            tp.add(self.personality10, model.personality10, self.personality10)
-            tp.add(self.personality11, model.personality11, self.personality11)
-            tp.add(self.personality12, model.personality12, self.personality12)
-            tp.add(self.personality13, model.personality13, self.personality13)
-            tp.add(self.personality14, model.personality14, self.personality14)
-            tp.add(self.personality15, model.personality15, self.personality15)
-            tp.add(self.personality16, model.personality16, self.personality16)
+        tp.add(self.thresholds_pos, model.thresholds_pos, self.thresholds_pos)
+        tp.add(self.thresholds_neg, model.thresholds_neg, self.thresholds_neg)
+        tp.add(self.signals_pos, model.signals_pos, self.signals_pos)
+        tp.add(self.signals_neg, model.signals_neg, self.signals_neg)
+        tp.add(self.personality1, model.personality1, self.personality1)
+        tp.add(self.personality2, model.personality2, self.personality2)
+        tp.add(self.personality3, model.personality3, self.personality3)
+        tp.add(self.personality4, model.personality4, self.personality4)
+        tp.add(self.personality5, model.personality5, self.personality5)
+        tp.add(self.personality6, model.personality6, self.personality6)
+        tp.add(self.personality7, model.personality7, self.personality7)
+        tp.add(self.personality8, model.personality8, self.personality8)
+        tp.add(self.personality9, model.personality9, self.personality9)
+        tp.add(self.personality10, model.personality10, self.personality10)
+        tp.add(self.personality11, model.personality11, self.personality11)
+        tp.add(self.personality12, model.personality12, self.personality12)
+        tp.add(self.personality13, model.personality13, self.personality13)
+        tp.add(self.personality14, model.personality14, self.personality14)
+        tp.add(self.personality15, model.personality15, self.personality15)
+        tp.add(self.personality16, model.personality16, self.personality16)
+        '''
         degree+=1
         tp.div_scalar(self.thresholds_pos, degree, self.thresholds_pos)
         tp.div_scalar(self.thresholds_neg, degree, self.thresholds_neg)
@@ -464,6 +463,7 @@ class general02():
         tp.div_scalar(self.personality1, degree, self.personality14)
         tp.div_scalar(self.personality1, degree, self.personality15)
         tp.div_scalar(self.personality1, degree, self.personality16)
+        '''
         return
     
     def __convert_nparray(self, nparray):
@@ -557,7 +557,7 @@ class general02():
         # now we repeat that process for the negative neurons
         tp.lesser(self.neurons, self.thresholds_neg, self.__helper1)
         
-        # update the positive thresholds, signals, and emotions based on which neurons fired
+        # now update the negative thresholds, signals, and emotions based on which neurons fired
         # here helper2 and helper3 just carry values between function calls
         # emotion 3
         tp.mul(self.emotion3, self.__helper1, self.__helper2)
