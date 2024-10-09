@@ -178,3 +178,5 @@ testing_modules/
 saved_models/
 bend_testing/
 test_dir/
+tests/testing_stuff.py
+test/testingstuff2.py
