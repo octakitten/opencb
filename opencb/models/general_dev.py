@@ -93,7 +93,7 @@ class general_dev():
         return
     
          
-    def copy(self, model: ocb.general_dev):
+    def copy(self, model):
         '''
         Copy a model's data to a new model.
         
@@ -186,24 +186,35 @@ class general_dev():
         self.bounds = bounds
         self.num_controls = num_controls
         self.num_sensations = num_sensations
+
+        print("New helpers")
         self.__new_helpers()
+        print("New propensity")
         self.__new_propensity()
+        print("New image map")
         self.__new_image_map()
+        print("New controls")
         self.__new_controls()
+        print("New thresholds")
         self.__new_thresholds()
+        print("New personality")
         self.__new_personality()
+        print("New sensations")
         self.__new_sensations()
+        print("New connections")
         self.__new_connections()
         return
 
-    def __convert_tensor_to_nparray(tensor: tp.tensor) -> np.ndarray:
-        arr = np.zeros(tensor.size)
-        for i in range(0, tensor.size):
+    def __convert_tensor_to_nparray(self, tensor) -> np.ndarray:
+        size = 0 
+        tp.size(tensor, size)
+        arr = np.zeros(size)
+        for i in range(0, size - 1):
             arr[i] = tensor.get(i)
         tp.destroy(tensor)
         return arr
 
-    def save(self, path: string):
+    def save(self, path):
         '''
         Save the model's data to disk.
 
@@ -218,64 +229,118 @@ class general_dev():
         is the directory that this function will use to look for its path. There isn't any real searching involved here,
         so make sure the path you're looking for exists in that directory before you try to use this.
         '''
-        if (not os.path.exists(path)):
-            try:
-                os.path.create(path)
-            except:
-                FileError("Error creating directory: unable to create directory.")
-        np.save(path + 'size', self.size)
-        np.save(path + 'image_size', self.image_size)
-        np.save(path + 'bounds', self.bounds)
-        np.save(path + 'neurons', __convert_tensor_to_nparray(self.neurons))
-        np.save(path + 'thresholds_pos', __convert_tensor_to_nparray(self.thresholds_pos))
-        np.save(path + 'thresholds_neg', __convert_tensor_to_nparray(self.thresholds_neg))
-        np.save(path + 'signals_pos', __convert_tensor_to_nparray(self.signals_pos))
-        np.save(path + 'signals_neg', __convert_tensor_to_nparray(self.signals_neg))
-        np.save(path + 'emotions1', __convert_tensor_to_nparray(self.emotions1))
-        np.save(path + 'emotions2', __convert_tensor_to_nparray(self.emotions2))
-        np.save(path + 'emotions3', __convert_tensor_to_nparray(self.emotions3))
-        np.save(path + 'emotions4', __convert_tensor_to_nparray(self.emotions4))
-        np.save(path + 'emotions5', __convert_tensor_to_nparray(self.emotions5))
-        np.save(path + 'emotions6', __convert_tensor_to_nparray(self.emotions6))
-        np.save(path + 'emotions7', __convert_tensor_to_nparray(self.emotions7))
-        np.save(path + 'emotions8', __convert_tensor_to_nparray(self.emotions8))
-        np.save(path + 'personality1', __convert_tensor_to_nparray(self.personality1))
-        np.save(path + 'personality2', __convert_tensor_to_nparray(self.personality2))
-        np.save(path + 'personality3', __convert_tensor_to_nparray(self.personality3))
-        np.save(path + 'personality4', __convert_tensor_to_nparray(self.personality4))
-        np.save(path + 'personality5', __convert_tensor_to_nparray(self.personality5))
-        np.save(path + 'personality6', __convert_tensor_to_nparray(self.personality6))
-        np.save(path + 'personality7', __convert_tensor_to_nparray(self.personality7))
-        np.save(path + 'personality8', __convert_tensor_to_nparray(self.personality8))
-        np.save(path + 'personality8', __convert_tensor_to_nparray(self.personality9))
-        np.save(path + 'personality10', __convert_tensor_to_nparray(self.personality10))
-        np.save(path + 'personality11', __convert_tensor_to_nparray(self.personality11))
-        np.save(path + 'personality12', __convert_tensor_to_nparray(self.personality12))
-        np.save(path + 'personality13', __convert_tensor_to_nparray(self.personality13))
-        np.save(path + 'personality14', __convert_tensor_to_nparray(self.personality14))
-        np.save(path + 'personality15', __convert_tensor_to_nparray(self.personality15))
-        np.save(path + 'personality16', __convert_tensor_to_nparray(self.personality16)) 
-        np.save(path + 'connections1', __convert_tensor_to_nparray(self.connections1))
-        np.save(path + 'connections2', __convert_tensor_to_nparray(self.connections2))
-        np.save(path + 'connections3', __convert_tensor_to_nparray(self.connections3))
-        np.save(path + 'connections4', __convert_tensor_to_nparray(self.connections4))
-        np.save(path + 'connections5', __convert_tensor_to_nparray(self.connections5))
-        np.save(path + 'connections6', __convert_tensor_to_nparray(self.connections6))
-        np.save(path + 'connections7', __convert_tensor_to_nparray(self.connections7))
-        np.save(path + 'connections8', __convert_tensor_to_nparray(self.connections8))
-        np.save(path + 'num_controls', self.num_controls)
-        np.save(path + 'controls', self.controls)
-        np.save(path + 'control_thresholds_pos', self.control_thresholds_pos)
-        np.save(path + 'control_thresholds_neg', self.control_thresholds_neg)
-        np.save(path + 'num_sensations', self.num_sensations)
-        np.save(path + 'sensations', self.sensations)
-        np.save(path + 'propensity', self.propensity)
-        np.save(path + 'propensity_pos', self.propensity_pos)
-        np.save(path + 'propensity_neg', self.propensity_neg)
+        try:
+            os.path.create(path)
+        except:
+            print("Error creating directory: unable to create directory.")
+
+        try:
+            print('size...')
+            os.makefile(path + '/size.npy')
+            os.makefile(path + '/image_size.npy')
+            os.makefile(path + '/bounds.npy')
+            print('neurons...')
+            os.makefile(path + '/neurons.npy')
+            os.makefile(path + '/thresholds_pos.npy')
+            os.makefile(path + '/thresholds_neg.npy')
+            os.makefile(path + '/signals_pos.npy')
+            os.makefile(path + '/signals_neg.npy')
+            os.makefile(path + '/emotion1.npy')
+            os.makefile(path + '/emotion2.npy')
+            os.makefile(path + '/emotion3.npy')
+            os.makefile(path + '/emotion4.npy')
+            os.makefile(path + '/emotion5.npy')
+            os.makefile(path + '/emotion6.npy')
+            os.makefile(path + '/emotion7.npy')
+            os.makefile(path + '/emotion8.npy')
+            os.makefile(path + '/personality1.npy')
+            os.makefile(path + '/personality2.npy')
+            os.makefile(path + '/personality3.npy')
+            os.makefile(path + '/personality4.npy')
+            os.makefile(path + '/personality5.npy')
+            os.makefile(path + '/personality6.npy')
+            os.makefile(path + '/personality7.npy')
+            os.makefile(path + '/personality8.npy')
+            os.makefile(path + '/personality9.npy')
+            os.makefile(path + '/personality10.npy')
+            os.makefile(path + '/personality11.npy')
+            os.makefile(path + '/personality12.npy')
+            os.makefile(path + '/personality13.npy')
+            os.makefile(path + '/personality14.npy')
+            os.makefile(path + '/personality15.npy')
+            os.makefile(path + '/personality16.npy')
+            os.makefile(path + '/connections1.npy')
+            os.makefile(path + '/connections2.npy')
+            os.makefile(path + '/connections3.npy')
+            os.makefile(path + '/connections4.npy')
+            os.makefile(path + '/connections5.npy')
+            os.makefile(path + '/connections6.npy')
+            os.makefile(path + '/connections7.npy')
+            os.makefile(path + '/connections8.npy')
+            os.makefile(path + '/num_controls.npy')
+            os.makefile(path + '/controls.npy')
+            os.makefile(path + '/control_thresholds_pos.npy')
+            os.makefile(path + '/control_thresholds_neg.npy')
+            os.makefile(path + '/num_sensations.npy')
+            os.makefile(path + '/sensations.npy')
+            os.makefile(path + '/propensity.npy')
+            os.makefile(path + '/propensity_pos.npy')
+            os.makefile(path + '/propensity_neg.npy')
+        except:
+            print("Unable to make new files. Do they already exist?")
+        np.save(path + '/size', self.size)
+        np.save(path + '/image_size', self.image_size)
+        np.save(path + '/bounds', self.bounds)
+        np.save(path + '/neurons', self.__convert_tensor_to_nparray(self.neurons))
+        np.save(path + '/thresholds_pos', self.__convert_tensor_to_nparray(self.thresholds_pos))
+        np.save(path + '/thresholds_neg', self.__convert_tensor_to_nparray(self.thresholds_neg))
+        np.save(path + '/signals_pos', self.__convert_tensor_to_nparray(self.signals_pos))
+        np.save(path + '/signals_neg', self.__convert_tensor_to_nparray(self.signals_neg))
+        np.save(path + '/emotion1', self.__convert_tensor_to_nparray(self.emotion1))
+        np.save(path + '/emotion2', self.__convert_tensor_to_nparray(self.emotion2))
+        np.save(path + '/emotion3', self.__convert_tensor_to_nparray(self.emotion3))
+        np.save(path + '/emotion4', self.__convert_tensor_to_nparray(self.emotion4))
+        np.save(path + '/emotion5', self.__convert_tensor_to_nparray(self.emotion5))
+        np.save(path + '/emotion6', self.__convert_tensor_to_nparray(self.emotion6))
+        np.save(path + '/emotion7', self.__convert_tensor_to_nparray(self.emotion7))
+        np.save(path + '/emotion8', self.__convert_tensor_to_nparray(self.emotion8))
+        np.save(path + '/personality1', self.__convert_tensor_to_nparray(self.personality1))
+        np.save(path + '/personality2', self.__convert_tensor_to_nparray(self.personality2))
+        np.save(path + '/personality3', self.__convert_tensor_to_nparray(self.personality3))
+        np.save(path + '/personality4', self.__convert_tensor_to_nparray(self.personality4))
+        np.save(path + '/personality5', self.__convert_tensor_to_nparray(self.personality5))
+        np.save(path + '/personality6', self.__convert_tensor_to_nparray(self.personality6))
+        np.save(path + '/personality7', self.__convert_tensor_to_nparray(self.personality7))
+        np.save(path + '/personality8', self.__convert_tensor_to_nparray(self.personality8))
+        np.save(path + '/personality9', self.__convert_tensor_to_nparray(self.personality9))
+        np.save(path + '/personality10', self.__convert_tensor_to_nparray(self.personality10))
+        np.save(path + '/personality11', self.__convert_tensor_to_nparray(self.personality11))
+        np.save(path + '/personality12', self.__convert_tensor_to_nparray(self.personality12))
+        np.save(path + '/personality13', self.__convert_tensor_to_nparray(self.personality13))
+        np.save(path + '/personality14', self.__convert_tensor_to_nparray(self.personality14))
+        np.save(path + '/personality15', self.__convert_tensor_to_nparray(self.personality15))
+        np.save(path + '/personality16', self.__convert_tensor_to_nparray(self.personality16)) 
+        np.save(path + '/connections1', self.__convert_tensor_to_nparray(self.connections1))
+        np.save(path + '/connections2', self.__convert_tensor_to_nparray(self.connections2))
+        np.save(path + '/connections3', self.__convert_tensor_to_nparray(self.connections3))
+        np.save(path + '/connections4', self.__convert_tensor_to_nparray(self.connections4))
+        np.save(path + '/connections5', self.__convert_tensor_to_nparray(self.connections5))
+        np.save(path + '/connections6', self.__convert_tensor_to_nparray(self.connections6))
+        np.save(path + '/connections7', self.__convert_tensor_to_nparray(self.connections7))
+        np.save(path + '/connections8', self.__convert_tensor_to_nparray(self.connections8))
+        np.save(path + '/num_controls', self.num_controls)
+        np.save(path + '/controls', self.controls)
+        np.save(path + '/control_thresholds_pos', self.control_thresholds_pos)
+        np.save(path + '/control_thresholds_neg', self.control_thresholds_neg)
+        np.save(path + '/num_sensations', self.num_sensations)
+        np.save(path + '/sensations', self.sensations)
+        np.save(path + '/propensity', self.propensity)
+        np.save(path + '/propensity_pos', self.propensity_pos)
+        np.save(path + '/propensity_neg', self.propensity_neg)
         self.__new_helpers()
         return
     
-    def load(self, path: string):
+    def load(self, path):
         '''
         Load a model from storage.
 
@@ -292,51 +357,51 @@ class general_dev():
         from the right directory in the first place.
         '''
 
-        self.size = np.load(path + 'size')
-        self.image_size = np.load(path + 'image_size')
-        self.neurons = self.__convert_nparray(np.load(path + 'neurons'))                            
-        self.thresholds_pos = self.__convert_nparray(np.load(path + 'thresholds_pos'))
-        self.thresholds_neg = self.__convert_nparray(np.load(path + 'thresholds_neg'))
-        self.signals_pos = self.__convert_nparray(np.load(path + 'signals_pos'))
-        self.signals_neg = self.__convert_nparray(np.load(path + 'signals_neg'))
-        self.emotions1 = self.__convert_nparray(np.load(path + 'emotions1'))
-        self.emotions2 = self.__convert_nparray(np.load(path + 'emotions2'))
-        self.emotions3 = self.__convert_nparray(np.load(path + 'emotions3'))
-        self.emotions4 = self.__convert_nparray(np.load(path + 'emotions4'))
-        self.emotions5 = self.__convert_nparray(np.load(path + 'emotions5'))
-        self.emotions6 = self.__convert_nparray(np.load(path + 'emotions6'))
-        self.emotions7 = self.__convert_nparray(np.load(path + 'emotions7'))
-        self.emotions8 = self.__convert_nparray(np.load(path + 'emotions8'))
-        self.personality1 = self.__convert_nparray(np.load(path + 'personality1'))
-        self.personality2 = self.__convert_nparray(np.load(path + 'personality2'))
-        self.personality3 = self.__convert_nparray(np.load(path + 'personality3'))
-        self.personality4 = self.__convert_nparray(np.load(path + 'personality4'))
-        self.personality5 = self.__convert_nparray(np.load(path + 'personality5'))
-        self.personality6 = self.__convert_nparray(np.load(path + 'personality6'))
-        self.personality7 = self.__convert_nparray(np.load(path + 'personality7'))
-        self.personality8 = self.__convert_nparray(np.load(path + 'personality8'))
-        self.personality9 = self.__convert_nparray(np.load(path + 'personality9'))
-        self.personality10 = self.__convert_nparray(np.load(path + 'personality10'))
-        self.personality11 = self.__convert_nparray(np.load(path + 'personality11'))
-        self.personality12 = self.__convert_nparray(np.load(path + 'personality12'))
-        self.personality13 = self.__convert_nparray(np.load(path + 'personality13'))
-        self.personality14 = self.__convert_nparray(np.load(path + 'personality14'))
-        self.personality15 = self.__convert_nparray(np.load(path + 'personality15'))
-        self.personality16 = self.__convert_nparray(np.load(path + 'personality16'))
-        self.connections1 = self.__convert_nparray(np.load(path + 'connections1'))
-        self.connections2 = self.__convert_nparray(np.load(path + 'connections2'))
-        self.connections3 = self.__convert_nparray(np.load(path + 'connections3'))
-        self.connections4 = self.__convert_nparray(np.load(path + 'connections4'))
-        self.connections5 = self.__convert_nparray(np.load(path + 'connections5'))
-        self.connections6 = self.__convert_nparray(np.load(path + 'connections6'))
-        self.connections7 = self.__convert_nparray(np.load(path + 'connections7'))
-        self.connections8 = self.__convert_nparray(np.load(path + 'connections8'))
-        self.num_controls = np.load(path + 'num_controls')
-        self.controls = np.load(path + 'controls')
-        self.control_thresholds_pos = np.load(path + 'control_thresholds_pos')
-        self.control_thresholds_neg = np.load(path + 'control_thresholds_neg')
-        self.num_sensations = np.load(path + 'num_sensations')
-        self.sensations = np.load(path + 'num_sensations')
+        self.size = np.load(path + '/size.npy')
+        self.image_size = np.load(path + '/image_size.npy')
+        self.neurons = self.__convert_nparray(np.load(path + '/neurons.npy'))                            
+        self.thresholds_pos = self.__convert_nparray(np.load(path + '/thresholds_pos.npy'))
+        self.thresholds_neg = self.__convert_nparray(np.load(path + '/thresholds_neg.npy'))
+        self.signals_pos = self.__convert_nparray(np.load(path + '/signals_pos.npy'))
+        self.signals_neg = self.__convert_nparray(np.load(path + '/signals_neg.npy'))
+        self.emotion1 = self.__convert_nparray(np.load(path + '/emotion1.npy'))
+        self.emotion2 = self.__convert_nparray(np.load(path + '/emotion2.npy'))
+        self.emotion3 = self.__convert_nparray(np.load(path + '/emotion3.npy'))
+        self.emotion4 = self.__convert_nparray(np.load(path + '/emotion4.npy'))
+        self.emotion5 = self.__convert_nparray(np.load(path + '/emotion5.npy'))
+        self.emotion6 = self.__convert_nparray(np.load(path + '/emotion6.npy'))
+        self.emotion7 = self.__convert_nparray(np.load(path + '/emotion7.npy'))
+        self.emotion8 = self.__convert_nparray(np.load(path + '/emotion8.npy'))
+        self.personality1 = self.__convert_nparray(np.load(path + '/personality1.npy'))
+        self.personality2 = self.__convert_nparray(np.load(path + '/personality2.npy'))
+        self.personality3 = self.__convert_nparray(np.load(path + '/personality3.npy'))
+        self.personality4 = self.__convert_nparray(np.load(path + '/personality4.npy'))
+        self.personality5 = self.__convert_nparray(np.load(path + '/personality5.npy'))
+        self.personality6 = self.__convert_nparray(np.load(path + '/personality6.npy'))
+        self.personality7 = self.__convert_nparray(np.load(path + '/personality7.npy'))
+        self.personality8 = self.__convert_nparray(np.load(path + '/personality8.npy'))
+        self.personality9 = self.__convert_nparray(np.load(path + '/personality9.npy'))
+        self.personality10 = self.__convert_nparray(np.load(path + '/personality10.npy'))
+        self.personality11 = self.__convert_nparray(np.load(path + '/personality11.npy'))
+        self.personality12 = self.__convert_nparray(np.load(path + '/personality12.npy'))
+        self.personality13 = self.__convert_nparray(np.load(path + '/personality13.npy'))
+        self.personality14 = self.__convert_nparray(np.load(path + '/personality14.npy'))
+        self.personality15 = self.__convert_nparray(np.load(path + '/personality15.npy'))
+        self.personality16 = self.__convert_nparray(np.load(path + '/personality16.npy'))
+        self.connections1 = self.__convert_nparray(np.load(path + '/connections1.npy'))
+        self.connections2 = self.__convert_nparray(np.load(path + '/connections2.npy'))
+        self.connections3 = self.__convert_nparray(np.load(path + '/connections3.npy'))
+        self.connections4 = self.__convert_nparray(np.load(path + '/connections4.npy'))
+        self.connections5 = self.__convert_nparray(np.load(path + '/connections5.npy'))
+        self.connections6 = self.__convert_nparray(np.load(path + '/connections6.npy'))
+        self.connections7 = self.__convert_nparray(np.load(path + '/connections7.npy'))
+        self.connections8 = self.__convert_nparray(np.load(path + '/connections8.npy'))
+        self.num_controls = np.load(path + '/num_controls.npy')
+        self.controls = np.load(path + '/controls.npy')
+        self.control_thresholds_pos = np.load(path + '/control_thresholds_pos.npy')
+        self.control_thresholds_neg = np.load(path + '/control_thresholds_neg.npy')
+        self.num_sensations = np.load(path + '/num_sensations.npy')
+        self.sensations = np.load(path + '/num_sensations.npy')
 
         return
 
@@ -374,10 +439,8 @@ class general_dev():
         The propensity is used to determine the potential sizes of the personality values. It's basically
         an upper and lower limit on how large values in the model will get.
         '''   
-        random_gen = np.random.default_rng(seed=None)
-        random_gen.seed()
-        self.propensity_pos = random_gen.integers(low=1, high=self.bounds, size=1)
-        self.propensity_neg = random_gen.integers(low=-self.bounds, high=-1, size=1)
+        self.propensity_pos = np.random.randint(low=1, high=self.bounds)
+        self.propensity_neg = np.random.randint(low=-self.bounds, high=-1)
         return
 
     def __new_image_map(self):
@@ -396,10 +459,15 @@ class general_dev():
         where n is the size of the image to be mapped. Those numbers will go in the first n indexes of the image map, the rest of the values will between
         simply 0. We later use this as a set of vectors for the image to the neurons, with the 0 values discarded.
         '''
+        print("Create the tensor")
         self.image_map = tp.create(self.size)
+        print("Set to zeros")
         tp.zeros(self.image_map)
+        print("For loop to set values")
         for i in range(0, self.image_size):
-            tp.set(self.image_map, i, i)
+            print("Loop number: " + str(i))
+            j = i
+            tp.set(self.image_map, i, j)
     
     def __new_thresholds(self):
         '''
@@ -417,14 +485,13 @@ class general_dev():
         the neuron will fire and send its signal to each of its connected neurons (in the update() function).
         Here we initialize these threshold values to random values using a random generator from NumPy.
         '''
-        random_gen = np.random.default_rng()
         self.thresholds_pos = tp.create(self.size)
         self.thresholds_neg = tp.create(self.size)
         tp.zeros(self.thresholds_pos)
         tp.zeros(self.thresholds_neg)
         for i in range(0, self.size):
-            tp.set(self.thresholds_pos, i, random_gen.integers(low=self.range_low, high=self.range_high,size=1))
-            tp.set(self.thresholds_neg, i, random_gen.integers(low=self.range_low, high=self.range_high,size=1))
+            tp.set(self.thresholds_pos, i, np.random.randint(low=self.range_low, high=self.range_high))
+            tp.set(self.thresholds_neg, i, np.random.randint(low=self.range_low, high=self.range_high))
         return
     
     def __new_controls(self):
@@ -462,16 +529,33 @@ class general_dev():
         each other neuron that it's connected to. Note that connections are one-way and not necessarily reversible - indeed, most of the time 
         neurons won't be reciprocally connected unless it happens at random.
         '''
-        random_gen = np.random.default_rng()
-        for i in range(0, self.size):
-            tp.set(self.connections1, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections2, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections3, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections4, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections5, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections6, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections7, i, random_gen.integers(low=0, high=self.size, size=1))
-            tp.set(self.connections8, i, random_gen.integers(low=0, high=self.size, size=1))
+        self.connections1 = tp.create(self.size)
+        self.connections2 = tp.create(self.size)
+        self.connections3 = tp.create(self.size)
+        self.connections4 = tp.create(self.size)
+        self.connections5 = tp.create(self.size)
+        self.connections6 = tp.create(self.size)
+        self.connections7 = tp.create(self.size)
+        self.connections8 = tp.create(self.size)
+
+        tp.zeros(self.connections1)
+        tp.zeros(self.connections2)
+        tp.zeros(self.connections3)
+        tp.zeros(self.connections4)
+        tp.zeros(self.connections5)
+        tp.zeros(self.connections6)
+        tp.zeros(self.connections7)
+        tp.zeros(self.connections8)
+
+        for i in range(0, self.size - 1):
+            tp.set(self.connections1, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections2, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections3, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections4, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections5, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections6, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections7, i, np.random.randint(low=0, high=self.size - 1))
+            tp.set(self.connections8, i, np.random.randint(low=0, high=self.size - 1))
         return
     
     def __new_personality(self):
@@ -636,25 +720,23 @@ class general_dev():
         tp.zeros(self.fire_amt_neg)
         tp.zeros(self.fire_amt_mult_pos)
         tp.zeros(self.fire_amt_mult_neg)
-        
-        random_gen = np.random.default_rng()
         for i in range(0, self.size):
-            tp.set(self.personality1, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality2, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality3, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality4, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality5, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality6, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality7, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality8, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality9, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality10, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality11, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality12, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality13, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality14, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
-            tp.set(self.personality15, i, random_gen.integers(low=0, high=self.propensity_pos, size=1))
-            tp.set(self.personality16, i, random_gen.integers(low=0, high=self.propensity_neg, size=1))
+            tp.set(self.personality1, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality2, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality3, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality4, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality5, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality6, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality7, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality8, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality9, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality10, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality11, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality12, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality13, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality14, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality15, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
+            tp.set(self.personality16, i, np.random.randint(low=self.propensity_neg, high=self.propensity_pos))
         return
     
     def __new_sensations(self):
@@ -829,7 +911,7 @@ class general_dev():
         '''
         return
     
-    def __convert_nparray(self, nparray: np.ndarray) -> tp.tensor:
+    def __convert_nparray(self, nparray: np.ndarray):
         '''
         Converts a NumPy array to a TensorPlus tensor.
 
@@ -845,7 +927,9 @@ class general_dev():
         we're using NumPy for with TensorPlus functions, but we're not there yet.
         '''
         dims = nparray.shape
-        size = dims[0] * dims[1]
+        size = 1
+        for dim in dims:
+            size = size * dim
         tensor = tp.create(size)
         for i in range(0, dims[0]):
             for j in range(0, dims[1]):
@@ -898,7 +982,7 @@ class general_dev():
         # helper1 now represents which neurons fired positively
         tp.greater(self.neurons, self.thresholds_pos, self.__helper1)
         
-        # update the positive thresholds, signals, and emotions based on which neurons fired
+        # update the positive thresholds, signals, and emotion based on which neurons fired
         # here helper2 and helper3 just carry values between function calls
         # emotion 1 
         tp.mul(self.emotion1, self.__helper1, self.__helper2)
@@ -960,7 +1044,7 @@ class general_dev():
         # now we repeat that process for the negative neurons
         tp.lesser(self.neurons, self.thresholds_neg, self.__helper1)
         
-        # now update the negative thresholds, signals, and emotions based on which neurons fired
+        # now update the negative thresholds, signals, and emotion based on which neurons fired
         # here helper2 and helper3 just carry values between function calls
         # emotion 3
         tp.mul(self.emotion3, self.__helper1, self.__helper2)
