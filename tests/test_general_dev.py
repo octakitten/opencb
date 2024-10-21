@@ -1,34 +1,50 @@
-from opencb.models.general import general_dev
+from opencb.models.general_dev import general_dev
 import torch
 import numpy as np
+import tensorplus as tp
 
 def test_general_dev_initialization():
+    print("Init model")
     model = general_dev()
-    model.create(5, 6, 7, 8, 9, 10)
+    print("Create model")
+    model.create(5, 6, 7, 8, 9)
+    print("Save model")
     model.save(path='tests/saved_models/test')
+    print("Create model2")
     model2 = general_dev()
+    print("Load model 1 to model 2")
     model2.load(path='tests/saved_models/test')
-    assert model.width == model2.width
-    assert model.height == model2.height
-    assert model.depth == model2.depth
+    print("Assertions...")
+    assert model.size == model2.size
     assert model.num_controls == model2.num_controls
     assert model.num_sensations == model2.num_sensations
-    assert model.num_personality_layers == model2.num_personality_layers
-    assert model.layer0.shape == model2.layer0.shape
-    assert model.layer1.shape == model2.layer1.shape
-    assert model.layer2.shape == model2.layer2.shape
-    assert model.layer3.shape == model2.layer3.shape
-    assert model.layer4.shape == model2.layer4.shape
-    assert model.emotion1.shape == model2.emotion1.shape
-    assert model.emotion8.shape == model2.emotion8.shape
-    assert model.personalty5.shape == model2.personalty5.shape
-    assert model.personality17.shape == model2.personality17.shape
-    model.create(11, 12, 13, 14, 15, 16)
+    size1 = 0
+    size2 = 0
+    tp.size(model.neurons, size1)
+    tp.size(model2.neurons, size2)
+    assert size1 == size2
+    tp.size(model.signals_neg, size1)
+    tp.size(model2.signals_neg, size2)
+    assert size1 == size2
+    tp.size(model.emotion1, size1)
+    tp.size(model2.emotion1, size2)
+    assert size1 == size2
+    tp.size(model.personality17, size1)
+    tp.size(model2.personality17, size2)
+    assert size1 == size2
+    print("Create model1 again")
+    model.create(10, 11, 12, 13, 14)
+    print("Copy model 1 to model 2")
     model2.copy(model)
-    assert model.width == model2.width
-    assert model.height == 12
-    assert model2.depth == 13
-    assert model.personality16.shape == model2.personality16.shape
-    assert model2.layer0[0, 0, 0] == 0
-    
-    
+    print("more assertions...")
+    assert model.image_size == model2.image_size
+    assert model.size == 10
+    assert model2.image_size == 11
+    tp.size(model.personality16, size1)
+    tp.size(modeol2.personality16, size2)
+    assert size1 == size2
+    assert model2.neurons.get(0) == 0
+    print("Done!")
+    return
+
+test_general_dev_initialization()
