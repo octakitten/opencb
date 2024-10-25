@@ -119,6 +119,7 @@ class general():
         if (os.path.exists(path) == False):
             os.makedirs(path)
             try:
+                '''
                 os.makefile(path + '/width')
                 os.makefile(path + '/height')
                 os.makefile(path + '/depth')
@@ -160,6 +161,7 @@ class general():
                 os.makefile(path + '/layer26.pth')
                 os.makefile(path + '/layer27.pth')
                 os.makefile(path + '/layer28.pth')
+                '''
             except:
                 print('error creating files')
         np.save(path + '/width', self.width)

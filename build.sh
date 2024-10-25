@@ -1,7 +1,11 @@
 #! /usr/bin/bash
 ## for use in a development environment
+source .venv/bin/activate
+pip install hatch
 echo "Building OpenCB package"
 hatch version b
 FOLDER="dist_beta/"
-hatch build -t wheel -t sdist $FOLDER
+rm -f $FOLDER*.whl
+rm -f $FOLDER*.tar.gz
+hatch build -t wheel $FOLDER
 echo "Built package!"
