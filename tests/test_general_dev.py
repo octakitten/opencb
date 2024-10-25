@@ -15,6 +15,7 @@ def test_general_dev_initialization():
     print("Load model 1 to model 2")
     model2.load(path='tests/saved_models/test')
     print("Assertions...")
+
     assert model.size == model2.size
     assert model.num_controls == model2.num_controls
     assert model.num_sensations == model2.num_sensations
