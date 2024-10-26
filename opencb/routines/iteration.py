@@ -18,7 +18,7 @@ from ..utilities import find_food_02
 from ..routines import grizzlybear_routine
 from ..routines import horse_routine
 from ..models import general
-from ..models import general_dev
+from ..models import general_dev2
 from ..utilities import find_food_03
 from ..games import forest
 
@@ -287,6 +287,65 @@ def test012(dir):
 def test013(dir):
     first_attempt = True
     model = general()
+    prev_model = 0
+    if (os.path.exists(sys.path[0] + dir + '/saved_models/victory')):
+        try:
+            model.load(sys.path[0] + dir + '/saved_models/victory')
+            print('loading model from disk...')
+        except:
+            print('unable to load a winning model')
+            try:
+                model.load(sys.path[0] + dir + '/saved_models/in_progress')
+                print('loading in progress model from disk...')
+            except:
+                print('unable to load an in progress model')
+                model.create(255, 255, 255, 1000, 4, 3)
+                print('creatng a new model...')
+    elif (os.path.exists(sys.path[0] + dir + '/saved_models/in_progress')):
+        try:
+            model.load(sys.path[0] + dir + '/saved_models/in_progress')
+            print('loading model from disk...')
+        except:
+            print('unable to load an in progress model')
+            model.create(255, 255, 255, 1000, 4, 3)
+            print('creating a new model...')
+    else:
+        model.create(255, 255, 255, 1000, 4, 3)
+        print('creatng a new model...')
+    iters = 0
+    game = forest(model)
+    while (True):
+        if (first_attempt == False):
+            game.restart()
+        if (game.play_game() == False):
+            iters+=1
+            print('game over! number of tries:')
+            print(iters)
+            print('restarting...')
+        else:
+            break
+        if (first_attempt):
+            prev_model = model
+            model.permute(2,1)
+        else: 
+            if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                prev_model = model
+                model.permute(1,2)
+            else:
+                model = prev_model
+                model.permute(2,1)
+        first_attempt = False
+        if (iters % 100 == 0):
+            print('saving in progress...')
+            model.save(sys.path[0] + dir + '/saved_models/in_progress')
+    print('victory! it took this many iterations:')
+    print(iters)
+    print('saving to disk...')
+    model.save(sys.path[0] + dir + '/saved_models/victory')
+    
+def test014(dir):
+    first_attempt = True
+    model = general_dev2()
     prev_model = 0
     if (os.path.exists(sys.path[0] + dir + '/saved_models/victory')):
         try:
