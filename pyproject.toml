@@ -18,7 +18,7 @@ dependencies = [
     "numpy>=1.26.1",
     "xlib>=0.21",
     "Pillow>=10.1.0",
-    "torch>=2.1.0",
+    "torch==2.4.1",
     #"tensorplus>=0.0.1",
     "matplotlib>=3.9.0",
 ]
