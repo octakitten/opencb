@@ -25,6 +25,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.whl
+^.tar.gz
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -178,5 +180,6 @@ testing_modules/
 saved_models/
 bend_testing/
 test_dir/
+indev-tests/
 tests/testing_stuff.py
 test/testingstuff2.py
