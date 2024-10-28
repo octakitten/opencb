@@ -13,8 +13,8 @@ jobs:
       image: octakitten/opencb-v01
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/upload-artifact@v4
-      with:
-        name: opencb-wheel
-        path: ./dist/*.whl
+    #    - uses: actions/upload-artifact@v4
+    #  with:
+    #    name: opencb-wheel
+    #    path: ./dist/*.whl
         
