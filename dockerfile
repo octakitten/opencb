@@ -12,8 +12,6 @@ RUN echo 'Installed clang' >> /usr/src/install/logs/install.txt
 RUN cat /usr/src/install/logs/install.txt
 RUN echo "Home directory:" >> /usr/src/install/logs/install.txt
 RUN echo ${HOME} >> /usr/src/install/logs/install.txt
-ENV PATH="/root/.cargo/bin:${PATH}"
-RUN echo 'Updated PATH' >> /usr/src/install/logs/install.txt
 RUN echo "PATH:" >> /usr/src/install/logs/install.txt
 RUN echo ${PATH} >> /usr/src/install/logs/install.txt
 RUN cat /usr/src/install/logs/install.txt
