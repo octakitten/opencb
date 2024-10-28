@@ -386,17 +386,16 @@ def test014(dir):
         if (first_attempt):
             prev_model = model
             model.permute(2,1)
+            first_attempt = False
         else: 
             if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
                 prev_model = model
-                model.permute(1,2)
             else:
                 model = prev_model
-                model.permute(2,1)
-        first_attempt = False
         if (iters % 100 == 0):
             print('saving in progress...')
             model.save(sys.path[0] + dir + '/saved_models/in_progress')
+        model.permute(1, 2)
     print('victory! it took this many iterations:')
     print(iters)
     print('saving to disk...')

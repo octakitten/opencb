@@ -1,4 +1,4 @@
-name: Python Package using Conda and Hatch
+name: OpenCB Wheel Release
 
 on: 
   push:
@@ -8,24 +8,13 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
-
+    runs-on: [self-hosted, linux, x64]
+    container:
+      image: 'dockerfile'
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+    - uses: actions/upload-artifact@v4
       with:
-        python-version: '3.10'
-    - name: Add conda to system path
-      run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        echo $CONDA/bin >> $GITHUB_PATH
-    - name: Configure conda-forge
-      run: |
-        conda config --add channels conda-forge
-        conda config --set channel_priority strict
-    - name: Install hatch
-      run: |
-        conda install -c conda-forge hatch
+
+        name: opencb-wheel
+        path: dist/*.whl
