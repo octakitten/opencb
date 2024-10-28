@@ -1,9 +1,10 @@
-FROM python:3.12
+FROM nvidia/cuda:12.5.1-runtime-ubuntu24.04
 RUN mkdir -p /usr/src/install/logs/
 RUN touch /usr/src/install/logs/install.txt
 RUN echo 'Created log file' > /usr/src/install/logs/install.txt
 RUN apt-get update
-RUN echo 'Updated apt-get' >> /usr/src/install/logs/install.txtx
+RUN echo 'Updated apt-get' >> /usr/src/install/logs/install.txt
+RUN echo 'which python' >> /usr/src/install/logs/install.txt
 RUN apt install -y curl
 RUN echo "Installed curl" >> /usr/src/install/logs/install.txt
 RUN apt-get install -y clang
