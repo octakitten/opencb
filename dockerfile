@@ -6,6 +6,8 @@ RUN apt-get update
 RUN echo 'Updated apt-get' >> /usr/src/install/logs/install.txt
 RUN apt-get install -y python3
 RUN echo 'Installed python' >> /usr/src/install/logs/install.txt
+RUN apt-get install -y python3-pip
+RUN echo 'Installed pip' >> /usr/src/install/logs/install.txt
 RUN echo 'which python' >> /usr/src/install/logs/install.txt
 RUN apt install -y curl
 RUN echo "Installed curl" >> /usr/src/install/logs/install.txt
