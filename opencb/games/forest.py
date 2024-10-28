@@ -248,7 +248,7 @@ class forest():
             self.prev_x = x
             self.prev_y = y
             iter += 1
-            print('iteration - ', iter)
+            print('movement turn - ', iter)
             if iter > max_iter:
                 break
             if (self.loss_condition == True):

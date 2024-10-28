@@ -21,6 +21,8 @@ from ..models import general
 from ..models import general_dev2
 from ..utilities import find_food_03
 from ..games import forest
+from ..routines import iteration
+
 
 def test001():
     model01 = d8a4gs()
@@ -401,3 +403,74 @@ def test014(dir):
     print('saving to disk...')
     model.save(sys.path[0] + dir + '/saved_models/victory')
     
+    return
+
+def run_general_dev():
+    iters = 10000
+    prev_iters = 10001
+    path = sys.path[0] + 'general_dev/saved_models'
+    vic_path = path + '/victory'
+    prog_path = path + '/in_progress'
+    model = general_dev2()
+    stored_model = 0
+    params = ( 255, 255, 255, 1000, 4, 3 )
+    first_attempt = True
+    while (iters > 5):
+        prev_model = 0
+        if (os.path.exists(vic_path) & first_attempt):
+            try:
+                model.load(vic_path)
+                print('loading model from disk... ')
+            except:
+                print('unable to load a winning model...')
+                try:
+                    model.load(prog_path)
+                    print('loading an in-progress model from disk...')
+                except:
+                    print('unable to load an in-progress model')
+                    print('creating a new model...')
+                    model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+        elif (os.path.exists(prog_path) & first_attempt):
+            try:
+              model.load(prog_path)
+              print('loading an in-progress model from disk...')
+            except:
+                print('unable to load an in-progress model')
+                print('creating a new model')
+                model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+        elif (first_attempt):
+              print('creating a new model...')
+              model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+
+        game = forest(model)
+        while (True):
+              permute_degree = 2
+              first_game_attempt = True
+              if (first_game_attempt == False):
+                    game.restart()
+              if (game.play_game() == False):
+                    iters+=1
+                    print('game over! number of attempts so far:')
+                    print(iters)
+                    print('restarting...')
+              else:
+                    break
+              if (first_game_attempt):
+                    prev_model = model
+                    first_attempt = False
+              else:
+                    if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                        prev_model = model
+                        permute_degree = 10
+                    else:
+                        model = prev_model
+                        permute_degree = 5
+              if (iters % 100 == 0):
+                    print('saving in progress, this may take a moment... ...')
+                    model.save(prog_path)
+              model.permute(1, permute_degree)
+        print('victory! a winning model was found! it took this many iterations:')
+        print(iters)
+        if (iters < prev_iters):
+              prev_iters = iters
+              model.save(vic_path)
