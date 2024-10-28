@@ -21,7 +21,9 @@ RUN echo ${PATH} >> /usr/src/install/logs/install.txt
 RUN cat /usr/src/install/logs/install.txt
 RUN apt install -y git
 RUN echo 'Installed git' >> /usr/src/install/logs/install.txt
-RUN pip install hatch
+RUN apt install python3-pipx
+RUN echo 'Installed pipx' >> /usr/src/install/logs/install.txt
+RUN pipx install hatch
 ENV PATH="/root/.local/bin:${PATH}"
 RUN echo 'Installed hatch' >> /usr/src/install/logs/install.txt
 RUN git clone -b develop https://github.com/octakitten/opencb.git
