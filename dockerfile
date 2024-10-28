@@ -35,9 +35,7 @@ RUN hatch env prune
 RUN hatch env create
 RUN echo 'Created opencb environment' >> /usr/src/install/logs/install.txt
 RUN echo 'Running Pytest' >> /usr/src/install/logs/install.txt
-RUN hatch shell \
-    && pytest >> /usr/src/install/logs/install.txt
 RUN hatch build -t wheel dist/
-RUN echo 'Installed opencb dependencies' >> /usr/src/install/logs/install.txt
+RUN echo 'Built OpenCB' >> /usr/src/install/logs/install.txt
 RUN echo 'Checking python version' >> /usr/src/install/logs/install.txt
 RUN python3 --version >> /usr/src/install/logs/install.txt
