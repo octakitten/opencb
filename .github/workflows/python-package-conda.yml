@@ -10,7 +10,7 @@ jobs:
   build-linux:
     runs-on: [self-hosted, linux, x64]
     container:
-      image: github.com/octakitten/opencb
+      image: octakitten/opencb-v01
     steps:
     - uses: actions/checkout@v4
     - uses: actions/upload-artifact@v4
