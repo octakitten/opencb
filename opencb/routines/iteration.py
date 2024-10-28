@@ -406,8 +406,8 @@ def test014(dir):
     return
 
 def run_general_dev():
-    iters = 10000
-    prev_iters = 10001
+    iters = 0
+    prev_iters = 10000
     path = sys.path[0] + 'general_dev/saved_models'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
@@ -415,7 +415,7 @@ def run_general_dev():
     stored_model = 0
     params = ( 255, 255, 255, 1000, 4, 3 )
     first_attempt = True
-    while (iters > 5):
+    while (True):
         prev_model = 0
         if (os.path.exists(vic_path) & first_attempt):
             try:
@@ -443,9 +443,9 @@ def run_general_dev():
               model.create(params[0], params[1], params[2], params[3], params[4], params[5])
 
         game = forest(model)
+        first_game_attempt = True
         while (True):
               permute_degree = 2
-              first_game_attempt = True
               if (first_game_attempt == False):
                     game.restart()
               if (game.play_game() == False):
@@ -457,7 +457,7 @@ def run_general_dev():
                     break
               if (first_game_attempt):
                     prev_model = model
-                    first_attempt = False
+                    first_game_attempt = False
               else:
                     if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
                         prev_model = model
@@ -474,3 +474,5 @@ def run_general_dev():
         if (iters < prev_iters):
               prev_iters = iters
               model.save(vic_path)
+        if (iters < 5):
+            break

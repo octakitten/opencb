@@ -11,3 +11,7 @@ from .iteration import test008
 from .iteration import test009
 from .iteration import test010
 from .iteration import test011
+from .iteration import test012
+from .iteration import test013
+from .iteration import test014
+from .iteration import run_general_dev

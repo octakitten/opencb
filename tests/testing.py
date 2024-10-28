@@ -3,7 +3,7 @@ from opencb import models
 from opencb import games'''
 from opencb import routines
 
-routines.iteration.test014('/indev-tests')
+#routines.iteration.test014('/indev-tests')
 '''import sys
 
 
@@ -41,3 +41,4 @@ def main():
     return
 '''
 
+routines.iteration.run_general_dev()
