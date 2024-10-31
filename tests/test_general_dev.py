@@ -42,7 +42,7 @@ def test_general_dev_initialization():
     assert model.size == 10
     assert model2.image_size == 11
     tp.size(model.personality16, size1)
-    tp.size(modeol2.personality16, size2)
+    tp.size(model2.personality16, size2)
     assert size1 == size2
     assert model2.neurons.get(0) == 0
     print("Done!")
