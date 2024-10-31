@@ -408,7 +408,7 @@ def test014(dir):
 def run_general_dev():
     iters = 0
     prev_iters = 10000
-    path = sys.path[0] + 'general_dev/saved_models'
+    path = sys.path[0] + '/general_dev/saved_models'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
     model = general_dev2()
@@ -416,6 +416,7 @@ def run_general_dev():
     params = ( 255, 255, 255, 1000, 4, 3 )
     first_attempt = True
     while (True):
+        iters = 0
         prev_model = 0
         if (os.path.exists(vic_path) & first_attempt):
             try:
