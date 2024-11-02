@@ -8,22 +8,22 @@ import os
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 
-from ..models import d8a4gs
-from ..models import d16a1gs
-from ..utilities import screen
-from ..models import camel
-from ..models import horse
-from ..utilities import find_food_01
-from ..utilities import find_food_02
-from ..routines import grizzlybear_routine
-from ..routines import horse_routine
-from ..models import general
-from ..models import general_dev2
-from ..utilities import find_food_03
-from ..games import forest
+from ..models.d8a4gs import d8a4gs
+from ..models.d16a1gs import d16a1gs
+from ..utilities.screen import screen
+from ..models.camel import camel
+from ..models.horse import horse
+from ..utilities.game import find_food_01
+from ..utilities.game import find_food_02
+from ..routines.grizzlybear_routine import grizzlybear_routine
+from ..routines.horse_routine import horse_routine
+from ..models.general import general
+from ..models.general_dev2 import general_dev2
+from ..utilities.game import find_food_03
+from ..games.forest import forest
 from ..routines import iteration
 
-
+'''
 def test001():
     model01 = d8a4gs()
     for i in range(100):
@@ -36,7 +36,7 @@ def test002():
     a, b = 50, 50
     w, h = 255, 255
     for i in range(3):
-        input_image_real = screen.screenshot_desktop(a, b, w, h)
+        input_image_real = screen.snap_desktop(a, b, w, h)
         next_action = model02.update(input_image_real)
         if next_action == 2:
             print(next_action)
@@ -183,7 +183,7 @@ def test010():
     print('saving to disk...')
     model.save(sys.path[0] + '/saved_models/')
     
-
+'''
 def test011():
     '''
     :Parameters:

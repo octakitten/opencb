@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from ..models import camel
 from ..models import horse
-from ..utilities import screen
+from ..utilities.screen import screen
 
 
 class game():
