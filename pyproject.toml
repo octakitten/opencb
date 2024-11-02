@@ -23,6 +23,11 @@ dependencies = [
     "matplotlib>=3.9.0",
 ]
 
+[project.packages]
+include = [
+    { include = "opencb" },
+]
+
 [project.optional-dependencies]
 dev = [
   "pytest>=7.4.3",
@@ -56,7 +61,7 @@ omit = [
 ]
 
 [tool.coverage.paths]
-opencb = ["src/opencb", "*/opencb/src/opencb"]
+opencb = ["opencb"]
 tests = ["tests", "*/opencb/tests"]
 
 [tool.coverage.report]

@@ -1,8 +1,7 @@
 '''import torch
 from opencb import models
 from opencb import games'''
-from opencb import routines
-
+import opencb as ocb
 #routines.iteration.test014('/indev-tests')
 '''import sys
 
@@ -41,4 +40,4 @@ def main():
     return
 '''
 
-routines.iteration.run_general_dev()
+ocb.iteration.run_general_dev()
