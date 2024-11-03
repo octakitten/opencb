@@ -9,10 +9,10 @@ import os
 from . import model as mdl
 from . import model_dev as mdl2
 from . import forest
+from . import game
 
-'''
 def test011():
-    
+    '''
     :Parameters:
     none
     :Returns:
@@ -24,14 +24,14 @@ def test011():
     location on the screen and get it to the top left corner of the screen. This function will run the game until it's won,
     changing the models parameters each time it fails. The model's parameters will be saved to a file if it wins a game, otherwise
     this function will run indefinitely.
-   
-    model = general.general()
+    '''
+    model = mdl.general()
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 2)
     iters = 0
     first_attempt = True
     while (True):
-        game = find_food_03(model)
+        game = game.find_food_03(model)
         if (game.play_game() == False):
             iters+=1
             print('game over! number of tries:')
@@ -57,7 +57,7 @@ def test011():
 
 # run test for the in development general model
 # test011()
-'''
+
 def test012(dir):
     '''
     Parameters:
@@ -69,7 +69,6 @@ def test012(dir):
     reaches the goal somewhere in the image. It receives positive input when it gets closer and negative when it gets further. Also,
     the model receives a powerful negative input when it gets too close to a tree. If it hits a tree, it dies.
     We'll be using the general_dev model for this.
-    
     '''
     
     try:
