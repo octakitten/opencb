@@ -213,28 +213,28 @@ class find_food_02(game):
         # convert that to an appropriate action for this game
         x, y = 0, 0
         if action % 2 == 0:
-            print('x + 1')
+            #print('x + 1')
             x += 1
         if action % 3 == 0:
-            print('x - 1')
+            #print('x - 1')
             x += -1
         if action % 5 == 0:
-            print('x - 1')
+            #print('x - 1')
             x += -1
         if action % 7 == 0:
-            print('x + 1')
+            #print('x + 1')
             x += 1
         if action % 11 == 0:
-            print('y + 1')
+            #print('y + 1')
             y += 1
         if action % 13 == 0:
-            print('y - 1')
+            #print('y - 1')
             y += -1
         if action % 17 == 0:
-            print('y - 1')
+            #print('y - 1')
             y += -1
         if action % 19 == 0:
-            print('y + 1')
+            #print('y + 1')
             y += 1
         return x, y
     
@@ -289,7 +289,7 @@ class find_food_02(game):
             self.__screen_update(x, y)
 
             iter += 1
-            print('iteration - ', iter)
+            #print('iteration - ', iter)
             if iter > max_iter:
                 break
         
