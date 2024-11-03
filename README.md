@@ -1,5 +1,5 @@
-# opencb
-Open-Source Computer Behavior
+# silky
+Open-Source Computer Behavior and Memory
 
 What is this?
 
