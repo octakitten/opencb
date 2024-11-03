@@ -1,3 +1,3 @@
-pip uninstall opencb
+pip uninstall silky
 pip install ./dist_beta/*.whl
 python3 tests/testing.py

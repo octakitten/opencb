@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'OpenCB'
+project = 'Silky'
 copyright = '2024, octakitten'
 author = 'octakitten'
 release = '0.0.1'

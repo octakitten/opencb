@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "opencb"
+name = "silky"
 dynamic = ["version"]
-description = "Open-Source Computer Behavior"
+description = "Open-Source Computer Behavior and Memory"
 authors = [
   { name = "octakitten", email = "raspberry2425@gmail.com"},
   ]
@@ -25,7 +25,7 @@ dependencies = [
 
 [project.packages]
 include = [
-    { include = "opencb" },
+    { include = "silky" },
 ]
 
 [project.optional-dependencies]
@@ -37,12 +37,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/octakitten/opencb"
-Issues = "https://github.com/octakitten/opencb/issues"
-Wiki = "https://github.com/octakitten/opencb/wiki"
+Homepage = "https://github.com/octakitten/silky"
+Issues = "https://github.com/octakitten/silky/issues"
+Wiki = "https://github.com/octakitten/silky/wiki"
 
 [tool.hatch.version]
-path = "opencb/__about__.py"
+path = "silky/__about__.py"
 
 [tool.hatch.envs.types]
 extra-dependencies = [
@@ -50,19 +50,19 @@ extra-dependencies = [
 ]
 
 [tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args:src/OpenCB tests}"
+check = "mypy --install-types --non-interactive {args:src/silky tests}"
 
 [tool.coverage.run]
-source_pkgs = ["opencb", "tests"]
+source_pkgs = ["silky", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/opencb/__about__.py",
+  "src/silky/__about__.py",
 ]
 
 [tool.coverage.paths]
-opencb = ["opencb"]
-tests = ["tests", "*/opencb/tests"]
+opencb = ["silky"]
+tests = ["tests", "*/silky/tests"]
 
 [tool.coverage.report]
 exclude_lines = [

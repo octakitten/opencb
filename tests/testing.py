@@ -1,7 +1,6 @@
 '''import torch
-from opencb import models
-from opencb import games'''
-import opencb as ocb
+'''
+import silky
 #routines.iteration.test014('/indev-tests')
 '''import sys
 
@@ -40,4 +39,4 @@ def main():
     return
 '''
 
-ocb.iteration.run_general_dev()
+silky.iteration.run_general_dev()

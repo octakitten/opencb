@@ -4,7 +4,7 @@ drun() {
 }
 
 drun_no_cuda() {
-    sudo docker run opencb_docker "$@"
+    sudo docker run silky_docker "$@"
 }
 
 helpmsg() {
