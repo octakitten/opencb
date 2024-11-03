@@ -1,4 +1,4 @@
-name: OpenCB Wheel Release
+name: Silky Wheel Release
 
 on: 
   push:
