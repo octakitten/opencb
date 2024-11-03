@@ -5,12 +5,14 @@ on:
     branches:
       - main
 
+env:
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   build-linux:
     runs-on: [self-hosted, linux, x64]
     container:
-      image: octakitten/opencb-v01
+      image: octakitten/silky-v02
     steps:
     - run: gh release delete latest -y --cleanup-tag
     - run: gh release create latest dist/*.whl
