@@ -28,7 +28,7 @@ RUN echo 'Installed pipx' >> /usr/src/install/logs/install.txt
 RUN pipx install hatch
 ENV PATH="/root/.local/bin:${PATH}"
 RUN echo 'Installed hatch' >> /usr/src/install/logs/install.txt
-RUN git clone -b develop https://github.com/octakitten/silky.git
+RUN git clone -b main https://github.com/octakitten/silky.git
 RUN echo 'Cloned silky' >> /usr/src/install/logs/install.txt
 RUN echo ${PATH}
 WORKDIR "/silky"
