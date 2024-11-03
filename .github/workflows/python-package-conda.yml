@@ -15,7 +15,7 @@ jobs:
       image: octakitten/silky-v02
     steps:
     - run: gh release delete latest -y --cleanup-tag
-    - run: gh release create latest /silky/dist_beta/*.whl
+    - run: gh release create latest /silky/dist/*.whl
     #    - uses: actions/upload-artifact@v4
     #  with:
     #    name: opencb-wheel

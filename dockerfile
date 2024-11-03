@@ -37,7 +37,7 @@ RUN hatch env prune
 RUN hatch env create
 RUN echo 'Created silky environment' >> /usr/src/install/logs/install.txt
 RUN echo 'Running Pytest' >> /usr/src/install/logs/install.txt
-RUN hatch build -t wheel dist_beta/
+RUN hatch build -t wheel dist/
 RUN echo 'Built silky' >> /usr/src/install/logs/install.txt
 RUN echo 'Checking python version' >> /usr/src/install/logs/install.txt
 RUN python3 --version >> /usr/src/install/logs/install.txt
