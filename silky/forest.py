@@ -144,18 +144,18 @@ class forest():
         # convert that to an appropriate action for this game
         x, y = 0, 0
         
-        if action[0] == True:
+        if action[0]:
             x += 1
-            
-        if action[1] == True:
+        
+        if action[1]:
             x += -1
-            
-        if action[2] == True:
+        
+        if action[2]:
             y += 1
-            
-        if action[3] == True:
+        
+        if action[3]:
             y += -1
-            
+        
         return x, y
     
     def __set_x(self, w):
