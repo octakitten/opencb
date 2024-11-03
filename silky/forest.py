@@ -145,20 +145,12 @@ class forest():
         x, y = 0, 0
         if action[0] == True:
             x += 1
-        if action[0] == False:
-            x += 0
         if action[1] == True:
             x += -1
-        if action[1] == False:
-            x -= 0
         if action[2] == True:
             y += 1
-        if action[2] == False:
-            y += 0
         if action[3] == True:
             y += -1
-        if action[3] == False:
-            y -= 0
         return x, y
     
     def __set_x(self, w):
