@@ -1,0 +1,2 @@
+you know, i really hate how git doesnt commit directories unless there's something in them.
+would have saved me a lot of trouble if i remembered it did that shit
