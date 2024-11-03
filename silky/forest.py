@@ -143,14 +143,19 @@ class forest():
         # decide on the action to take based on the input and 
         # convert that to an appropriate action for this game
         x, y = 0, 0
+        
         if action[0] == True:
             x += 1
+            
         if action[1] == True:
             x += -1
+            
         if action[2] == True:
             y += 1
+            
         if action[3] == True:
             y += -1
+            
         return x, y
     
     def __set_x(self, w):
