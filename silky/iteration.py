@@ -9,7 +9,7 @@ import os
 from . import model as mdl
 from . import model_dev as mdl2
 from . import forest
-from . import game
+from . import game as gm
 
 def test011():
     '''
@@ -31,7 +31,7 @@ def test011():
     iters = 0
     first_attempt = True
     while (True):
-        game = game.find_food_03(model)
+        game = gm.find_food_03(model)
         if (game.play_game() == False):
             iters+=1
             print('game over! number of tries:')
@@ -82,7 +82,7 @@ def test012(dir):
     prev_model = 0
     model.create(255, 255, 255, 1000, 4, 3)
     iters = 0
-    game = forest(model)
+    game = forest.forest(model)
     while (True):
         if (first_attempt == False):
             game.restart()
