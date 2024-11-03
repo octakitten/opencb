@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   build-linux:
