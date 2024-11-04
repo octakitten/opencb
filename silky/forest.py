@@ -248,9 +248,11 @@ class forest():
 
         # otherwise we lose, and just do nothing with it.
         if (self.victory_condition == True):
-            print("victory!")
+            print("victory! it took this many turns:")
+            print(iter)
             return True
         else:
-            print("defeat!")
+            print("defeat! after this many turns:")
+            print(iter)
             #screen.save(self.game_screen, 'end_screen')
         return False
