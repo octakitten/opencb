@@ -14,17 +14,8 @@ jobs:
     container:
       image: octakitten/silky-v02
     steps:
-    - uses: actions/upload-artifact@v4
-      with:
-        name: silky-py3-none-any.whl
-        path: /silky/dist/silky-*.whl
-        if-no-files-found: error
-        retention-days: 1
-        overwrite: true
+    - uses: actions/checkout@v4
+    - run: hatch env create
+    - run: hatch build -t wheel dist/
     - run: gh release delete latest -y --cleanup-tag
-    - run: gh release create latest silky-py3-none-any.whl
-    #    - uses: actions/upload-artifact@v4
-    #  with:
-    #    name: opencb-wheel
-    #    path: ./dist/*.whl
-        
+    - run: gh release create latest /silky/dist/silky-*.whl
