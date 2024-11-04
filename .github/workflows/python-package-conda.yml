@@ -18,4 +18,4 @@ jobs:
     - run: hatch env create
     - run: hatch build -t wheel dist/
     - run: gh release delete latest -y --cleanup-tag
-    - run: gh release create latest /silky/dist/silky-*.whl
+    - run: gh release create latest dist/silky-*.whl
