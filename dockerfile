@@ -28,16 +28,3 @@ RUN echo 'Installed pipx' >> /usr/src/install/logs/install.txt
 RUN pipx install hatch
 ENV PATH="/root/.local/bin:${PATH}"
 RUN echo 'Installed hatch' >> /usr/src/install/logs/install.txt
-RUN git clone -b main https://github.com/octakitten/silky.git
-RUN echo 'Cloned silky' >> /usr/src/install/logs/install.txt
-RUN echo ${PATH}
-WORKDIR "/silky"
-RUN echo ${PATH}
-RUN hatch env prune
-RUN hatch env create
-RUN echo 'Created silky environment' >> /usr/src/install/logs/install.txt
-RUN echo 'Running Pytest' >> /usr/src/install/logs/install.txt
-RUN hatch build -t wheel dist/
-RUN echo 'Built silky' >> /usr/src/install/logs/install.txt
-RUN echo 'Checking python version' >> /usr/src/install/logs/install.txt
-RUN python3 --version >> /usr/src/install/logs/install.txt
