@@ -364,7 +364,7 @@ def run_velvet():
               if (iters % 100 == 0):
                     print('saving in progress, this may take a moment... ...')
                     model.save(prog_path)
-              model.permute(1, permute_degree)
+              model.permute(permute_degree)
         print('victory! a winning model was found! it took this many iterations:')
         print(iters)
         if (iters < prev_iters):
