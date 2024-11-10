@@ -1,5 +1,5 @@
 # silky
-Open-Source Computer Behavior and Memory
+Framework for neural networks with persistent memory
 
 What is this?
 
