@@ -1765,6 +1765,38 @@ class velvet():
         self.layer59 = model.layer59
         self.layer60 = model.layer60
         return
+
+    def clear(self):
+        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer3 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer4 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer5 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer6 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer7 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer8 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer9 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer10 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer11 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer12 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer13 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer14 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer15 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer16 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer17 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer18 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer19 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer20 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer21 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer22 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer23 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer24 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer25 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer26 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer27 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        self.layer28 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+
     
     def train(self, sense_num, amt, pos):    
         '''

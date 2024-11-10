@@ -48,6 +48,7 @@ def train(repo):
                 wins += 1
                 logging.info('WIN!')
                 mdl.save(savepath)
+                mdl.clear()
             else:
                 mdl.permute(20)
     mdl.save(progpath)
