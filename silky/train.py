@@ -38,6 +38,7 @@ def train(repo):
     mdl.create(64, 64, 64, 500, 200, 0)
     attempts = 0
     wins = 0
+    print(dataset[0])
     for j in range(0, 200000):
         attempts += 1
         tally = np.zeros(200)
