@@ -21,7 +21,7 @@ def train(repo):
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
-    dataset = dataset.with_format("torch")
+    dataset = dataset.with_format("torch", device=gpu)
     # dataloader = DataLoader(dataset, batch_size=1)
 
     basepath = "./saves/"
