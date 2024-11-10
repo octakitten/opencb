@@ -1528,8 +1528,6 @@ class velvet():
         np.save(path + '/height', self.height)
         np.save(path + '/depth', self.depth)
         np.save(path + '/bounds', self.bounds)
-        np.save(path + '/range_high', self.range_high)
-        np.save(path + '/range_low', self.range_low)
         np.save(path + '/num_controls', self.num_controls) 
         np.save(path + '/controls', self.controls)
         np.save(path + '/num_sensations', self.num_sensations)
@@ -1605,8 +1603,6 @@ class velvet():
         self.height = np.load(path + '/height.npy')
         self.depth = np.load(path + '/depth.npy')
         self.bounds = np.load(path + '/bounds.npy')
-        self.range_high = np.load(path + '/range_high.npy')
-        self.range_low = np.load(path + '/range_low.npy')
         self.num_controls = np.load(path + '/num_controls.npy')
         self.controls = np.load(path + '/controls.npy')
         self.num_sensations = np.load(path + '/num_sensations.npy')
@@ -1724,8 +1720,6 @@ class velvet():
         self.height = model.height
         self.depth = model.depth
         self.bounds = model.bounds
-        self.range_high = model.range_high
-        self.range_low = model.range_low
         self.num_controls = model.num_controls
         self.controls = model.controls
         self.thresholds_pos = model.thresholds_pos
