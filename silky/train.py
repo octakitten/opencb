@@ -21,7 +21,7 @@ def train(repo):
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
-    dataset = dataset.with_format("torch", device=gpu)
+    dataformat = dataset.with_format("torch", device=gpu)
     # dataloader = DataLoader(dataset, batch_size=1)
 
     basepath = "./saves/"
@@ -43,7 +43,7 @@ def train(repo):
         attempts += 1
         tally = np.zeros(200)
         for k in range(0, 200):
-            output = np.array(mdl.update(dataset[j]["image"]))
+            output = np.array(mdl.update(dataformat[j]["image"]))
             tally = tally + output
         guess = np.argmax(tally)
         answer = dataset[j]["label"]
