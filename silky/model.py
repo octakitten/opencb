@@ -2146,7 +2146,7 @@ class velvet():
         torch.add(self.layer8, torch.mul(torch.atan(torch.mul(self.layer19, self.layer41)), self.layer42), out=self.layer19)
         torch.add(self.layer8, torch.mul(torch.atan(torch.mul(self.layer20, self.layer43)), self.layer44), out=self.layer20)
         torch.add(self.layer9, torch.mul(torch.atan(torch.mul(self.layer21, self.layer45)), self.layer46), out=self.layer21)
-        torch.add(self.layer9, torc/h.mul(torch.atan(torch.mul(self.layer22, self.layer47)), self.layer48), out=self.layer22)
+        torch.add(self.layer9, torch.mul(torch.atan(torch.mul(self.layer22, self.layer47)), self.layer48), out=self.layer22)
         torch.add(self.layer10, torch.mul(torch.atan(torch.mul(self.layer23, self.layer49)), self.layer50), out=self.layer23)
         torch.add(self.layer10, torch.mul(torch.atan(torch.mul(self.layer24, self.layer51)), self.layer52), out=self.layer24)
         torch.add(self.layer11, torch.mul(torch.atan(torch.mul(self.layer25, self.layer53)), self.layer54), out=self.layer25)
