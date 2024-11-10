@@ -38,14 +38,14 @@ def train(repo):
     mdl.create(64, 64, 64, 500, 200, 0)
     attempts = 0
     wins = 0
-    for i in range(0, 200000):
+    for j in range(0, 200000):
         attempts += 1
         tally = np.zeros(200)
-        for i in range(0, 200):
-            output = np.array(mdl.update(dataset[i]["image"]))
+        for k in range(0, 200):
+            output = np.array(mdl.update(dataset[j]["image"]))
             tally = tally + output
         guess = np.argmax(tally)
-        answer = dataset[0]["label"]
+        answer = dataset[j]["label"]
         logging.info('{ "guess" : "' + str(guess) + '" }')
         logging.info('{ "answer"  : "' + str(answer) + '" }')
         if answer == guess:
