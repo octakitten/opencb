@@ -1303,7 +1303,7 @@ class velvet():
             wegood = False
             newctl = 0
             while wegood == False:
-                newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth))
+                newctl = (np.random.randint(low=7, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth))
                 wegood = True
                 for ctl in self.controls:
                     if ctl == newctl:
