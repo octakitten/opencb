@@ -1300,7 +1300,13 @@ class velvet():
     def __new_controls(self):
         self.controls = []
         for i in range(0, self.num_controls):
-            self.controls.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
+            wegood = False
+            while wegood == False:
+                newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth))
+                wegood = True
+                for ctl in self.controls:
+                    if ctl == newctl:
+                        wegood = False
         return
 
     def __new_propensity(self):
@@ -2080,7 +2086,9 @@ class velvet():
         #print(input_tensor)
         #print('layer0')
         #print(self.layer0)o
-        torch.add(self.layer0[:, :, 1],  input_tensor, out=self.layer0[:, :, 1])
+        torch.add(self.layer0[:, :, 1],  input_tensor[0, :, :], out=self.layer0[:, :, 1])
+        torch.add(self.layer0[:, :, 3],  input_tensor[1, :, :], out=self.layer0[:, :, 3])
+        torch.add(self.layer0[:, :, 5],  input_tensor[2, :, :], out=self.layer0[:, :, 5])
 
         # update layer0 based on the arctan function we're using, as well as inputs from the threshold and signal layers
         torch.add(torch.mul(torch.atan(torch.mul(self.layer0, self.layer1)), self.layer3), torch.mul(torch.atan(torch.mul(self.layer0, self.layer2)), self.layer4))
@@ -2112,11 +2120,11 @@ class velvet():
         #print('layer0')
         for i in range(0, self.num_controls):
             if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
-                take_action.append(True)
+                take_action.append(1)
                 self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
             else:
                 if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
-                    take_action.append(False)
+                    take_action.append(0)
                 else:
                     take_action.append(-1)
         
