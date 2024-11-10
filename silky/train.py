@@ -43,10 +43,10 @@ def train(repo):
             attempts += 1
             tally = np.zeros(200)
             for i in range(0, 200):
-                output = np.array(mdl.update(item[0]))
+                output = np.array(mdl.update(item["image"]))
                 tally = tally + output
             guess = np.argmax(tally)
-            answer = item[1]
+            answer = item["label"]
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
             if answer == guess:
