@@ -2097,7 +2097,7 @@ class velvet():
         torch.sub(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
         torch.sub(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
         torch.sub(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
-        torch.sub(self.layer0, tor/ch.roll(self.layer0, 1, 2), out=temp)
+        torch.sub(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
         torch.sub(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
         torch.add(self.layer0, temp, out=self.layer0)
         '''print("3")
