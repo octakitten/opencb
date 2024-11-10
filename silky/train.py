@@ -22,7 +22,7 @@ def train(repo):
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
     dataset = dataset.with_format("torch")
-    dataloader = DataLoader(dataset, batch_size=1)
+    # dataloader = DataLoader(dataset, batch_size=1)
 
     basepath = "./saves/"
     savepath = "./saves/winners/"
@@ -38,24 +38,23 @@ def train(repo):
     mdl.create(64, 64, 64, 500, 200, 0)
     attempts = 0
     wins = 0
-    for batch in dataloader:
-        for item in batch:
-            attempts += 1
-            tally = np.zeros(200)
-            for i in range(0, 200):
-                output = np.array(mdl.update(item["image"]))
-                tally = tally + output
-            guess = np.argmax(tally)
-            answer = item["label"]
-            logging.info('{ "guess" : "' + str(guess) + '" }')
-            logging.info('{ "answer"  : "' + str(answer) + '" }')
-            if answer == guess:
-                wins += 1
-                logging.info('WIN! Wins so far: ' + str(wins))
-                mdl.save(savepath)
-                mdl.clear()
-            else:
-                mdl.permute(20)
+    for i in range(0, 200000):
+        attempts += 1
+        tally = np.zeros(200)
+        for i in range(0, 200):
+            output = np.array(mdl.update(dataset[i]["image"]))
+            tally = tally + output
+        guess = np.argmax(tally)
+        answer = dataset[0]["label"]
+        logging.info('{ "guess" : "' + str(guess) + '" }')
+        logging.info('{ "answer"  : "' + str(answer) + '" }')
+        if answer == guess:
+            wins += 1
+            logging.info('WIN! Wins so far: ' + str(wins))
+            mdl.save(savepath)
+            mdl.clear()
+        else:
+            mdl.permute(20)
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
