@@ -1301,12 +1301,14 @@ class velvet():
         self.controls = []
         for i in range(0, self.num_controls):
             wegood = False
+            newctl = 0
             while wegood == False:
                 newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth))
                 wegood = True
                 for ctl in self.controls:
                     if ctl == newctl:
                         wegood = False
+            self.controls.append(newctl)
         return
 
     def __new_propensity(self):
