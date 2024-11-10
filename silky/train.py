@@ -27,15 +27,18 @@ def train(repo):
     logfilename = repo + "-run"
     logging.basicConfig(level=logging.DEBUG, filename=logfilename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
+    logging.info('Starting a  new run...')
     savepath = "./saves/winners"
     progpath = "./saves/in-prog"
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
 
     mdl = model.velvet()
     mdl.create(64, 64, 64, 500, 200, 0)
+    attempts = 0
     wins = 0
     for batch in dataloader:
         for item in batch:
+            attempts += 1
             tally = np.zeros(200)
             for i in range(0, 200):
                 output = np.array(mdl.update(item["image"]))
@@ -46,11 +49,14 @@ def train(repo):
             logging.info('{ "answer"  : "' + answer + '" }')
             if answer == guess:
                 wins += 1
-                logging.info('WIN!')
+                logging.info('WIN! Wins so far: ' + str(wins))
                 mdl.save(savepath)
                 mdl.clear()
             else:
                 mdl.permute(20)
+    logging.info('Run ending...')
+    logging.info('Total wins this run: ' + str(wins))
+    logging.info('Total attempts this run: ' + str(attempts))
     mdl.save(progpath)
     return
     
