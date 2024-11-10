@@ -1190,7 +1190,7 @@ class velvet():
     neg_fire_amt = 0
     pos_fire_amt_mult = 0
     neg_fire_amt_mult = 0
-    propensity = 0
+    propensity = .001
     
     # layers:
     # neuron layer

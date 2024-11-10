@@ -309,7 +309,7 @@ def run_velvet():
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
     model = mdl.velvet()
-    params = ( 255, 255, 255, 50, 4, 3 )
+    params = ( 255, 255, 255, 500, 4, 3 )
     first_attempt = True
     while (True):
         iters = 0
