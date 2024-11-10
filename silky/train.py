@@ -22,7 +22,7 @@ def train(repo):
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
     dataset = dataset.with_format("torch")
-    dataloader = DataLoader(dataset, batch_size=4)
+    dataloader = DataLoader(dataset, batch_size=1)
 
     basepath = "./saves/"
     savepath = "./saves/winners/"
