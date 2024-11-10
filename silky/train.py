@@ -24,12 +24,13 @@ def train(repo):
     dataset = dataset.with_format("torch")
     dataloader = DataLoader(dataset, batch_size=4)
 
-    logfilename = repo + "-run"
+    basepath = "./saves"
+    savepath = "./saves/winners"
+    progpath = "./saves/in-prog"
+    logfilename = basepath + repo + "-run.log"
     logging.basicConfig(level=logging.DEBUG, filename=logfilename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info('Starting a  new run...')
-    savepath = "./saves/winners"
-    progpath = "./saves/in-prog"
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
 
     mdl = model.velvet()
