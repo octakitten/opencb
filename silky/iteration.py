@@ -1,4 +1,3 @@
-import numpy as np
 import sys
 import os
 #from pathlib import Path
@@ -7,7 +6,6 @@ import os
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 #print(sys.path)
 from . import model as mdl
-from . import model_dev as mdl2
 from . import forest
 from . import game as gm
 
@@ -240,6 +238,78 @@ def run_general_dev():
     model = mdl2.general_dev2()
     stored_model = 0
     params = ( 255, 255, 255, 1000, 4, 3 )
+    first_attempt = True
+    while (True):
+        iters = 0
+        prev_model = 0
+        if (os.path.exists(vic_path) & first_attempt):
+            try:
+                model.load(vic_path)
+                print('loading model from disk... ')
+            except:
+                print('unable to load a winning model...')
+                try:
+                    model.load(prog_path)
+                    print('loading an in-progress model from disk...')
+                except:
+                    print('unable to load an in-progress model')
+                    print('creating a new model...')
+                    model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+        elif (os.path.exists(prog_path) & first_attempt):
+            try:
+              model.load(prog_path)
+              print('loading an in-progress model from disk...')
+            except:
+                print('unable to load an in-progress model')
+                print('creating a new model')
+                model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+        elif (first_attempt):
+              print('creating a new model...')
+              model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+
+        game = forest.forest(model)
+        first_game_attempt = True
+        while (True):
+              permute_degree = 2
+              if (first_game_attempt == False):
+                    game.restart()
+              if (game.play_game() == False):
+                    iters+=1
+                    print('game over! number of attempts so far:')
+                    print(iters)
+                    print('restarting...')
+              else:
+                    break
+              if (first_game_attempt):
+                    prev_model = model
+                    first_game_attempt = False
+              else:
+                    if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
+                        prev_model = model
+                        permute_degree = 10
+                    else:
+                        model = prev_model
+                        permute_degree = 5
+              if (iters % 100 == 0):
+                    print('saving in progress, this may take a moment... ...')
+                    model.save(prog_path)
+              model.permute(1, permute_degree)
+        print('victory! a winning model was found! it took this many iterations:')
+        print(iters)
+        if (iters < prev_iters):
+              prev_iters = iters
+              model.save(vic_path)
+        if (iters < 5):
+            break
+
+def run_velvet():
+    iters = 0
+    prev_iters = 10000
+    path = sys.path[0] + '/velvet/saved_models'
+    vic_path = path + '/victory'
+    prog_path = path + '/in_progress'
+    model = mdl.velvet()
+    params = ( 255, 255, 255, 50, 4, 3 )
     first_attempt = True
     while (True):
         iters = 0
