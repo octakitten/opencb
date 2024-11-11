@@ -33,8 +33,8 @@ def train(repo, path):
     if path == "":
         path = "./default/"
     basepath = path
-    savepath = path + "winners/"
-    progpath = path + "in-prog/"
+    savepath = path + "winners"
+    progpath = path + "in-prog"
     logfilename = basepath + "training.log"
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
     os.makedirs(os.path.dirname(progpath), exist_ok=True)
