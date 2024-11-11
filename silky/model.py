@@ -2140,21 +2140,22 @@ class velvet():
         '''print("3")
         print('layer0')
         print(self.layer0)'''
+        print(
 
         # guess we're the outer sums factory now
-        self.layer0[:,:,3] = torch.sum(torch.kron(self.layer0[:,:,0], self.layer0[:,:,3]), -2, True)
-        self.layer0[:,:,4] = torch.sum(torch.kron(self.layer0[:,:,1], self.layer0[:,:,4]), -2, True)
-        self.layer0[:,:,5] = torch.sum(torch.kron(self.layer0[:,:,2], self.layer0[:,:,5]), -2, True)
-        self.layer0[:,:,6] = torch.sum(torch.kron(self.layer0[:,:,3], self.layer0[:,:,6]), -2, True)
-        self.layer0[:,:,7] = torch.sum(torch.kron(self.layer0[:,:,4], self.layer0[:,:,7]), -2, True)
-        self.layer0[:,:,8] = torch.sum(torch.kron(self.layer0[:,:,5], self.layer0[:,:,8]), -2, True)
-        self.layer0[:,:,9] = torch.sum(torch.kron(self.layer0[:,:,6], self.layer0[:,:,9]), -2, True)
-        self.layer0[:,:,10] = torch.sum(torch.kron(self.layer0[:,:,7], self.layer0[:,:,10]), -2, True)
-        self.layer0[:,:,11] = torch.sum(torch.kron(self.layer0[:,:,8], self.layer0[:,:,11]), -2, True)
-        self.layer0[:,:,12] = torch.sum(torch.kron(self.layer0[:,:,9], self.layer0[:,:,12]), -2, True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,10], self.layer0[:,:,13]), -2, True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,11], self.layer0[:,:,13]), -2, True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,12], self.layer0[:,:,13]), -2, True)
+        self.layer0[:,:,3] = torch.sum(torch.kron(self.layer0[:,:,0], self.layer0[:,:,3]), (-1,-2), True)
+        self.layer0[:,:,4] = torch.sum(torch.kron(self.layer0[:,:,1], self.layer0[:,:,4]), (-1, -2), True)
+        self.layer0[:,:,5] = torch.sum(torch.kron(self.layer0[:,:,2], self.layer0[:,:,5]), (-1, -2), True)
+        self.layer0[:,:,6] = torch.sum(torch.kron(self.layer0[:,:,3], self.layer0[:,:,6]), (-1, -2), True)
+        self.layer0[:,:,7] = torch.sum(torch.kron(self.layer0[:,:,4], self.layer0[:,:,7]), (-1, -2), True)
+        self.layer0[:,:,8] = torch.sum(torch.kron(self.layer0[:,:,5], self.layer0[:,:,8]), (-1, -2), True)
+        self.layer0[:,:,9] = torch.sum(torch.kron(self.layer0[:,:,6], self.layer0[:,:,9]), (-1, -2), True)
+        self.layer0[:,:,10] = torch.sum(torch.kron(self.layer0[:,:,7], self.layer0[:,:,10]), (-1, -2), True)
+        self.layer0[:,:,11] = torch.sum(torch.kron(self.layer0[:,:,8], self.layer0[:,:,11]), (-1, -2), True)
+        self.layer0[:,:,12] = torch.sum(torch.kron(self.layer0[:,:,9], self.layer0[:,:,12]), (-1, -2), True)
+        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,10], self.layer0[:,:,13]), (-1, -2), True)
+        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,11], self.layer0[:,:,13]), (-1, -2), True)
+        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,12], self.layer0[:,:,13]), (-1, -2), True)
 
         for i in range(13, self.depth - 1):
             self.layer0[:,:,(i + 1)] = torch.sum(torch.kron(self.layer0[:,:,i], self.layer0[:,:,(i + 1)]), 0, True)
