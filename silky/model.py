@@ -2168,11 +2168,11 @@ class velvet():
         #print(self.layer0)
         #print('layer0')
         for i in range(0, self.num_controls):
-            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i, 0].item()):
+            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0].item()):
                 take_action.append(1)
-                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i,0]
+                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
             else:
-                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.control_thresholds_neg[i,0].item()):
+                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.control_thresholds_neg[i][0].item()):
                     take_action.append(0)
                 else:
                     take_action.append(-1)
