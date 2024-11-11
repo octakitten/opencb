@@ -49,7 +49,7 @@ def train(repo):
                 output = np.array(mdl.update(dataformat[i]["image"]))
                 tally = tally + output
             guess = np.argmax(tally)
-            answer = dataformat[i]["label"][0]
+            answer = dataformat[i]["label"].item()
             logging.info('{ "item# : "' + str(i) + '" }')
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
