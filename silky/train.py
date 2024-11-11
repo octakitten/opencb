@@ -44,9 +44,9 @@ def train(repo, path):
 
     # initialize the model if we need to, but default to loading it in
     mdl = model.velvet()
-    if os.path.exists(savepath):
+    if os.path.exists(savepath + "/width.npy"):
         mdl.load(savepath)
-    elif os.path.exists(progpath):
+    elif os.path.exists(progpath + "/width.npy"):
         mdl.load(progpath)
     else:
         mdl.create(64, 64, 200, 500, 200, 0)
