@@ -39,8 +39,10 @@ def train(repo):
     attempts = 0
     wins = 0
     tolerance = 20
+    
     for batch in dataloader:
         for item in batch:
+            print(item)
             attempts += 1
             tally = np.zeros(200)
             for k in range(0, 200):
