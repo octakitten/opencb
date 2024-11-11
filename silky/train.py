@@ -22,7 +22,8 @@ def train(repo):
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
-    dataloader = DataLoader(dataformat, batch_size=8)
+    batchsize = 8
+    dataloader = DataLoader(dataformat, batch_size=batchsize)
 
     basepath = "./saves/"
     savepath = "./saves/winners/"
@@ -42,15 +43,14 @@ def train(repo):
     
     for batch in dataloader:
         print(batch)
-        for item in batch:
-            print(item)
+        for i in range(0, batchsize):
             attempts += 1
             tally = np.zeros(200)
             for k in range(0, 200):
-                output = np.array(mdl.update(item))
+                output = np.array(mdl.update(batch[i]["image"]))
                 tally = tally + output
             guess = np.argmax(tally)
-            answer = item["label"]
+            answer = batch[i]["label"]
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
             if answer == guess:
