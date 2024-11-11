@@ -2158,7 +2158,7 @@ class velvet():
         self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,12], self.layer0[:,:,13]), (-1, -2), True)
 
         for i in range(13, self.depth - 1):
-            self.layer0[:,:,(i + 1)] = torch.sum(torch.kron(self.layer0[:,:,i], self.layer0[:,:,(i + 1)]), 0, True)
+            self.layer0[:,:,(i + 1)] = torch.sum(torch.kron(self.layer0[:,:,i], self.layer0[:,:,(i + 1)]), (-1, -2), True)
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
