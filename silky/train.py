@@ -22,7 +22,7 @@ def train(repo):
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
-    # dataloader = DataLoader(dataset, batch_size=1)
+    dataloader = DataLoader(dataformat, batch_size=8)
 
     basepath = "./saves/"
     savepath = "./saves/winners/"
@@ -35,29 +35,30 @@ def train(repo):
     logging.info('Starting a  new run...')
 
     mdl = model.velvet()
-    mdl.create(64, 64, 128, 500, 200, 0)
+    mdl.create(64, 64, 2000, 500, 200, 0)
     attempts = 0
     wins = 0
     tolerance = 20
-    for j in range(0, 200000):
-        attempts += 1
-        tally = np.zeros(200)
-        for k in range(0, 200):
-            output = np.array(mdl.update(dataformat[j]["image"]))
-            tally = tally + output
-        guess = np.argmax(tally)
-        answer = dataset[j]["label"]
-        logging.info('{ "guess" : "' + str(guess) + '" }')
-        logging.info('{ "answer"  : "' + str(answer) + '" }')
-        if answer == guess:
-            wins += 1
-            logging.info('WIN! Wins so far: ' + str(wins))
-            mdl.save(savepath)
-            mdl.clear()
-            tolerance += 1
-        else:
-            mdl.permute(tolerance)
-            if tolerance > 2 : tolerance -= 1
+    for batch in dataloader:
+        for item in batch:
+            attempts += 1
+            tally = np.zeros(200)
+            for k in range(0, 200):
+                output = np.array(mdl.update(item["image"]))
+                tally = tally + output
+            guess = np.argmax(tally)
+            answer = item["label"]
+            logging.info('{ "guess" : "' + str(guess) + '" }')
+            logging.info('{ "answer"  : "' + str(answer) + '" }')
+            if answer == guess:
+                wins += 1
+                logging.info('WIN! Wins so far: ' + str(wins))
+                mdl.save(savepath)
+                mdl.clear()
+                tolerance += 1
+            else:
+                mdl.permute(tolerance)
+                if tolerance > 2 : tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
