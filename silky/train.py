@@ -41,6 +41,7 @@ def train(repo):
     wins = 0
     tolerance = 20
     
+    print(dataformat[0])
     for i in range(0, len(dataformat)):
             attempts += 1
             tally = np.zeros(200)
