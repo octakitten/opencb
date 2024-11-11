@@ -1667,10 +1667,10 @@ class velvet():
         random_gen.seed()
         self.control_thresholds_pos = torch.tensor(data=1, device=self.device)
         self.control_thresholds_neg = torch.tensor(data=1, device=self.device)
-        self.control_thresholds_pos = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=self.device)
+        self.control_thresholds_pos = torch.rand(size=(self.num_controls), generator=random_gen, device=self.device)
         torch.add(torch.mul(self.control_thresholds_pos, self.bounds, out=self.control_thresholds_pos), 1, out=self.control_thresholds_pos)
         random_gen.seed()
-        self.control_thresholds_neg = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=self.device)
+        self.control_thresholds_neg = torch.rand(size=(self.num_controls), generator=random_gen, device=self.device)
         torch.subtract(-1, torch.divide(self.control_thresholds_neg, self.bounds, out=self.control_thresholds_neg), out=self.control_thresholds_neg)
         return
 
@@ -2165,14 +2165,15 @@ class velvet():
         # if they are, then return the action(s) to take
         take_action = []
         
+        print(len(self.control_thresholds_pos))
         #print(self.layer0)
         #print('layer0')
-        for i in range(0, self.num_controls - 1):
-            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0].item()):
+        for i in range(0, self.num_controls):
+            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i]):
                 take_action.append(1)
-                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
+                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i]
             else:
-                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.control_thresholds_neg[i][0].item()):
+                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() < self.control_thresholds_neg[i]):
                     take_action.append(0)
                 else:
                     take_action.append(-1)
