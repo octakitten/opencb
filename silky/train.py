@@ -5,6 +5,7 @@ import numpy as np
 import logging
 from . import model
 import os
+import random
 
 class training_options():
     option = [
@@ -41,27 +42,34 @@ def train(repo):
     wins = 0
     tolerance = 20
     
+
     print(dataformat[1853])
-    for i in range(0, len(dataformat)):
-            attempts += 1
-            tally = np.zeros(200)
-            for k in range(0, 200):
-                output = np.array(mdl.update(dataformat[i]["image"]))
-                tally = tally + output
-            guess = np.argmax(tally)
-            answer = dataformat[i]["label"].item()
-            logging.info('{ "item# : "' + str(i) + '" }')
-            logging.info('{ "guess" : "' + str(guess) + '" }')
-            logging.info('{ "answer"  : "' + str(answer) + '" }')
-            if answer == guess:
-                wins += 1
-                logging.info('WIN! Wins so far: ' + str(wins))
-                mdl.save(savepath)
-                mdl.clear()
-                tolerance += 1
-            else:
-                mdl.permute(tolerance)
-                if tolerance > 2 : tolerance -= 1
+
+    len_dataset = len(dataformat)
+    numbers_to_use = list(range(0, len_dataset))
+    for i in range(0, len_dataset):
+        j = random.randint(0, len(numbers_to_use))
+        n = numbers_to_use.pop(j)
+
+        attempts += 1
+        tally = np.zeros(200)
+        for k in range(0, 200):
+            output = np.array(mdl.update(dataformat[n]["image"]))
+            tally = tally + output
+        guess = np.argmax(tally)
+        answer = dataformat[n]["label"].item()
+        logging.info('{ "item# : "' + str(n) + '" }')
+        logging.info('{ "guess" : "' + str(guess) + '" }')
+        logging.info('{ "answer"  : "' + str(answer) + '" }')
+        if answer == guess:
+            wins += 1
+            logging.info('WIN! Wins so far: ' + str(wins))
+            mdl.save(savepath)
+            mdl.clear()
+            tolerance += 1
+        else:
+            mdl.permute(tolerance)
+            if tolerance > 2 : tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
