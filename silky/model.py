@@ -2167,7 +2167,7 @@ class velvet():
         
         #print(self.layer0)
         #print('layer0')
-        for i in range(0, self.num_controls):
+        for i in range(0, self.num_controls - 1):
             if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0].item()):
                 take_action.append(1)
                 self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
