@@ -18,7 +18,7 @@ class training_options():
     repo_url = ""
     repo_path = "path/to/data"
 
-def train(repo):
+def train(repo, path):
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if repo == "" : repo = "Maysee/tiny-imagenet"
     dataset = datasets.load_dataset(repo, split="train")
@@ -26,9 +26,11 @@ def train(repo):
     batchsize = 8
     dataloader = DataLoader(dataformat, batch_size=batchsize)
 
-    basepath = "./saves/"
-    savepath = "./saves/winners/"
-    progpath = "./saves/in-prog/"
+    if path == "":
+        path = "./default/"
+    basepath = path
+    savepath = path + "winners/"
+    progpath = path + "in-prog/"
     logfilename = basepath + "training.log"
     os.makedirs(os.path.dirname(savepath), exist_ok=True)
     os.makedirs(os.path.dirname(progpath), exist_ok=True)
@@ -37,7 +39,10 @@ def train(repo):
     logging.info('Starting a  new run...')
 
     mdl = model.velvet()
-    mdl.create(64, 64, 200, 500, 200, 0)
+    if path != "./default/":
+        mdl.load(savepath)
+    else:
+        mdl.create(64, 64, 200, 500, 200, 0)
     attempts = 0
     wins = 0
     tolerance = 20
