@@ -41,12 +41,13 @@ def train(repo):
     tolerance = 20
     
     for batch in dataloader:
+        print(batch)
         for item in batch:
             print(item)
             attempts += 1
             tally = np.zeros(200)
             for k in range(0, 200):
-                output = np.array(mdl.update(item["image"]))
+                output = np.array(mdl.update(item))
                 tally = tally + output
             guess = np.argmax(tally)
             answer = item["label"]
