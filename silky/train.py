@@ -41,16 +41,16 @@ def train(repo):
     wins = 0
     tolerance = 20
     
-    for batch in dataloader:
+    for batch in dataformat:
         print(batch)
         for i in range(0, batchsize):
             attempts += 1
             tally = np.zeros(200)
             for k in range(0, 200):
-                output = np.array(mdl.update(batch["image"][i]))
+                output = np.array(mdl.update(batch[i]["image"]))
                 tally = tally + output
             guess = np.argmax(tally)
-            answer = batch["label"][i]
+            answer = batch[i]["label"]
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
             if answer == guess:
