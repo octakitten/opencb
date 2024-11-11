@@ -2140,10 +2140,10 @@ class velvet():
         '''print("3")
         print('layer0')
         print(self.layer0)'''
-        print(
+        print(layer0[:,:,3].shape())
 
         # guess we're the outer sums factory now
-        self.layer0[:,:,3] = torch.sum(torch.kron(self.layer0[:,:,0], self.layer0[:,:,3]), (-1,-2), True)
+        self.layer0[:,:,3] = torch.sum(torch.kron(self.layer0[:,:,0], self.layer0[:,:,3]), (-1, -2), True)
         self.layer0[:,:,4] = torch.sum(torch.kron(self.layer0[:,:,1], self.layer0[:,:,4]), (-1, -2), True)
         self.layer0[:,:,5] = torch.sum(torch.kron(self.layer0[:,:,2], self.layer0[:,:,5]), (-1, -2), True)
         self.layer0[:,:,6] = torch.sum(torch.kron(self.layer0[:,:,3], self.layer0[:,:,6]), (-1, -2), True)
