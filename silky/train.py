@@ -39,6 +39,7 @@ def train(repo):
     attempts = 0
     wins = 0
     print(dataset[0])
+    tolerance = 20
     for j in range(0, 200000):
         attempts += 1
         tally = np.zeros(200)
@@ -54,8 +55,10 @@ def train(repo):
             logging.info('WIN! Wins so far: ' + str(wins))
             mdl.save(savepath)
             mdl.clear()
+            tolerance += 1
         else:
-            mdl.permute(20)
+            mdl.permute(tolerance)
+            if tolerance > 2 : tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
