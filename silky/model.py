@@ -2110,31 +2110,54 @@ class velvet():
         #print(input_tensor)
         #print('layer0')
         #print(self.layer0)o
-        torch.add(self.layer0[:, :, 1],  input_tensor[0, :, :], out=self.layer0[:, :, 1])
-        torch.add(self.layer0[:, :, 3],  input_tensor[1, :, :], out=self.layer0[:, :, 3])
-        torch.add(self.layer0[:, :, 5],  input_tensor[2, :, :], out=self.layer0[:, :, 5])
+        try:
+            torch.add(self.layer0[:, :, 0],  input_tensor[0, :, :], out=self.layer0[:, :, 0])
+            torch.add(self.layer0[:, :, 1],  input_tensor[1, :, :], out=self.layer0[:, :, 1])
+            torch.add(self.layer0[:, :, 2],  input_tensor[2, :, :], out=self.layer0[:, :, 2])
+        except:
+            torch.add(self.layer0[:, :, 0],  input_tensor[0, :, :], out=self.layer0[:, :, 0])
 
         # update layer0 based on the arctan function we're using, as well as inputs from the threshold and signal layers
-        torch.add(torch.mul(torch.atan(torch.mul(self.layer0, self.layer1)), self.layer3), torch.mul(torch.atan(torch.mul(self.layer0, self.layer2)), self.layer4))
+        torch.add(torch.mul(torch.mul(torch.atan(self.layer0), self.layer1), self.layer3), torch.mul(torch.mul(torch.atan(self.layer0), self.layer2), self.layer4))
 
         # do some rolls to simulate neurons sending messages to each other
+        '''
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.float32)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
-        torch.sub(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
-        torch.add(self.layer0, temp, out=self.layer0)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
+        torch.mul(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
+        torch.mul(self.layer0, temp, out=self.layer0)
+        '''
         '''print("3")
         print('layer0')
         print(self.layer0)'''
+
+        # guess we're the outer sums factory now
+        self.layer0[:,:,3] = torch.sum(torch.outer(self.layer0[:,:,0], self.layer0[:,:,3]), 2)
+        self.layer0[:,:,4] = torch.sum(torch.outer(self.layer0[:,:,1], self.layer0[:,:,4]), 2)
+        self.layer0[:,:,5] = torch.sum(torch.outer(self.layer0[:,:,2], self.layer0[:,:,5]), 2)
+        self.layer0[:,:,6] = torch.sum(torch.outer(self.layer0[:,:,3], self.layer0[:,:,6]), 2)
+        self.layer0[:,:,7] = torch.sum(torch.outer(self.layer0[:,:,4], self.layer0[:,:,7]), 2)
+        self.layer0[:,:,8] = torch.sum(torch.outer(self.layer0[:,:,5], self.layer0[:,:,8]), 2)
+        self.layer0[:,:,9] = torch.sum(torch.outer(self.layer0[:,:,6], self.layer0[:,:,9]), 2)
+        self.layer0[:,:,10] = torch.sum(torch.outer(self.layer0[:,:,7], self.layer0[:,:,10]), 2)
+        self.layer0[:,:,11] = torch.sum(torch.outer(self.layer0[:,:,8], self.layer0[:,:,11]), 2)
+        self.layer0[:,:,12] = torch.sum(torch.outer(self.layer0[:,:,9], self.layer0[:,:,12]), 2)
+        self.layer0[:,:,13] = torch.sum(torch.outer(self.layer0[:,:,10], self.layer0[:,:,13]), 2)
+        self.layer0[:,:,13] = torch.sum(torch.outer(self.layer0[:,:,11], self.layer0[:,:,13]), 2)
+        self.layer0[:,:,13] = torch.sum(torch.outer(self.layer0[:,:,12], self.layer0[:,:,13]), 2)
+
+        for i in range(13, self.depth - 1):
+            self.layer0[:,:,(i + 1)] = torch.sum(torch.outer(self.layer0[:,:,i], self.layer0[:,:,(i + 1)]), 2)
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
@@ -2153,38 +2176,38 @@ class velvet():
                     take_action.append(-1)
         
         # update the threshold and signal layers
-        torch.add(self.layer0, torch.mul(torch.atan(torch.mul(self.layer1, self.layer5)), self.layer6), out=self.layer1)
-        torch.add(self.layer0, torch.mul(torch.atan(torch.mul(self.layer2, self.layer7)), self.layer8), out=self.layer2)
-        torch.add(self.layer0, torch.mul(torch.atan(torch.mul(self.layer3, self.layer9)), self.layer10), out=self.layer3)
-        torch.add(self.layer0, torch.mul(torch.atan(torch.mul(self.layer4, self.layer11)), self.layer12), out=self.layer4)
+        torch.mul(self.layer0, torch.mul(torch.mul(torch.atan(self.layer1), self.layer5), self.layer6), out=self.layer1)
+        torch.mul(self.layer0, torch.mul(torch.mul(torch.atan(self.layer2), self.layer7), self.layer8), out=self.layer2)
+        torch.mul(self.layer0, torch.mul(torch.mul(torch.atan(self.layer3), self.layer9), self.layer10), out=self.layer3)
+        torch.mul(self.layer0, torch.mul(torch.mul(torch.atan(self.layer4), self.layer11), self.layer12), out=self.layer4)
 
         # update the emotion layers
-        torch.add(self.layer1, torch.mul(torch.atan(torch.mul(self.layer5, self.layer13)), self.layer14), out=self.layer5)
-        torch.add(self.layer1, torch.mul(torch.atan(torch.mul(self.layer6, self.layer15)), self.layer16), out=self.layer6)
-        torch.add(self.layer2, torch.mul(torch.atan(torch.mul(self.layer7, self.layer17)), self.layer18), out=self.layer7)
-        torch.add(self.layer2, torch.mul(torch.atan(torch.mul(self.layer8, self.layer19)), self.layer20), out=self.layer8)
-        torch.add(self.layer3, torch.mul(torch.atan(torch.mul(self.layer9, self.layer21)), self.layer22), out=self.layer9)
-        torch.add(self.layer3, torch.mul(torch.atan(torch.mul(self.layer10, self.layer23)), self.layer24), out=self.layer10)
-        torch.add(self.layer4, torch.mul(torch.atan(torch.mul(self.layer11, self.layer25)), self.layer26), out=self.layer11)
-        torch.add(self.layer4, torch.mul(torch.atan(torch.mul(self.layer12, self.layer27)), self.layer28), out=self.layer12)
+        torch.mul(self.layer1, torch.mul(torch.mul(torch.atan(self.layer5), self.layer13), self.layer14), out=self.layer5)
+        torch.mul(self.layer1, torch.mul(torch.mul(torch.atan(self.layer6), self.layer15), self.layer16), out=self.layer6)
+        torch.mul(self.layer2, torch.mul(torch.mul(torch.atan(self.layer7), self.layer17), self.layer18), out=self.layer7)
+        torch.mul(self.layer2, torch.mul(torch.mul(torch.atan(self.layer8), self.layer19), self.layer20), out=self.layer8)
+        torch.mul(self.layer3, torch.mul(torch.mul(torch.atan(self.layer9), self.layer21), self.layer22), out=self.layer9)
+        torch.mul(self.layer3, torch.mul(torch.mul(torch.atan(self.layer10), self.layer23), self.layer24), out=self.layer10)
+        torch.mul(self.layer4, torch.mul(torch.mul(torch.atan(self.layer11), self.layer25), self.layer26), out=self.layer11)
+        torch.mul(self.layer4, torch.mul(torch.mul(torch.atan(self.layer12), self.layer27), self.layer28), out=self.layer12)
 
         # update the personality layers
-        torch.add(self.layer5, torch.mul(torch.atan(torch.mul(self.layer13, self.layer29)), self.layer30), out=self.layer13)
-        torch.add(self.layer5, torch.mul(torch.atan(torch.mul(self.layer14, self.layer31)), self.layer32), out=self.layer14)
-        torch.add(self.layer6, torch.mul(torch.atan(torch.mul(self.layer15, self.layer33)), self.layer34), out=self.layer15)
-        torch.add(self.layer6, torch.mul(torch.atan(torch.mul(self.layer16, self.layer35)), self.layer36), out=self.layer16)
-        torch.add(self.layer7, torch.mul(torch.atan(torch.mul(self.layer17, self.layer37)), self.layer38), out=self.layer17)
-        torch.add(self.layer7, torch.mul(torch.atan(torch.mul(self.layer18, self.layer39)), self.layer40), out=self.layer18)
-        torch.add(self.layer8, torch.mul(torch.atan(torch.mul(self.layer19, self.layer41)), self.layer42), out=self.layer19)
-        torch.add(self.layer8, torch.mul(torch.atan(torch.mul(self.layer20, self.layer43)), self.layer44), out=self.layer20)
-        torch.add(self.layer9, torch.mul(torch.atan(torch.mul(self.layer21, self.layer45)), self.layer46), out=self.layer21)
-        torch.add(self.layer9, torch.mul(torch.atan(torch.mul(self.layer22, self.layer47)), self.layer48), out=self.layer22)
-        torch.add(self.layer10, torch.mul(torch.atan(torch.mul(self.layer23, self.layer49)), self.layer50), out=self.layer23)
-        torch.add(self.layer10, torch.mul(torch.atan(torch.mul(self.layer24, self.layer51)), self.layer52), out=self.layer24)
-        torch.add(self.layer11, torch.mul(torch.atan(torch.mul(self.layer25, self.layer53)), self.layer54), out=self.layer25)
-        torch.add(self.layer11, torch.mul(torch.atan(torch.mul(self.layer26, self.layer55)), self.layer56), out=self.layer26)
-        torch.add(self.layer12, torch.mul(torch.atan(torch.mul(self.layer27, self.layer57)), self.layer58), out=self.layer27)
-        torch.add(self.layer12, torch.mul(torch.atan(torch.mul(self.layer28, self.layer59)), self.layer60), out=self.layer28)
+        torch.mul(self.layer5, torch.mul(torch.mul(torch.atan(self.layer13), self.layer29), self.layer30), out=self.layer13)
+        torch.mul(self.layer5, torch.mul(torch.mul(torch.atan(self.layer14), self.layer31), self.layer32), out=self.layer14)
+        torch.mul(self.layer6, torch.mul(torch.mul(torch.atan(self.layer15), self.layer33), self.layer34), out=self.layer15)
+        torch.mul(self.layer6, torch.mul(torch.mul(torch.atan(self.layer16), self.layer35), self.layer36), out=self.layer16)
+        torch.mul(self.layer7, torch.mul(torch.mul(torch.atan(self.layer17), self.layer37), self.layer38), out=self.layer17)
+        torch.mul(self.layer7, torch.mul(torch.mul(torch.atan(self.layer18), self.layer39), self.layer40), out=self.layer18)
+        torch.mul(self.layer8, torch.mul(torch.mul(torch.atan(self.layer19), self.layer41), self.layer42), out=self.layer19)
+        torch.mul(self.layer8, torch.mul(torch.mul(torch.atan(self.layer20), self.layer43), self.layer44), out=self.layer20)
+        torch.mul(self.layer9, torch.mul(torch.mul(torch.atan(self.layer21), self.layer45), self.layer46), out=self.layer21)
+        torch.mul(self.layer9, torch.mul(torch.mul(torch.atan(self.layer22), self.layer47), self.layer48), out=self.layer22)
+        torch.mul(self.layer10, torch.mul(torch.mul(torch.atan(self.layer23), self.layer49), self.layer50), out=self.layer23)
+        torch.mul(self.layer10, torch.mul(torch.mul(torch.atan(self.layer24), self.layer51), self.layer52), out=self.layer24)
+        torch.mul(self.layer11, torch.mul(torch.mul(torch.atan(self.layer25), self.layer53), self.layer54), out=self.layer25)
+        torch.mul(self.layer11, torch.mul(torch.mul(torch.atan(self.layer26), self.layer55), self.layer56), out=self.layer26)
+        torch.mul(self.layer12, torch.mul(torch.mul(torch.atan(self.layer27), self.layer57), self.layer58), out=self.layer27)
+        torch.mul(self.layer12, torch.mul(torch.mul(torch.atan(self.layer28), self.layer59), self.layer60), out=self.layer28)
 
         
         return take_action
