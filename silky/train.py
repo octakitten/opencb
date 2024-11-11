@@ -35,10 +35,9 @@ def train(repo):
     logging.info('Starting a  new run...')
 
     mdl = model.velvet()
-    mdl.create(64, 64, 500, 500, 200, 0)
+    mdl.create(64, 64, 128, 500, 200, 0)
     attempts = 0
     wins = 0
-    print(dataset[0])
     tolerance = 20
     for j in range(0, 200000):
         attempts += 1
