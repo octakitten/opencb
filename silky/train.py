@@ -49,7 +49,7 @@ def train(repo, path):
             os.path.exists(progpath + "/width.npy")
             mdl.load(progpath)
         except:
-            mdl.create(64, 64, 200, 500, 200, 0)
+            mdl.create(64, 64, 64, 500, 200, 0)
     attempts = 0
     wins = 0
     tolerance = 20
