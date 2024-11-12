@@ -7,33 +7,79 @@ from . import model
 import os
 import random
 
-def time_chamber(repo = None, path = None):
+def time_chamber(options = None):
     print("Here we go...")
-    if repo == None: repo = ""
-    if path == None: path = ""
+    if options == None:
+        options = optionsobj("Maysee/tiny-imagenet", "", 64, 64, 200, 500, 200, 2)
     percent = 0.0
     while percent < .95:
-        train(repo,  path)
-        percent = test(repo, repo)
+        train(options)
+        percent = test(options.repo, options.path)
     print("Let's fucking GO!")
 
+class optionsobj():
+    '''
+    This object is used to pass options to the training and testing functions.
 
-def train(repo, path):
+    repo: the name of the dataset to use. This is the name of the dataset in the huggingface datasets library.
+    path: the path to save the model and logs to. This is a string that should be a valid path on your system.
+    height: the height of the input images. This is an integer.
+    width: the width of the input images. This is an integer.
+    depth: the depth of the input images. This is an integer.
+    bounds: the number of bounds to use in the model. This is an integer.
+    controls: the number of controls to use in the model. This is an integer.
+    senses: the number of senses to use in the model. This is an integer.
+    '''
+    repo = None
+    path = None
+    height = None
+    width = None
+    depth = None
+    bounds = None
+    controls = None
+    senses = None
+    def __init__(self, repo = None, path = None, height = None, width = None, depth = None, bounds = None, controls = None, senses = None):
+        self.repo = repo
+        self.path = path
+        self.height = height
+        self.width = width
+        self.depth = depth
+        self.bounds = bounds
+        self.controls = controls
+        self.senses = senses
+
+def train(options):
+    '''
+    This function trains a model on a dataset. You will need to decide on the parameters you want
+    the model to have and pass them into this function with the options object. Thats kind of just for
+    simplicity and readability's sake.
+
+    options: an optionsobj object that contains the options for the training run.
+    '''
+    # some basic error checking
+    if options.repo == "" : options.repo = "Maysee/tiny-imagenet"
+    if options.repo == None: raise ValueError("No dataset provided!")
+    if options.path == None: raise ValueError("No save path provided!")
+    if options.height == None: raise ValueError("No height provided!")
+    if options.width == None: raise ValueError("No width provided!")
+    if options.depth == None: raise ValueError("No depth provided!")
+    if options.bounds == None: raise ValueError("No bounds provided!")
+    if options.controls == None: raise ValueError("No controls provided!")
+    if options.senses == None: raise ValueError("No senses provided!")
 
     # set up the dataset so it can be used on the gpu
+    # also resize the images to a height and width that matches the model's input stream
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    if repo == "" : repo = "Maysee/tiny-imagenet"
-    dataset = datasets.load_dataset(repo, split="train")
+    dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
-    #batchsize = 8
-    #dataloader = DataLoader(dataformat, batch_size=batchsize)
+    dataformat = dataformat.map(torch.nn.functional.interpolate(dataformat["image"], size=(options.height, options.width)))
 
     # set up the save path and event logging
-    if path == "":
+    if options.path == "":
         path = os.getcwd() + "/default/"
-    basepath = path
-    savepath = path + "winners"
-    progpath = path + "in-prog"
+    basepath = options.path
+    savepath = options.path + "winners"
+    progpath = options.path + "in-prog"
     logfilename = basepath + "training.log"
     if not os.path.exists(savepath): os.makedirs(savepath, exist_ok=True)
     if not os.path.exists(progpath): os.makedirs(progpath, exist_ok=True)
@@ -51,7 +97,10 @@ def train(repo, path):
             os.path.exists(progpath + "/width.npy")
             mdl.load(progpath)
         except:
-            mdl.create(64, 64, 64, 500, 200, 2)
+            try:
+                mdl.create(options.height, options.width, options.depth, options.bounds, options.controls, options.senses) 
+            except:
+                raise ValueError("Unable to create or load a model! Maybe try setting the model options with the options object.")
     attempts = 0
     wins = 0
     tolerance = 20
