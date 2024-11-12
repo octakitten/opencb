@@ -31,7 +31,8 @@ def train(repo, path):
 
     # set up the save path and event logging
     if path == "":
-        path = "./default/"
+
+        path = os.getcwd() + "default/"
     basepath = path
     savepath = path + "winners"
     progpath = path + "in-prog"
@@ -100,7 +101,6 @@ def train(repo, path):
             wins += 1
             logging.info('WIN! Wins so far: ' + str(wins))
             mdl.save(savepath)
-            mdl.clear()
             tolerance += 1
         else:
             mdl.permute(tolerance)
