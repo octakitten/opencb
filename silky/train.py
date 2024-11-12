@@ -73,7 +73,7 @@ def train(repo, path):
         # longer the exposure time runs. this is something you'll have to
         # figure out a balance for as you work with training models
         exposure_time = 400
-        tally = np.zeros(exposure_time)
+        tally = np.zeros(200)
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
@@ -162,7 +162,7 @@ def test(repo, path):
         # figure out a balance for as you work with training models
         attempts += 1
         exposure_time = 400
-        tally = np.zeros(exposure_time)
+        tally = np.zeros(200)
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
