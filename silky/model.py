@@ -2118,7 +2118,7 @@ class velvet():
             torch.add(self.layer0[:, :, 0],  input_tensor[0, :, :], out=self.layer0[:, :, 0])
 
         # update layer0 based on the arctan function we're using, as well as inputs from the threshold and signal layers
-        torch.add(torch.mul(torch.mul(torch.atan(self.layer0), self.layer1), self.layer3), torch.mul(torch.mul(torch.atan(self.layer0), self.layer2), self.layer4))
+        torch.add(torch.add(torch.atan(torch.add(self.layer0, self.layer1)), self.layer3), torch.add(torch.atan(torch.add(self.layer0, self.layer2)), self.layer4))
 
         # do some rolls to simulate neurons sending messages to each other
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.float32)
