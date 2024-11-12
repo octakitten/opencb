@@ -368,7 +368,7 @@ class ferret():
         Copy a model's parameters to a new model.
         
         :Parameters:
-        model (general_dev2): the model to copy
+        model (ferret): the model to copy
         
         :Returns:
         none
@@ -852,7 +852,7 @@ class ferret():
 
         Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
         '''
-        model = general_dev2()
+        model = ferret()
         model.copy(self)
         model.__new_thresholds()
         model.__new_propensity()
@@ -1702,7 +1702,7 @@ class hampster():
         Copy a model's parameters to a new model.
         
         :Parameters:
-        model (general_dev2): the model to copy
+        model (ferret): the model to copy
         
         :Returns:
         none
