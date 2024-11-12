@@ -1182,7 +1182,7 @@ class velvet():
     pos_propensity  = 0
     neg_propensity = 0
 
-    propensity = 1.1
+    propensity = 100
     
     # layers:
     # neuron layer
@@ -2179,23 +2179,56 @@ class velvet():
                     take_action.append(-1)
         
         # update the threshold and signal layers
-        torch.add(self.layer0, torch.add(torch.atan(torch.add(self.layer1, self.layer5)), self.layer6), out=self.layer1)
-        torch.add(self.layer0, torch.add(torch.atan(torch.add(self.layer2, self.layer7)), self.layer8), out=self.layer2)
-        torch.add(self.layer0, torch.add(torch.atan(torch.add(self.layer3, self.layer9)), self.layer10), out=self.layer3)
-        torch.add(self.layer0, torch.add(torch.atan(torch.add(self.layer4, self.layer11)), self.layer12), out=self.layer4)
+        torch.add(torch.atan(torch.add(self.layer1, torch.add(self.layer0, self.layer5))), torch.add(self.layer1, self.layer6), out=self.layer0)
+        torch.add(torch.atan(torch.add(self.layer2, torch.add(self.layer0, self.layer7))), torch.add(self.layer2, self.layer8), out=self.layer0)
+        torch.add(torch.atan(torch.add(self.layer3, torch.add(self.layer0, self.layer9))), torch.add(self.layer3, self.layer10), out=self.layer0)
+        torch.add(torch.atan(torch.add(self.layer4, torch.add(self.layer0, self.layer11))), torch.add(self.layer4, self.layer12), out=self.layer0)
+        '''
+        torch.add(torch.atan(torch.add(self.layer1, torch.mul(self.layer0, self.layer5))), torch.mul(self.layer0, self.layer6), out=self.layer1)
+        torch.add(torch.atan(torch.add(self.layer2, torch.mul(self.layer0, self.layer7))), torch.mul(self.layer0, self.layer8), out=self.layer2)
+        torch.add(torch.atan(torch.add(self.layer3, torch.mul(self.layer0, self.layer9))), torch.mul(self.layer0, self.layer10), out=self.layer3)
+        torch.add(torch.atan(torch.add(self.layer4, torch.mul(self.layer0, self.layer11))), torch.mul(self.layer0, self.layer12), out=self.layer4)
+        '''
 
         # update the emotion layers
-        torch.add(self.layer1, torch.add(torch.atan(torch.add(self.layer5, self.layer13)), self.layer14), out=self.layer5)
-        torch.add(self.layer1, torch.add(torch.atan(torch.add(self.layer6, self.layer15)), self.layer16), out=self.layer6)
+        torch.add(torch.atan(torch.add(self.layer5, torch.add(self.layer1, self.layer13))), torch.add(self.layer1, self.layer14), out=self.layer5)
+        torch.add(torch.atan(torch.add(self.layer6, torch.add(self.layer1, self.layer15))), torch.add(self.layer1, self.layer16), out=self.layer6)
+        torch.add(torch.atan(torch.add(self.layer7, torch.add(self.layer2, self.layer17))), torch.add(self.layer2, self.layer18), out=self.layer7)
+        torch.add(torch.atan(torch.add(self.layer8, torch.add(self.layer2, self.layer19))), torch.add(self.layer2, self.layer20), out=self.layer8)
+        torch.add(torch.atan(torch.add(self.layer9, torch.add(self.layer3, self.layer21))), torch.add(self.layer3, self.layer22), out=self.layer9)
+        torch.add(torch.atan(torch.add(self.layer10, torch.add(self.layer3, self.layer23))), torch.add(self.layer3, self.layer24), out=self.layer10)
+        torch.add(torch.atan(torch.add(self.layer11, torch.add(self.layer4, self.layer25))), torch.add(self.layer4, self.layer26), out=self.layer11)
+        torch.add(torch.atan(torch.add(self.layer12, torch.add(self.layer4, self.layer27))), torch.add(self.layer4, self.layer28), out=self.layer12)
+
+        '''
+        torch.add(torch.atan(torch.add(self.layer5, torch.mul(self.layer , self.layer13))), torch.mul(self.layer0, self.layer14), out=self.layer5)
+        torch.add(torch.atan(torch.add(self.layer6, torch.mul(self.layer6, self.layer15))), torch.mul(self.layer6, self.layer16), out=self.layer6)
         torch.add(self.layer2, torch.add(torch.atan(torch.add(self.layer7, self.layer17)), self.layer18), out=self.layer7)
         torch.add(self.layer2, torch.add(torch.atan(torch.add(self.layer8, self.layer19)), self.layer20), out=self.layer8)
         torch.add(self.layer3, torch.add(torch.atan(torch.add(self.layer9, self.layer21)), self.layer22), out=self.layer9)
         torch.add(self.layer3, torch.add(torch.atan(torch.add(self.layer10, self.layer23)), self.layer24), out=self.layer10)
         torch.add(self.layer4, torch.add(torch.atan(torch.add(self.layer11, self.layer25)), self.layer26), out=self.layer11)
         torch.add(self.layer4, torch.add(torch.atan(torch.add(self.layer12, self.layer27)), self.layer28), out=self.layer12)
+        '''
 
         # update the personality layers
-        torch.add(self.layer5, torch.add(torch.atan(torch.add(self.layer13, self.layer29)), self.layer30), out=self.layer13)
+        torch.add(torch.atan(torch.add(self.layer13, torch.add(self.layer5, self.layer29))), torch.add(self.layer5, self.layer30), out=self.layer13)
+        torch.add(torch.atan(torch.add(self.layer14, torch.add(self.layer5, self.layer31))), torch.add(self.layer5, self.layer32), out=self.layer14)
+        torch.add(torch.atan(torch.add(self.layer15, torch.add(self.layer6, self.layer33))), torch.add(self.layer6, self.layer34), out=self.layer15)
+        torch.add(torch.atan(torch.add(self.layer16, torch.add(self.layer6, self.layer35))), torch.add(self.layer6, self.layer36), out=self.layer16)
+        torch.add(torch.atan(torch.add(self.layer17, torch.add(self.layer7, self.layer37))), torch.add(self.layer7, self.layer38), out=self.layer17)
+        torch.add(torch.atan(torch.add(self.layer18, torch.add(self.layer7, self.layer39))), torch.add(self.layer7, self.layer40), out=self.layer18)
+        torch.add(torch.atan(torch.add(self.layer19, torch.add(self.layer8, self.layer41))), torch.add(self.layer8, self.layer42), out=self.layer19)
+        torch.add(torch.atan(torch.add(self.layer20, torch.add(self.layer8, self.layer43))), torch.add(self.layer8, self.layer44), out=self.layer20)
+        torch.add(torch.atan(torch.add(self.layer21, torch.add(self.layer9, self.layer45))), torch.add(self.layer9, self.layer46), out=self.layer21)
+        torch.add(torch.atan(torch.add(self.layer22, torch.add(self.layer9, self.layer47))), torch.add(self.layer9, self.layer48), out=self.layer22)
+        torch.add(torch.atan(torch.add(self.layer23, torch.add(self.layer10, self.layer49))), torch.add(self.layer10, self.layer50), out=self.layer23)
+        torch.add(torch.atan(torch.add(self.layer24, torch.add(self.layer10, self.layer51))), torch.add(self.layer10, self.layer52), out=self.layer24)
+        torch.add(torch.atan(torch.add(self.layer25, torch.add(self.layer11, self.layer53))), torch.add(self.layer11, self.layer54), out=self.layer25)
+        torch.add(torch.atan(torch.add(self.layer26, torch.add(self.layer11, self.layer55))), torch.add(self.layer11, self.layer56), out=self.layer26)
+        torch.add(torch.atan(torch.add(self.layer27, torch.add(self.layer12, self.layer57))), torch.add(self.layer12, self.layer58), out=self.layer27)
+        torch.add(torch.atan(torch.add(self.layer28, torch.add(self.layer12, self.layer59))), torch.add(self.layer12, self.layer60), out=self.layer28)
+        '''
         torch.add(self.layer5, torch.add(torch.atan(torch.add(self.layer14, self.layer31)), self.layer32), out=self.layer14)
         torch.add(self.layer6, torch.add(torch.atan(torch.add(self.layer15, self.layer33)), self.layer34), out=self.layer15)
         torch.add(self.layer6, torch.add(torch.atan(torch.add(self.layer16, self.layer35)), self.layer36), out=self.layer16)
@@ -2211,6 +2244,7 @@ class velvet():
         torch.add(self.layer11, torch.add(torch.atan(torch.add(self.layer26, self.layer55)), self.layer56), out=self.layer26)
         torch.add(self.layer12, torch.add(torch.atan(torch.add(self.layer27, self.layer57)), self.layer58), out=self.layer27)
         torch.add(self.layer12, torch.add(torch.atan(torch.add(self.layer28, self.layer59)), self.layer60), out=self.layer28)
+        '''
 
         
         return take_action
