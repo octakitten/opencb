@@ -1668,10 +1668,10 @@ class velvet():
         self.control_thresholds_pos = torch.tensor(data=1, device=self.device)
         self.control_thresholds_neg = torch.tensor(data=1, device=self.device)
         self.control_thresholds_pos = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=self.device)
-        torch.add(torch.mul(self.control_thresholds_pos, self.bounds, out=self.control_thresholds_pos), 1, out=self.control_thresholds_pos)
+        torch.add(torch.mul(self.control_thresholds_pos, self.pos_propensity, out=self.control_thresholds_pos), 1, out=self.control_thresholds_pos)
         random_gen.seed()
         self.control_thresholds_neg = torch.rand(size=(self.num_controls, self.num_controls), generator=random_gen, device=self.device)
-        torch.subtract(-1, torch.divide(self.control_thresholds_neg, self.bounds, out=self.control_thresholds_neg), out=self.control_thresholds_neg)
+        torch.subtract(-1, torch.divide(self.control_thresholds_neg, self.neg_propensity, out=self.control_thresholds_neg), out=self.control_thresholds_neg)
         return
 
     def __new_sensations(self):
