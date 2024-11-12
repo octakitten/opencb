@@ -1182,7 +1182,7 @@ class velvet():
     pos_propensity  = 0
     neg_propensity = 0
 
-    propensity = .001
+    propensity = 1.1
     
     # layers:
     # neuron layer
