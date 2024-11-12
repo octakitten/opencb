@@ -33,8 +33,8 @@ def train(repo, path):
     savepath = path + "winners"
     progpath = path + "in-prog"
     logfilename = basepath + "training.log"
-    if not os.path.exists(savepath): os.makedirs(os.path.dirname(savepath), exist_ok=True)
-    if not os.path.exists(progpath): os.makedirs(os.path.dirname(progpath), exist_ok=True)
+    if not os.path.exists(savepath): os.makedirs(savepath, exist_ok=True)
+    if not os.path.exists(progpath): os.makedirs(progpath, exist_ok=True)
     logging.basicConfig(level=logging.DEBUG, filename=logfilename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info('Starting a  new run...')
