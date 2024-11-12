@@ -104,7 +104,7 @@ def train(repo, path):
             mdl.save(savepath)
             tolerance += 1
         else:
-            mdl.permute(tolerance)
+            mdl.permute(1, tolerance)
             if tolerance > 2 : tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
