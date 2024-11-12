@@ -9,7 +9,7 @@ import random
 
 # this isnt used currently. might deleted later...
 def time_chamber():
-    print("It's so over...")
+    print("Here we go...")
     percent = 0.0
     while percent < .95:
         train("",  "")
