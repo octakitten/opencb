@@ -2165,7 +2165,7 @@ class velvet():
         # if they are, then return the action(s) to take
         take_action = []
         
-        print(len(self.control_thresholds_pos))
+        #print(len(self.control_thresholds_pos))
         #print(self.layer0)
         #print('layer0')
         for i in range(0, self.num_controls):
