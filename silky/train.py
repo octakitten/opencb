@@ -9,6 +9,7 @@ import random
 
 # this isnt used currently. might deleted later...
 def time_chamber():
+    print("It's so over...")
     percent = 0.0
     while percent < .95:
         train("",  "")
@@ -27,14 +28,13 @@ def train(repo, path):
 
     # set up the save path and event logging
     if path == "":
-
         path = os.getcwd() + "/default/"
     basepath = path
     savepath = path + "winners"
     progpath = path + "in-prog"
     logfilename = basepath + "training.log"
-    if not os.path.exists(savepath): os.makedirs(os.path.dirname(savepath))
-    if not os.path.exists(progpath): os.makedirs(os.path.dirname(progpath))
+    if not os.path.exists(savepath): os.makedirs(os.path.dirname(savepath), exist_ok=True)
+    if not os.path.exists(progpath): os.makedirs(os.path.dirname(progpath), exist_ok=True)
     logging.basicConfig(level=logging.DEBUG, filename=logfilename, filemode="a+",
                         format="%(asctime)-15s %(levelname)-8s %(message)s")
     logging.info('Starting a  new run...')
@@ -72,7 +72,7 @@ def train(repo, path):
         # time in order to make accurate predictions. but it consumes resources the 
         # longer the exposure time runs. this is something you'll have to
         # figure out a balance for as you work with training models
-        exposure_time = 200
+        exposure_time = 400
         tally = np.zeros(exposure_time)
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
@@ -161,7 +161,7 @@ def test(repo, path):
         # longer the exposure time runs. this is something you'll have to
         # figure out a balance for as you work with training models
         attempts += 1
-        exposure_time = 200
+        exposure_time = 400
         tally = np.zeros(exposure_time)
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
