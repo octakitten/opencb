@@ -1853,10 +1853,10 @@ class velvet():
         threshp = self.thresholds_pos
         threshn = self.thresholds_neg
         self.__new_thresholds()
-        torch.divide(self.thresholds_pos, fraction, out=self.thresholds_pos)
-        torch.divide(self.thresholds_neg, fraction, out=self.thresholds_neg)
-        torch.add(self.thresholds_pos, threshp, out=self.thresholds_pos)
-        torch.add(self.thresholds_neg, threshn, out=self.thresholds_neg)
+        torch.divide(self.control_thresholds_pos, fraction, out=self.control_thresholds_pos)
+        torch.divide(self.control_thresholds_neg, fraction, out=self.control_thresholds_neg)
+        torch.add(self.control_thresholds_pos, threshp, out=self.control_thresholds_pos)
+        torch.add(self.control_thresholds_neg, threshn, out=self.control_thresholds_neg)
 
         temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
         random_gen = torch.Generator(device=self.device)
