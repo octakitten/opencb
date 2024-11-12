@@ -1003,7 +1003,14 @@ class ferret():
         #print(input_tensor)
         #print('layer0')
         #print(self.layer0)o
-        torch.add(self.layer0[:, :, 1],  input_tensor, out=self.layer0[:, :, 1])
+        try:
+            torch.add(self.layer0[:, :, 0],  input_tensor[0,:,:], out=self.layer0[:, :, 0])
+            torch.add(self.layer0[:, :, 1],  input_tensor[1,:,:], out=self.layer0[:, :, 1])
+            torch.add(self.layer0[:, :, 2],  input_tensor[2,:,:], out=self.layer0[:, :, 2])
+        except:
+            torch.add(self.layer0[:, :, 0],  input_tensor, out=self.layer0[:, :, 0])
+
+
         #print("1")
         #print('layer0')
         #print(self.layer0)
