@@ -2,4 +2,5 @@ import silky
 from silky import iteration
 from silky import train as tr
 
-tr.time_chamber()
+opts = tr.options("ILSVRC/imagenet-1k", "", 256, 256, 500, 500, 200, 2)
+tr.time_chamber(opts)
