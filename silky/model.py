@@ -1861,7 +1861,7 @@ class velvet():
         temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
         random_gen = torch.Generator(device=self.device)
         random_gen.seed()
-        torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
+        torch.multiply(input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), other=self.pos_propensity[0,0], out=temp)
         torch.divide(temp, fraction, out=temp)
         torch.add(self.layer29, temp, out=self.layer29)
         temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
