@@ -7,14 +7,16 @@ from . import model
 import os
 import random
 
-# this isnt used currently. might deleted later...
-def time_chamber():
+def time_chamber(repo = None, path = None):
     print("Here we go...")
+    if repo == None: repo = ""
+    if path == None: path = ""
     percent = 0.0
     while percent < .95:
-        train("",  "")
-        percent = test("", "")
-    print("We're so back.")
+        train(repo,  path)
+        percent = test(repo, repo)
+    print("Let's fucking GO!")
+
 
 def train(repo, path):
 

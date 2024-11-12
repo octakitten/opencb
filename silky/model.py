@@ -1309,6 +1309,7 @@ class hampster():
         print('new personality')
         self.__new_sensations()
         print('new sensations')
+
         return
 
     def __new_controls(self):
