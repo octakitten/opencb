@@ -40,7 +40,7 @@ def train(repo, path):
     logging.info('Starting a  new run...')
 
     # initialize the model if we need to, but default to loading it in
-    mdl = model.velvet()
+    mdl = model.ferret()
     try:
         os.path.exists(savepath + "/width.npy")
         mdl.load(savepath)
@@ -49,7 +49,7 @@ def train(repo, path):
             os.path.exists(progpath + "/width.npy")
             mdl.load(progpath)
         except:
-            mdl.create(64, 64, 64, 500, 200, 0)
+            mdl.create(64, 64, 64, 500, 200, 2)
     attempts = 0
     wins = 0
     tolerance = 20
@@ -74,13 +74,18 @@ def train(repo, path):
         # figure out a balance for as you work with training models
         exposure_time = 400
         tally = np.zeros(200)
+        answer = dataformat[n]["label"].item()
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
+            current_guess = np.argmax(tally)
+            if current_guess == answer:
+                mdl.train(0, 1000, True)
+            else:
+                mdl.train(1, 500, False)
 
         # see how the model did an log it.
         guess = np.argmax(tally)
-        answer = dataformat[n]["label"].item()
         logging.info('{ "item# : "' + str(n) + '" }')
         logging.info('{ "guess" : "' + str(guess) + '" }')
         logging.info('{ "answer"  : "' + str(answer) + '" }')
@@ -131,7 +136,7 @@ def test(repo, path):
     logging.info('Starting a  new run...')
 
     # initialize the model if we need to, but default to loading it in
-    mdl = model.velvet()
+    mdl = model.ferret()
     try:
         os.path.exists(savepath + "/width.npy")
         mdl.load(savepath)

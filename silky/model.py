@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import os
 
-class general_dev2():
+class ferret():
         
     device = -1
     
@@ -518,13 +518,21 @@ class general_dev2():
         #    self.thresholds_pos.append(np.random.uniform(low=1, high=threshhold_max))
         #    self.thresholds_neg.append(np.random.uniform(low=self.range_low, high=1))
         return
-    
+     
     def __new_controls(self):
         self.controls = []
         for i in range(0, self.num_controls):
-            self.controls.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
+            wegood = False
+            newctl = 0
+            while wegood == False:
+                newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), int((self.depth - 1) * .37))
+                wegood = True
+                for ctl in self.controls:
+                    if ctl == newctl:
+                        wegood = False
+            self.controls.append(newctl)
         return
-    
+
     def __new_personality(self):
             
         '''
@@ -785,7 +793,7 @@ class general_dev2():
     def __new_sensations(self):
         self.sensations = []
         for i in range(0, self.num_sensations):
-            self.sensations.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), np.random.randint(low=1, high=self.depth)))
+            self.sensations.append((np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), int(self.depth * .5)))
         return
 
     def __pos_sensation(self, sense_num, amt):
@@ -955,7 +963,6 @@ class general_dev2():
         self.dna32 = torch.divide(self.dna32, deg,).to(dtype=torch.int16)
         return
 
-    # @TODO: NaNs... NaNs everywhere!
     def update(self, input_image):
         '''
         Main control function for the model.
@@ -1163,7 +1170,7 @@ class general_dev2():
 
 
 
-class velvet():
+class hampster():
     # variables and definitions
     device = -1
     min_dx = -1
