@@ -75,7 +75,7 @@ def train(repo, path):
         exposure_time = 200
         tally = np.zeros(exposure_time)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataformat[n]["image"].item()))
+            output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
 
         # see how the model did an log it.
@@ -164,7 +164,7 @@ def test(repo, path):
         exposure_time = 200
         tally = np.zeros(exposure_time)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataformat[n]["image"].item()))
+            output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
 
         # see how the model did an log it.
