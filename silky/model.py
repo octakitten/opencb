@@ -1850,8 +1850,8 @@ class velvet():
         Once a minimal working model has been found, this function will be what we primarily use to iterate on it.
         '''
 
-        threshp = self.thresholds_pos
-        threshn = self.thresholds_neg
+        threshp = self.control_thresholds_pos
+        threshn = self.control_thresholds_neg
         self.__new_thresholds()
         torch.divide(self.control_thresholds_pos, fraction, out=self.control_thresholds_pos)
         torch.divide(self.control_thresholds_neg, fraction, out=self.control_thresholds_neg)
