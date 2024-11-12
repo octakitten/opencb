@@ -57,6 +57,7 @@ def train(repo, path):
     # set up tools we need to randomize the data selection process
     len_dataset = len(dataformat)
     numbers_to_use = list(range(0, len_dataset))
+    last_win = 0
 
     # loop over the dataset pseudo randomly
     for i in range(0, len_dataset):
@@ -103,9 +104,14 @@ def train(repo, path):
             logging.info('WIN! Wins so far: ' + str(wins))
             mdl.save(savepath)
             tolerance += 1
+            last_win += 1
         else:
-            mdl.permute(1, tolerance)
-            if tolerance > 2 : tolerance -= 1
+            if last_win > 5:
+                mdl.load(savepath)
+            else:
+                mdl.permute(1, tolerance)
+            if tolerance > 2: 
+                tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
