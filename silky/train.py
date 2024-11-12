@@ -32,7 +32,7 @@ def train(repo, path):
     # set up the save path and event logging
     if path == "":
 
-        path = os.getcwd() + "default/"
+        path = os.getcwd() + "/default/"
     basepath = path
     savepath = path + "winners"
     progpath = path + "in-prog"
