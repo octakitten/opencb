@@ -31,6 +31,7 @@ class optionsobj():
     senses: the number of senses to use in the model. This is an integer.
     '''
     repo = None
+    hftoken = None
     path = None
     height = None
     width = None
@@ -39,10 +40,11 @@ class optionsobj():
     controls = None
     senses = None
     exposure = None
-    def __init__(self, repo = None, path = None, 
+    def __init__(self, repo = None, hftoken = None, path = None, 
                  height = None, width = None, depth = None, 
                  bounds = None, controls = None, senses = None, exposure = None):
         self.repo = repo
+        self.hftoken = hftoken
         self.path = path
         self.height = height
         self.width = width
@@ -73,7 +75,10 @@ def train(options):
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dataset = datasets.load_dataset(options.repo, split="train")
+    if options.hftoken != None:
+        dataset = datasets.load_dataset(options.repo, split="train", api_token=options.hftoken)
+    else:
+        dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
     dataformat = dataformat.map(torch.nn.functional.interpolate(dataformat["image"], size=(options.height, options.width)))
 
