@@ -38,7 +38,10 @@ class optionsobj():
     bounds = None
     controls = None
     senses = None
-    def __init__(self, repo = None, path = None, height = None, width = None, depth = None, bounds = None, controls = None, senses = None):
+    exposure = None
+    def __init__(self, repo = None, path = None, 
+                 height = None, width = None, depth = None, 
+                 bounds = None, controls = None, senses = None, exposure = None):
         self.repo = repo
         self.path = path
         self.height = height
@@ -124,7 +127,8 @@ def train(options):
         # time in order to make accurate predictions. but it consumes resources the 
         # longer the exposure time runs. this is something you'll have to
         # figure out a balance for as you work with training models
-        exposure_time = 400
+        if options.exposure == None: exposure_time = 400
+        else: exposure_time = options.exposure
         tally = np.zeros(200)
         answer = dataformat[n]["label"].item()
         for k in range(0, exposure_time):
@@ -155,11 +159,13 @@ def train(options):
             logging.info('WIN! Wins so far: ' + str(wins))
             mdl.save(savepath)
             tolerance += 1
-            last_win += 1
+            last_win = 0
         else:
-            if last_win > 5:
+            if last_win > 9:
                 mdl.load(savepath)
+                last_win = 0
             else:
+                last_win += 1
                 mdl.permute(1, tolerance)
             if tolerance > 2: 
                 tolerance -= 1
