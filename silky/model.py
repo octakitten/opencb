@@ -133,6 +133,7 @@ class ferret():
 
     propensity = 0
     
+    outputs = 0
 
     def __init__(self):
         if torch.cuda.is_available():
@@ -988,6 +989,8 @@ class ferret():
         implement them.
         '''
 
+        self.outputs = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.int16)
+
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
@@ -1036,7 +1039,7 @@ class ferret():
         
         self.pos_fre_amt = torch.div(self.pos_fire_amt, 6).to(dtype=torch.int16)
         self.neg_fire_amt = torch.div(self.neg_fire_amt, 6).to(dtype=torch.int16)
-        
+
         # use the firing multipliers to change the output values of the firing neurons
         torch.add(self.pos_fire_amt, self.layer3, out=self.pos_fire_amt_mult)
         torch.sub(self.neg_fire_amt, self.layer4, out=self.neg_fire_amt_mult)
@@ -1088,23 +1091,21 @@ class ferret():
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
-        take_action = []
-        
-        #print(self.layer0)
-        #print('layer0')
         for i in range(0, self.num_controls):
             if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
-                take_action.append(True)
+                self.outputs[i] = 1
                 self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
             else:
                 if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
-                    take_action.append(False)
+                    self.outputs[i] = 0
                 else:
-                    take_action.append(-1)
+                    self.outputs[i] = -1
         
-        # update layer0 by setting all the firing neurons to 0
-        torch.mul(self.layer0, torch.logical_not(self.positive_firing), out=self.layer0)
-        torch.mul(self.layer0, torch.logical_not(self.negative_firing), out=self.layer0)
+        # update layer0 by decrementing all the firing neurons by their firing amount
+        torch.sub(self.layer0, self.pos_fire_amt, out=self.layer0)
+        torch.sub(self.layer0, self.neg_fire_amt, out=self.layer0)
+        #torch.mul(self.layer0, torch.logical_not(self.positive_firing), out=self.layer0)
+        #torch.mul(self.layer0, torch.logical_not(self.negative_firing), out=self.layer0)
 
         # update the threshold layers
         torch.add(torch.mul(self.positive_firing, self.emotion1), self.layer1, out=self.layer1)
@@ -1172,12 +1173,209 @@ class ferret():
         torch.add(torch.mul(self.negative_resting, self.dna32), self.personality16, out=self.personality16)
 
         #print(take_action)
-        return take_action
+        return self.outputs
+
+    def backprop(self, guess, answer, constant = None):
+        '''
+        Backpropagation function
+
+        :Parameters:
+        answer (tensor): the correct answer to the model's output
+
+        :Returns:
+        none
+
+        :Comments:
+        This does not work like traditional backprop does. We have to sort of approximate the process of 
+        taking a gradient because this system is not differentiable over time. In fact, it's not even 
+        representable by a function in the first place. Only by its own algorith I believe. In order to
+        achieve the results we would get from backprop in a more usual neural network design, I think
+        we have to represent the gradient in a probability graph rather than a vector graph. Essentially,
+        we treat the actual results of the network as unknowably random, and predict the probability 
+        of a specific neuron firing based on the probability that the 6 neurons its in contact with
+        would have fired. We look at what would have needed to happen for each neuron to fire, and assign a 
+        probability to each of those things. Then we look at what actually happened and adjust the dna
+        values to try to move those probabilities closer to the results we need, rather than the results
+        we got.
+
+        The nice thing here is that we can use this backprop function immediately following a call to the
+        update function. This means all the data we need should be still in place and unchanged. First up
+        we identify which neuron(s) needed to fire, and which did not. Then we try to look at dna value
+        configurations that would have resulted in the correct firing state last turn. We adjust the dna
+        values of its 6 in-contact neurons to a state that would have resulted in the neuron firing... but
+        well, here's where things get complicated. The probability that these neurons fire depends on their
+        contact neurons as well. It starts to become prohibitively difficult to pick out a specific 
+        configuration that we want to shoot for when iterating over the whole network. Thus we need to nudge
+        neurons rather than set theto a specific value. If a neuron needed to fire and didn't, we can 
+        change the dna values of its contact neurons and then propagate out from them. This means that for each 
+        neuron that we need to change, we also need to change its own contact neurons. This will have a 
+        recursive effect on the origin neuron too, which is fine I think. 
+
+        Anyway, to lay out how this process will work: pick an output neuron and an answer that it should have
+        given but didn't. Nudge its contact neurons in a direction that would have increased the probability
+        of the output neuron firing. Then, treat each of those contact neurons as an output neuron that 
+        should have had a different answer, depending no what we needed from them. Nudge their contact neurons
+        appropriately too, then continue this process throughout the whole network.
+
+        How much a given neuron needs to be nudged should depend on its contribution to the probability 
+        of the output neuron firing. This will probably best be represented with a function that 
+        depends on the distance between the neurons actual value and the firing value it needed to get to.
+        If that value is closer, then the neuron was more likely to fire, and so was contributing more and
+        should be nudged more. Note that the contribution of the output neuron itself is the highest 
+        contribution of all, and so it should be nudged the most. 
+
+        Now, how can we implement this algorithm? We need to start from the output neuron and work outward
+        through the network. We'll need to iterate in steps that sort of add 3d layers on top of the part 
+        of the network we just nudged. The formual we want to use should look like: 
+        Nudge ~= k / ((On - Oa) * (Cn - Ca))
+        where k is some constant that we can manipulate, O is the output neuron and C is the contact 
+        neuron, and n subscript is the needed val while a subscript is the actual val.
+
+        One thing to note is that there are 4 states a neuron can potentially be in, and it will be in
+        2 of them at a time at all times. This means that there's two states we need to nudge towards:
+        the correct firing state and the correct resting state. These will be split between the positive
+        and negative states though, so we nudge to the right positive state and then the right negative state
+        seperately.
+
+        Ok, let's get to it I guess.
+        '''
+
+        # first, we pick an item from the output layer and compare it to its corresponding item in the answer key.
+        # if they match, cool, on to the next one. if they dont, nudge the dna values in an appropriate
+        # direction.
+        cons = 0.37
+        if constant != None: cons = constant
+
+        for i in range(0, len(self.outputs)):
+            if (guess[i] != answer[i]):
+                for j in range(0, abs(guess[i] - answer[i])):
+                    if guess[i] == 0: cons = cons / 2
+                    # if the output was 1 and it should have been 0, then we need to nudge the dna values
+                    # of the contact neurons in the direction that would have made the output neuron not fire
+                    # if (self.outputs[i] == 1):
+                    # first, we need to find the contact neurons and nudge them in the right direction
+                    # to make the output neuron not fire
+                    '''
+                    cons = 1
+                    outx = self.controls[i][0]
+                    outy = self.controls[i][1]
+                    outz = self.controls[i][2]
+                    dx = 1
+                    dy = 0
+                    dz = 0
+                    # oloss should be the difference between the output neurons actual value and the closest value it could have had that would have satisfied the conditions we want, which in this case is for it to not fire.
+                    # thus it should be the remaining value left after the neuron fired
+                    oloss = self.layer0[outx, outy, outz]
+                    
+                    # closs is a bit more complicated, its the values of the contact neuron and its dna that would have helped move the output neuron to the state it should have been in
+                    # since the output fired when it shouldnt have, the closs should be something that would help minimize the oloss
+                    # thus, when the output neuron shouldnt fire, the contact neurons shouldnt fire either... but only if their firing would have helped the output neuron not fire
+                    # we will have to take the firing value of the contact neuron and 
+                    closs1 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)] 
+                    closs2 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
+                    closs3 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
+                    closs4 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
+
+                    nudge1 = cons / (oloss * closs1)
+                    nudge2 = cons / (oloss * closs2)
+                    nudge3 = cons / (oloss * closs3)
+                    nudge4 = cons / (oloss * closs4)
+
+                    self.dna1[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna2[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna3[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna4[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna5[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna6[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna7[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna8[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna9[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna10[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna11[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna12[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna13[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna14[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna15[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna16[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna17[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna18[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna19[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna20[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna21[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna22[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna23[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna24[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna25[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna26[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna27[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna28[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    self.dna29[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                    self.dna30[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                    self.dna31[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                    self.dna32[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+
+                    dx = -1
+                    dy = 0
+                    dz = 0
+
+                    closs1 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)]
+                    closs2 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
+                    closs3 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
+                    closs4 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
+                    '''
+                    # after this we just repeat this process across the entire network.
+                    # thing is, this whole process is incredibly slow in native python
+                    # we need to run this using tensors instead.
+                    # it should look like this:
+                    torch.add(self.dna1, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna1)
+                    torch.add(self.dna2, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna2)
+                    torch.add(self.dna3, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna3)
+                    torch.add(self.dna4, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna4)
+                    torch.add(self.dna5, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna5)
+                    torch.add(self.dna6, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna6)
+                    torch.add(self.dna7, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna7)
+                    torch.add(self.dna8, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna8)
+                    torch.add(self.dna9, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna9)
+                    torch.add(self.dna10, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna10)
+                    torch.add(self.dna11, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna11)
+                    torch.add(self.dna12, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna12)
+                    torch.add(self.dna13, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna13)
+                    torch.add(self.dna14, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna14)
+                    torch.add(self.dna15, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna15)
+                    torch.add(self.dna16, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna16)
+                    torch.add(self.dna17, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna17)
+                    torch.add(self.dna18, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna18)
+                    torch.add(self.dna19, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna19)
+                    torch.add(self.dna20, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna20)
+                    torch.add(self.dna21, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna21)
+                    torch.add(self.dna22, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna22)
+                    torch.add(self.dna23, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna23)
+                    torch.add(self.dna24, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna24)
+                    torch.add(self.dna25, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna25)
+                    torch.add(self.dna26, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna26)
+                    torch.add(self.dna27, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna27)
+                    torch.add(self.dna28, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna28)
+                    torch.add(self.dna29, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), out=self.dna29)
+                    torch.add(self.dna30, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), out=self.dna30)
+                    torch.add(self.dna31, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), out=self.dna31)
+                    torch.add(self.dna32, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), out=self.dna32)
+                    # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
+                    # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
+                    # it wont work well if you set it above 1 since that could have unintended effects, and setting it to a negative value
+                    # will just have the effect of driving the model's training further from the desired results instead. 
+            return
 
 
 
 
-class hampster():
+class hamster():
     # variables and definitions
     device = -1
     min_dx = -1

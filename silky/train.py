@@ -112,6 +112,7 @@ def train(options):
     attempts = 0
     wins = 0
     tolerance = 20
+    permute_fraction = 20
 
     # set up tools we need to randomize the data selection process
     len_dataset = len(dataformat)
@@ -136,14 +137,11 @@ def train(options):
         else: exposure_time = options.exposure
         tally = np.zeros(200)
         answer = dataformat[n]["label"].item()
+        answerkey = np.zeros(200)
         for k in range(0, exposure_time):
             output = np.array(mdl.update(dataformat[n]["image"]))
             tally = tally + output
-            current_guess = np.argmax(tally)
-            if current_guess == answer:
-                mdl.train(0, 1000, True)
-            else:
-                mdl.train(1, 500, False)
+            answerkey[answer] += 1
 
         # see how the model did an log it.
         guess = np.argmax(tally)
@@ -159,20 +157,26 @@ def train(options):
         # in here, its designed to change the model "less" when its winning a lot,
         # and "more" when its losing a lot. if the model doesnt get anything right
         # then it would seem like we have to change a lot of things about it, yea?
+
+        # also were adding a backprop function in on this step. not sure yet how well it will
+        # work but, one thing we have to do is prepare an 'answer key' of which values are 
+        # correct and which are not.
+
         if answer == guess:
             wins += 1
             logging.info('WIN! Wins so far: ' + str(wins))
             mdl.save(savepath)
-            tolerance += 1
+            tolerance += 20
             last_win = 0
         else:
-            if last_win > 9:
-                mdl.load(savepath)
-                last_win = 0
-            else:
-                last_win += 1
-                mdl.permute(1, tolerance)
-            if tolerance > 2: 
+            if tolerance < 5:
+                mdl.permute(1, permute_fraction)
+                tolerance += 20
+            last_win += 1
+            cons = 0.1
+            mdl.backprop(answerkey, tally, cons)
+            mdl.permute(1, tolerance)
+            if tolerance > 5: 
                 tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
@@ -183,17 +187,20 @@ def train(options):
     mdl.save(progpath)
     return
     
-def test(repo, path):
+def test(options):
     # set up the dataset so it can be used on the gpu
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    if repo == "" : repo = "Maysee/tiny-imagenet"
-    dataset = datasets.load_dataset(repo, split="test")
+    repo = options.repo
+    if repo == "" : options.repo = "Maysee/tiny-imagenet"
+    if repo == None: repo = "Maysee/tiny-imagenet"
+    dataset = datasets.load_dataset(options.repo, split="test")
     dataformat = dataset.with_format("torch", device=gpu)
     #batchsize = 8
     #dataloader = DataLoader(dataformat, batch_size=batchsize)
 
     # set up the save path and event logging
-    if path == "":
+    path = options.path
+    if options.path == None:
         path = os.getcwd() + "/default/"
     basepath = path
     savepath = path + "winners"
