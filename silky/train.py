@@ -53,7 +53,7 @@ class optionsobj():
         self.controls = controls
         self.senses = senses
 
-def transforms(data, size):
+def transforms(data):
     '''
     This function takes in a dataset object and applies some transformations to it. 
     This is useful if you want to resize the images or do some other kind of transformation
@@ -62,7 +62,7 @@ def transforms(data, size):
     data: a dataset object from the huggingface datasets library.
     '''
     for i in range(0, len(data)):
-        data[i]["image"] = torch.nn.functional.interpolate(data[i]["image"], size)
+        data[i]["image"] = torch.nn.functional.interpolate(data[i]["image"], (64, 64))
     return data
 
 def train(options):
