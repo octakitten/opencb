@@ -61,8 +61,7 @@ def transforms(data):
 
     data: a dataset object from the huggingface datasets library.
     '''
-    for i in range(0, len(data)):
-        data[i]["image"] = torch.nn.functional.interpolate(data[i]["image"], (64, 64))
+    data["image"] = torch.nn.functional.interpolate(data["image"], (64, 64))
     return data
 
 def train(options):
