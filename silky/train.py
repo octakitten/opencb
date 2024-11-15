@@ -88,12 +88,13 @@ def train(options):
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
+    dataformat = torch.stack(dataformat["image"]).to(gpu)
     dataformat = dataformat.map(transforms, batched=True)
 
     # set up the save path and event logging
-    if options.path == "":
-        path = os.getcwd() + "/default/"
     basepath = options.path
+    if options.path == "":
+        basepath = os.getcwd() + "/default/"
     savepath = options.path + "winners"
     progpath = options.path + "in-prog"
     logfilename = basepath + "training.log"
