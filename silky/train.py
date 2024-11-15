@@ -53,6 +53,18 @@ class optionsobj():
         self.controls = controls
         self.senses = senses
 
+def transforms(data, size):
+    '''
+    This function takes in a dataset object and applies some transformations to it. 
+    This is useful if you want to resize the images or do some other kind of transformation
+    to the data before training or testing a model.
+
+    data: a dataset object from the huggingface datasets library.
+    '''
+    for i in range(0, len(data)):
+        data[i]["image"] = torch.nn.functional.interpolate(data[i]["image"], size)
+    return data
+
 def train(options):
     '''
     This function trains a model on a dataset. You will need to decide on the parameters you want
@@ -80,7 +92,8 @@ def train(options):
     else:
         dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
-    dataformat = dataformat.map(torch.nn.functional.interpolate(dataformat["image"], size=(options.height, options.width)))
+    size = (options.height, options.width)
+    dataformat = dataformat.map(transforms, dataformat, size, batched=True)
 
     # set up the save path and event logging
     if options.path == "":
