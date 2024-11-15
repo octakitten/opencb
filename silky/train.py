@@ -86,10 +86,7 @@ def train(options):
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    if options.hftoken != None:
-        dataset = datasets.load_dataset(options.repo, split="train", api_token=options.hftoken)
-    else:
-        dataset = datasets.load_dataset(options.repo, split="train")
+    dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
     dataformat = dataformat.map(transforms, batched=True)
 
