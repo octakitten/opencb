@@ -92,7 +92,7 @@ def train(options):
         dataset = datasets.load_dataset(options.repo, split="train")
     dataformat = dataset.with_format("torch", device=gpu)
     size = (options.height, options.width)
-    dataformat = dataformat.map(transforms, batched=True)
+    dataformat = dataformat.map(transforms, size=size, batched=True)
 
     # set up the save path and event logging
     if options.path == "":
