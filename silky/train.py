@@ -14,7 +14,7 @@ def time_chamber(options = None):
     percent = 0.0
     while percent < .95:
         train(options)
-        percent = test(options.repo, options.path)
+        percent = test(optionsobj)
     print("Let's fucking GO!")
 
 class optionsobj():
