@@ -1,7 +1,7 @@
 import datasets
 import torch
 import torchvision.transforms
-from torch.utils.data.Dataloader import DataLoader
+from torch.utils.data.Dataset import Dataset
 import numpy as np
 import logging
 from . import model
