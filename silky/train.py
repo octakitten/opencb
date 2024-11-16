@@ -77,7 +77,7 @@ def collate_func(dataset):
     labels = torch.stack(labels)
     return {"image": pixelvals, "label": labels}
 '''
-class dataset_loader(torch.utils.data.Datasets):
+class dataset_loader(torch.utils.data.Dataset):
     def __init__(self, options):
         self.gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.dataset = datasets.load_dataset(options.repo, split="train")
