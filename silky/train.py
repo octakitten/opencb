@@ -165,15 +165,15 @@ def train(options):
             # figure out a balance for as you work with training models
             if options.exposure == None: exposure_time = 400
             else: exposure_time = options.exposure
-            tally = np.zeros(200)
+            tally = torch.zeros(200)
             answer = label[i].item()
-            answerkey = np.zeros(200)
+            answerkey = torch.zeros(200)
             for k in range(0, exposure_time):
-                tally = tally + np.array(mdl.update(data[i]))
+                tally = torch.add(tally + mdl.update(data[i]))
                 answerkey[answer] += 1
 
             # see how the model did an log it.
-            guess = np.argmax(tally)
+            guess = torch.argmax(tally)
             logging.info('{ "batch# : "' + str(i) + '" }')
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
