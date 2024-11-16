@@ -61,8 +61,19 @@ def transforms(data):
 
     data: a dataset object from the huggingface datasets library.
     '''
-    data["image"] = torch.nn.functional.interpolate(data["image"], (64, 64))
+    data["image"] = torch.nn.functional.interpolate(data["image"], (256, 25))
     return data
+
+def collate_func(dataset):
+    images = []
+    labels = []
+    for data in dataset:
+        data["image"] = torch.nn.functional.interpolate(data["image"], (256, 256))
+        images.append(data["image"])
+        labels.append(data["label"])
+    pixelvals = torch.stack(images)
+    labels = torch.stack(labels)
+    return {"image": pixelvals, "label": labels}
 
 def train(options):
     '''
@@ -87,9 +98,9 @@ def train(options):
     # also resize the images to a height and width that matches the model's input stream
     gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dataset = datasets.load_dataset(options.repo, split="train")
-    dataformat = dataset.with_format("torch", device=gpu)
-    dataformat = torch.stack(dataformat["image"]).to(gpu)
-    dataformat = dataformat.map(transforms, batched=True)
+    dataset = dataset.cast_column("image", datasets.Image(mode="RGB"))
+    dataset = dataset.with_format("torch", device=gpu)
+    dataset = DataLoader(dataset, collate_func, batch_size=8)
 
     # set up the save path and event logging
     basepath = options.path
@@ -124,7 +135,7 @@ def train(options):
     permute_fraction = 20
 
     # set up tools we need to randomize the data selection process
-    len_dataset = len(dataformat)
+    len_dataset = len(dataset)
     numbers_to_use = list(range(0, len_dataset))
     last_win = 0
 
@@ -148,7 +159,7 @@ def train(options):
         answer = dataformat[n]["label"].item()
         answerkey = np.zeros(200)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataformat[n]["image"]))
+            output = np.array(mdl.update(dataset[n]["image"]))
             tally = tally + output
             answerkey[answer] += 1
 
