@@ -173,6 +173,8 @@ def train(options):
                 answerkey[answer] += 1
 
             # see how the model did an log it.
+            tally = tally.squeeze()
+            answerkey = answerkey.squeeze()
             guess = torch.argmax(tally)
             logging.info('{ "batch# : "' + str(i) + '" }')
             logging.info('{ "guess" : "' + str(guess) + '" }')
