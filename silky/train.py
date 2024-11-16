@@ -116,7 +116,7 @@ def train(options):
 
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
-    dataset = dataset_loader(options)
+    dataset = dataset_loader()
     dataloader = DataLoader(dataset, batch_size=8, num_workers=1, shuffle=True)
 
     # set up the save path and event logging
