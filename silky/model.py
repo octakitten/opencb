@@ -989,7 +989,7 @@ class ferret():
         implement them.
         '''
 
-        self.outputs = torch.zeros(size=self.num_controls, device=self.device, dtype=torch.int16)
+        self.outputs = torch.zeros(size=(self.num_controls), device=self.device, dtype=torch.int16)
 
         if (torch.is_tensor(input_image) == False):
             return -1
