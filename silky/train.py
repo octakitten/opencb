@@ -1,5 +1,6 @@
 import datasets
 import torch
+import torchvision.transforms
 from torch.utils.data import DataLoader
 import numpy as np
 import logging
@@ -52,27 +53,47 @@ class optionsobj():
         self.bounds = bounds
         self.controls = controls
         self.senses = senses
-
+        self.exposure = exposure
+'''
 def transforms(data):
-    '''
+    
     This function takes in a dataset object and applies some transformations to it. 
     This is useful if you want to resize the images or do some other kind of transformation
     to the data before training or testing a model.
 
     data: a dataset object from the huggingface datasets library.
-    '''
+    
     data["image"] = torch.nn.functional.interpolate(data["image"], (256, 25))
     return data
 
 def collate_func(dataset):
     images = []
     labels = []
+
     for data in dataset:
-        images.append(torch.nn.functional.interpolate(data["image"], (256, 256)))
+        tensor = data["image"].unsqueeze(0)
+        images.append(torch.nn.functional.interpolate(tensor, (256, 256)))
         labels.append(data["label"])
     pixelvals = torch.stack(images)
     labels = torch.stack(labels)
     return {"image": pixelvals, "label": labels}
+'''
+def dataset_loader(torch.utils.data.Dataset):
+    def __init__(self, options):
+        self.gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.dataset = datasets.load_dataset(options.repo, split="train")
+        self.dataset = self.dataset.cast_column("image", datasets.Image(mode="RGB"))
+        self.dataset = self.dataset.with_format("torch", device=self.gpu)
+        return
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, idx):
+        item = self.dataset[idx]
+        data, label = item["image"], item["label"]
+        transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256, 256)), torchvision.transforms.ToTensor()])
+        return transform(data), label
 
 def train(options):
     '''
@@ -95,11 +116,8 @@ def train(options):
 
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
-    gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dataset = datasets.load_dataset(options.repo, split="train")
-    dataset = dataset.cast_column("image", datasets.Image(mode="RGB"))
-    dataset = dataset.with_format("torch", device=gpu)
-    dataloader = DataLoader(dataset, batch_size=1, collate_fn=collate_func)
+    dataset = dataset_loader(options)
+    dataloader = DataLoader(dataset, batch_size=8, num_workers=1, shuffle=True)
 
     # set up the save path and event logging
     basepath = options.path
@@ -128,75 +146,69 @@ def train(options):
                 mdl.create(options.height, options.width, options.depth, options.bounds, options.controls, options.senses) 
             except:
                 raise ValueError("Unable to create or load a model! Maybe try setting the model options with the options object.")
+             
     attempts = 0
     wins = 0
     tolerance = 20
     permute_fraction = 20
-
-    # set up tools we need to randomize the data selection process
-    len_dataset = len(dataloader)
-    numbers_to_use = list(range(0, len_dataset))
     last_win = 0
 
     # loop over the dataset pseudo randomly
-    for data in dataloader:
-        j = random.randint(0, len(numbers_to_use))
-        n = numbers_to_use.pop(j)
+    for data, label in dataset:
+        for i in range(0, len(data)):
+            attempts += 1
 
-        attempts += 1
+            # the value here for exposure is important actually
+            # the "exposure time" is the time that the model is given 
+            # to process and understand each data element.
+            # theoretically, the model should need at least a certain amount of exposure
+            # time in order to make accurate predictions. but it consumes resources the 
+            # longer the exposure time runs. this is something you'll have to
+            # figure out a balance for as you work with training models
+            if options.exposure == None: exposure_time = 400
+            else: exposure_time = options.exposure
+            tally = np.zeros(200)
+            answer = label[i].item()
+            answerkey = np.zeros(200)
+            for k in range(0, exposure_time):
+                tally = tally + np.array(mdl.update(data[i]))
+                answerkey[answer] += 1
 
-        # the value here for exposure is important actually
-        # the "exposure time" is the time that the model is given 
-        # to process and understand each data element.
-        # theoretically, the model should need at least a certain amount of exposure
-        # time in order to make accurate predictions. but it consumes resources the 
-        # longer the exposure time runs. this is something you'll have to
-        # figure out a balance for as you work with training models
-        if options.exposure == None: exposure_time = 400
-        else: exposure_time = options.exposure
-        tally = np.zeros(200)
-        answer = data["label"].item()
-        answerkey = np.zeros(200)
-        for k in range(0, exposure_time):
-            output = np.array(mdl.update(data["image"].item()))
-            tally = tally + output
-            answerkey[answer] += 1
+            # see how the model did an log it.
+            guess = np.argmax(tally)
+            logging.info('{ "batch# : "' + str(i) + '" }')
+            logging.info('{ "guess" : "' + str(guess) + '" }')
+            logging.info('{ "answer"  : "' + str(answer) + '" }')
 
-        # see how the model did an log it.
-        guess = np.argmax(tally)
-        logging.info('{ "item# : "' + str(n) + '" }')
-        logging.info('{ "guess" : "' + str(guess) + '" }')
-        logging.info('{ "answer"  : "' + str(answer) + '" }')
+            # when the model is right, we reward it by letting it survive intact, so to speak
+            # we dont change parameters when the model wins, only when it loses
+            # also, the tolerance here is important
+            # see, the amount that the model changes when it loses can be fine
+            # tuned with this tolerance number. if you want to change it, you can.
+            # in here, its designed to change the model "less" when its winning a lot,
+            # and "more" when its losing a lot. if the model doesnt get anything right
+            # then it would seem like we have to change a lot of things about it, yea?
 
-        # when the model is right, we reward it by letting it survive intact, so to speak
-        # we dont change parameters when the model wins, only when it loses
-        # also, the tolerance here is important
-        # see, the amount that the model changes when it loses can be fine
-        # tuned with this tolerance number. if you want to change it, you can.
-        # in here, its designed to change the model "less" when its winning a lot,
-        # and "more" when its losing a lot. if the model doesnt get anything right
-        # then it would seem like we have to change a lot of things about it, yea?
+            # also were adding a backprop function in on this step. not sure yet how well it will
+            # work but, one thing we have to do is prepare an 'answer key' of which values are 
+            # correct and which are not.
 
-        # also were adding a backprop function in on this step. not sure yet how well it will
-        # work but, one thing we have to do is prepare an 'answer key' of which values are 
-        # correct and which are not.
-
-        if answer == guess:
-            wins += 1
-            logging.info('WIN! Wins so far: ' + str(wins))
-            mdl.save(savepath)
-            tolerance += 20
-            last_win = 0
-        else:
-            if tolerance < 5:
-                mdl.permute(1, permute_fraction)
+            if answer == guess:
+                wins += 1
+                logging.info('WIN! Wins so far: ' + str(wins))
+                mdl.save(savepath)
                 tolerance += 20
-            last_win += 1
-            cons = 0.1
-            mdl.backprop(answerkey, tally, cons)
-            mdl.permute(1, tolerance)
-            if tolerance > 5: 
-                tolerance -= 1
+                last_win = 0
+            else:
+                if tolerance < 5:
+                    mdl.permute(1, permute_fraction)
+                    tolerance += 20
+                last_win += 1
+                cons = 0.1
+                mdl.backprop(answerkey, tally, cons)
+                mdl.permute(1, tolerance)
+                if tolerance > 5: 
+                    tolerance -= 1
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
