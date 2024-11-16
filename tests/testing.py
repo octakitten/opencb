@@ -2,5 +2,5 @@ import silky
 from silky import iteration
 from silky import train as tr
 
-opts = tr.optionsobj("ILSVRC/imagenet1k", None, "./testing01", 256, 256, 500, 500, 1000, 2)
+opts = tr.optionsobj("ILSVRC/imagenet-1k", None, "./testing01", 256, 256, 500, 500, 1000, 2)
 tr.time_chamber(opts)
