@@ -997,7 +997,7 @@ class ferret():
         input_image.to(dtype=torch.int16, device=self.device)
         input_tensor = torch.tensor(data=1, device=self.device)
         
-        input_tensor = torch.clone(input_image, ).detach()
+        input_tensor = torch.clone(input_image, ).detach().to(dtype=torch.int16, device=self.device)
         #print(input_image.device)
         #print(input_tensor)
         #torch.div(input_tensor, 255, out=input_tensor)
