@@ -140,7 +140,7 @@ def train(options):
     last_win = 0
 
     # loop over the dataset pseudo randomly
-    for i in range(0, len_dataset):
+    for data in dataloader:
         j = random.randint(0, len(numbers_to_use))
         n = numbers_to_use.pop(j)
 
@@ -156,11 +156,10 @@ def train(options):
         if options.exposure == None: exposure_time = 400
         else: exposure_time = options.exposure
         tally = np.zeros(200)
-        image = dataloader["image"].item()
-        answer = dataloader[n]["label"].item()
+        answer = data["label"].item()
         answerkey = np.zeros(200)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(image))
+            output = np.array(mdl.update(data["image"].item()))
             tally = tally + output
             answerkey[answer] += 1
 
