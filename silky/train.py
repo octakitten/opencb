@@ -165,9 +165,9 @@ def train(options):
             # figure out a balance for as you work with training models
             if options.exposure == None: exposure_time = 400
             else: exposure_time = options.exposure
-            tally = torch.zeros(200)
+            tally = torch.zeros(500)
             answer = label[i].item()
-            answerkey = torch.zeros(200)
+            answerkey = torch.zeros(500)
             for k in range(0, exposure_time):
                 tally = torch.add(tally + mdl.update(data[i]))
                 answerkey[answer] += 1
