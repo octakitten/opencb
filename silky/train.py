@@ -156,10 +156,11 @@ def train(options):
         if options.exposure == None: exposure_time = 400
         else: exposure_time = options.exposure
         tally = np.zeros(200)
+        image = dataloader["image"].item()
         answer = dataloader[n]["label"].item()
         answerkey = np.zeros(200)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataloader[n]["image"]))
+            output = np.array(mdl.update(image))
             tally = tally + output
             answerkey[answer] += 1
 
