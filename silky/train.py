@@ -78,8 +78,9 @@ def collate_func(dataset):
     return {"image": pixelvals, "label": labels}
 '''
 class dataset_loader(torch.utils.data.Dataset):
-    def __init__(self, options):
-        self.dataset = datasets.load_dataset(options.repo, split="train")
+    def __init__(self, options, split="train"):
+        self.split = split
+        self.dataset = datasets.load_dataset(options.repo, split=self.split)
         self.dataset = self.dataset.cast_column("image", datasets.Image(mode="RGB"))
         self.dataset = self.dataset.with_format("torch", device="cpu")
         return
@@ -226,10 +227,11 @@ def test(options):
     repo = options.repo
     if repo == "" : options.repo = "Maysee/tiny-imagenet"
     if repo == None: repo = "Maysee/tiny-imagenet"
-    dataset = datasets.load_dataset(options.repo, split="test")
-    dataformat = dataset.with_format("torch", device=gpu)
     #batchsize = 8
     #dataloader = DataLoader(dataformat, batch_size=batchsize)
+    split = "test"
+    dataset = dataset_loader(options, split)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=8, num_workers=1, shuffle=True)
 
     # set up the save path and event logging
     path = options.path
