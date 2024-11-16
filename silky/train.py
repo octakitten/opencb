@@ -90,7 +90,7 @@ class dataset_loader(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         item = self.dataset[idx]
         data, label = item["image"], item["label"]
-        transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256, 256)), torchvision.transforms.ToTensor()])
+        transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256, 256))])
         return transform(data), label
 
 def train(options):
