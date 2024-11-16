@@ -79,10 +79,9 @@ def collate_func(dataset):
 '''
 class dataset_loader(torch.utils.data.Dataset):
     def __init__(self, options):
-        self.gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.dataset = datasets.load_dataset(options.repo, split="train")
         self.dataset = self.dataset.cast_column("image", datasets.Image(mode="RGB"))
-        self.dataset = self.dataset.with_format("torch", device=self.gpu)
+        self.dataset = self.dataset.with_format("torch", device="cpu")
         return
 
     def __len__(self):
