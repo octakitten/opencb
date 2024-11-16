@@ -260,38 +260,34 @@ def test(options):
     wins = 0
 
     # set up tools we need to randomize the data selection process
-    len_dataset = len(dataformat)
-    numbers_to_use = list(range(0, len_dataset))
 
     # loop over the dataset pseudo randomly
-    for i in range(0, len_dataset):
-        j = random.randint(0, len(numbers_to_use))
-        n = numbers_to_use.pop(j)
+    for data, label in dataloader:
+        for i in range(0, len(data)):
+            # the value here for exposure is important actually
+            # the "exposure time" is the time that the model is given 
+            # to process and understand each data element.
+            # theoretically, the model should need at least a certain amount of exposure
+            # time in order to make accurate predictions. but it consumes resources the 
+            # longer the exposure time runs. this is something you'll have to
+            # figure out a balance for as you work with training models
+            attempts += 1
+            exposure_time = 400
+            tally = np.zeros(1000)
+            for k in range(0, exposure_time):
+                output = np.array(mdl.update(data[i]))
+                tally = tally + output
 
-        # the value here for exposure is important actually
-        # the "exposure time" is the time that the model is given 
-        # to process and understand each data element.
-        # theoretically, the model should need at least a certain amount of exposure
-        # time in order to make accurate predictions. but it consumes resources the 
-        # longer the exposure time runs. this is something you'll have to
-        # figure out a balance for as you work with training models
-        attempts += 1
-        exposure_time = 400
-        tally = np.zeros(200)
-        for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataformat[n]["image"]))
-            tally = tally + output
+            # see how the model did an log it.
+            guess = np.argmax(tally)
+            answer = label
+            logging.info('{ "batch# : "' + str(i) + '" }')
+            logging.info('{ "guess" : "' + str(guess) + '" }')
+            logging.info('{ "answer"  : "' + str(answer) + '" }')
 
-        # see how the model did an log it.
-        guess = np.argmax(tally)
-        answer = dataformat[n]["label"].item()
-        logging.info('{ "item# : "' + str(n) + '" }')
-        logging.info('{ "guess" : "' + str(guess) + '" }')
-        logging.info('{ "answer"  : "' + str(answer) + '" }')
-
-        if answer == guess:
-            wins += 1
-            logging.info('WIN! Wins so far: ' + str(wins))
+            if answer == guess:
+                wins += 1
+                logging.info('WIN! Wins so far: ' + str(wins))
     logging.info('Run ending...')
     logging.info('Total wins this run: ' + str(wins))
     logging.info('Total attempts this run: ' + str(attempts))
