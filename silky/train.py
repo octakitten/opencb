@@ -169,7 +169,7 @@ def train(options):
             answer = label[i].item()
             answerkey = torch.zeros(500)
             for k in range(0, exposure_time):
-                tally = torch.add(tally + mdl.update(data[i]).to("cpu"))
+                tally = torch.add(tally, mdl.update(data[i]).to("cpu"))
                 answerkey[answer] += 1
 
             # see how the model did an log it.
