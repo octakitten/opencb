@@ -100,7 +100,7 @@ def train(options):
     dataset = datasets.load_dataset(options.repo, split="train")
     dataset = dataset.cast_column("image", datasets.Image(mode="RGB"))
     dataset = dataset.with_format("torch", device=gpu)
-    dataset = DataLoader(dataset, collate_func, batch_size=8)
+    dataloader = DataLoader(dataset, collate_func, batch_size=4)
 
     # set up the save path and event logging
     basepath = options.path
@@ -135,7 +135,7 @@ def train(options):
     permute_fraction = 20
 
     # set up tools we need to randomize the data selection process
-    len_dataset = len(dataset)
+    len_dataset = len(dataloader)
     numbers_to_use = list(range(0, len_dataset))
     last_win = 0
 
@@ -156,10 +156,10 @@ def train(options):
         if options.exposure == None: exposure_time = 400
         else: exposure_time = options.exposure
         tally = np.zeros(200)
-        answer = dataformat[n]["label"].item()
+        answer = dataloader[n]["label"].item()
         answerkey = np.zeros(200)
         for k in range(0, exposure_time):
-            output = np.array(mdl.update(dataset[n]["image"]))
+            output = np.array(mdl.update(dataloader[n]["image"]))
             tally = tally + output
             answerkey[answer] += 1
 
