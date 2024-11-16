@@ -100,7 +100,7 @@ def train(options):
     dataset = datasets.load_dataset(options.repo, split="train")
     dataset = dataset.cast_column("image", datasets.Image(mode="RGB"))
     dataset = dataset.with_format("torch", device=gpu)
-    dataloader = DataLoader(dataset, collate_func, batch_size=4)
+    dataloader = DataLoader(dataset, collate_func)
 
     # set up the save path and event logging
     basepath = options.path
