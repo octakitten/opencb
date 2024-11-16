@@ -1280,7 +1280,8 @@ class ferret():
 
         for i in range(0, len(self.outputs)):
             if (guess[i] != answer[i]):
-                for j in range(0, abs(guess[i] - answer[i])):
+                diff = abs(guess[i] - answer[i])
+                for j in range(0, diff):
                     if guess[i] == 0: cons = cons / 2
                     # if the output was 1 and it should have been 0, then we need to nudge the dna values
                     # of the contact neurons in the direction that would have made the output neuron not fire
