@@ -68,8 +68,7 @@ def collate_func(dataset):
     images = []
     labels = []
     for data in dataset:
-        data["image"] = torch.nn.functional.interpolate(data["image"], (256, 256))
-        images.append(data["image"])
+        images.append(torch.nn.functional.interpolate(data["image"], (256, 256)))
         labels.append(data["label"])
     pixelvals = torch.stack(images)
     labels = torch.stack(labels)
