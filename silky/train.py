@@ -192,12 +192,14 @@ def train(options):
             # correct and which are not.
 
             if answer == guess:
+                mdl.clear()
                 wins += 1
                 logging.info('WIN! Wins so far: ' + str(wins))
                 mdl.save(savepath)
                 tolerance += 20
                 last_win = 0
             else:
+                mdl.clear()
                 if tolerance < 5:
                     mdl.permute(1, permute_fraction)
                     tolerance += 20

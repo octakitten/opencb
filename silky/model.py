@@ -363,6 +363,38 @@ class ferret():
         self.pos_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.neg_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         
+    def clear(self):
+        self.layer0 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion5 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion6 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion7 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.emotion8 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality4 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality5 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality6 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality7 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality8 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+            
+        self.personality9 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality10 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality11 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality12 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality13 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality14 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality15 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.personality16 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        return
         
     def copy(self, model):
         '''
