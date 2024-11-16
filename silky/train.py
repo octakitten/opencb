@@ -1,7 +1,7 @@
 import datasets
 import torch
 import torchvision.transforms
-from torch.utils.data
+from torch.utils.data.Dataloader import DataLoader
 import numpy as np
 import logging
 from . import model
@@ -117,7 +117,7 @@ def train(options):
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
     dataset = dataset_loader(options)
-    dataloader = torch.utils.data.Datasets(dataset, batch_size=8, num_workers=1, shuffle=True)
+    dataloader = torch.utils.data.Dataloader(dataset, batch_size=8, num_workers=1, shuffle=True)
 
     # set up the save path and event logging
     basepath = options.path
