@@ -1,7 +1,7 @@
 import datasets
 import torch
 import torchvision.transforms
-from torch.utils.data import DataLoader
+from torch.utils.data
 import numpy as np
 import logging
 from . import model
@@ -78,7 +78,7 @@ def collate_func(dataset):
     labels = torch.stack(labels)
     return {"image": pixelvals, "label": labels}
 '''
-def dataset_loader():
+class dataset_loader(torch.utils.data.Datasets):
     def __init__(self, options):
         self.gpu = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.dataset = datasets.load_dataset(options.repo, split="train")
@@ -116,8 +116,8 @@ def train(options):
 
     # set up the dataset so it can be used on the gpu
     # also resize the images to a height and width that matches the model's input stream
-    dataset = dataset_loader()
-    dataloader = DataLoader(dataset, batch_size=8, num_workers=1, shuffle=True)
+    dataset = dataset_loader(options)
+    dataloader = torch.utils.data.Datasets(dataset, batch_size=8, num_workers=1, shuffle=True)
 
     # set up the save path and event logging
     basepath = options.path
@@ -154,7 +154,7 @@ def train(options):
     last_win = 0
 
     # loop over the dataset pseudo randomly
-    for data, label in dataset:
+    for data, label in dataloader:
         for i in range(0, len(data)):
             attempts += 1
 
