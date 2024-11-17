@@ -381,6 +381,7 @@ def train_hamster(options):
                 answerkey[answer] += 1
             # see how the model did an log it.
             guess = np.argmax(tally)
+            print(tally)
             logging.info('{ "batch# : "' + str(i) + '" }')
             logging.info('{ "guess" : "' + str(guess) + '" }')
             logging.info('{ "answer"  : "' + str(answer) + '" }')
