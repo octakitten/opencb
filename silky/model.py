@@ -1666,11 +1666,8 @@ class hamster():
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
-        input_image.to(dtype=torch.int16, device=self.device)
-        input_tensor = torch.tensor(data=1, device=self.device)
-        
-        input_tensor = torch.clone(input_image, ).detach()
-        input_tensor.to(dtype=torch.float32, device=self.device)
+        input_image.to(dtype=torch.float32, device=self.device)
+        input_tensor = torch.tensor(input_image, device=self.device)
         #print(input_image.device)
         #print(input_tensor)
         #torch.div(input_tensor, 255, out=input_tensor)
