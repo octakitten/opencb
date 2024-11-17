@@ -372,7 +372,7 @@ def train_hamster(options):
             answer = label[i].item()
             answerkey = torch.zeros(options.controls)
             for k in range(0, exposure_time):
-                tally = torch.add(tally, mdl.update(data[i]).to("cpu"))
+                tally = torch.add(tally, mdl.update(data[i].to("cuda")).to("cpu"))
                 answerkey[answer] += 1
             
             
