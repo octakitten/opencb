@@ -80,6 +80,7 @@ def collate_func(dataset):
 class dataset_loader(torch.utils.data.Dataset):
     def __init__(self, options, split="train"):
         self.split = split
+        self.options = options
         self.dataset = datasets.load_dataset(options.repo, split=self.split)
         self.dataset = self.dataset.cast_column("image", datasets.Image(mode="RGB"))
         self.dataset = self.dataset.with_format("torch", device="cpu")
@@ -91,7 +92,7 @@ class dataset_loader(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         item = self.dataset[idx]
         data, label = item["image"], item["label"]
-        transform = torchvision.transforms.Compose([torchvision.transforms.Resize((256, 256))])
+        transform = torchvision.transforms.Compose([torchvision.transforms.Resize((self.options.height, self.options.width))])
         return transform(data), label
 
 def train(options):

@@ -377,6 +377,9 @@ def run_velvet():
         return
 
 def run_hamster():
-    opts = tr.optionsobj("", None, "./hamstertest1/", 64, 64, 10, 50, 200, 2)
-    tr.time_chamber(opts)
+    opts = tr.optionsobj("", None, "./hamstertest1/", 64, 64, 10, 50, 200, 2, 10)
+    percent = 0.0
+    while (percent < .95):
+        tr.train_hamster(opts)
+        percent = tr.test_hamster(opts)
     return
