@@ -1792,5 +1792,5 @@ class hamster():
                 # nudge = cons / layer0 ^ 2 * dna
 
                 for k in range(29, 61):
-                    torch.mul(self.layers[k], torch.mul(torch.div(cons, torch.mul(torch.pow(torch.abs(self.layers[0]), .5), torch.pow(torch.abs(self.layers[k]), .5))), diff), out=self.layers[k])
+                    torch.mul(self.layers[k], torch.mul(torch.div(cons, torch.mul(torch.pow(torch.abs(self.layers[0]), .5), torch.pow(torch.abs(self.layers[k]), .5))), (1 - diff)), out=self.layers[k])
         return
