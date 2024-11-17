@@ -736,69 +736,69 @@ class ferret():
         # positive thresh firing is used
         random_gen = torch.Generator(device=self.device)
         random_gen.seed()
-        self.dna1 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna1 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna2 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna2 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna3 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna3 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna4 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna4 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna5 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna5 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna6 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna6 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna7 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna7 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna8 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna8 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna9 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna9 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna10 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna10 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna11 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna11 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna12 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna12 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna13 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna13 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna14 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna14 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna15 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna15 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna16 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna16 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna17 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna17 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna18 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna18 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna19 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna19 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna20 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna20 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna21 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna21 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna22 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna22 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna23 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna23 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna24 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna24 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna25 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna25 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna26 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna26 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna27 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna27 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna28 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna28 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna29 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna29 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna30 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna30 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna31 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna31 = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
         random_gen.seed()
-        self.dna32 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device))).to(dtype=torch.int16)
+        self.dna32 = torch.multiply(other=self.neg_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
 
         return
     
@@ -1503,11 +1503,11 @@ class hamster():
     def __new_dna(self):
         for i in range(0, 61):
             self.layers[i] = torch.tensor(data=1, device=self.device)
-            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float64, device=self.device)
         for i in range(29, 61):
             random_gen = torch.Generator(device=self.device)
             random_gen.seed()
-            self.layers[i] = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
+            self.layers[i] = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device)))
 
     def save(self, path):
         np.save(path + '/width', self.width)
@@ -1591,7 +1591,7 @@ class hamster():
 
     def clear(self):
         for i in range(0, 28):
-            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float64, device=self.device)
         return
     
     def train(self, sense_num, amt, pos):    
@@ -1652,21 +1652,21 @@ class hamster():
         torch.add(self.control_thresholds_neg, threshn, out=self.control_thresholds_neg)
 
         for i in range(29, 61):
-            temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+            temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float64, device=self.device)
             random_gen = torch.Generator(device=self.device)
             random_gen.seed()
-            torch.multiply(input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), other=self.pos_propensity, out=temp)
+            torch.multiply(input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device)), other=self.pos_propensity, out=temp)
             torch.divide(temp, fraction, out=temp)
             torch.add(self.layers[i], temp, out=self.layers[i])
         for i in range(0, 28):
-            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float64, device=self.device)
         return
         
     def update(self, input_image):
         if (torch.is_tensor(input_image) == False):
             return -1
         # add in the input image
-        input_image.to(dtype=torch.float32, device=self.device)
+        input_image.to(dtype=torch.float64, device=self.device)
         input_tensor = torch.tensor(input_image, device=self.device)
         #print(input_image.device)
         #print(input_tensor)
@@ -1691,7 +1691,7 @@ class hamster():
 
         # do some rolls to simulate neurons sending messages to each other
         '''
-        temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.float32)
+        temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.float64)
         torch.add(self.layers[0], torch.roll(self.layers[0], 1, 0), out=temp)
         torch.add(self.layers[0], torch.roll(self.layers[0], -1, 0), out=temp)
         torch.add(self.layers[0], torch.roll(self.layers[0], 1, 1), out=temp)
@@ -1719,7 +1719,7 @@ class hamster():
             torch.add(self.layers[0][:,:,i+1], self.layers[0][:,:,(i+2)], out=self.layers[0][:,:,i+2])
 
         
-        self.outputs = torch.zeros(self.num_controls).to(dtype=torch.float32, device=self.device)
+        self.outputs = torch.zeros(self.num_controls).to(dtype=torch.float64, device=self.device)
         for i in range(0, self.num_controls):
             self.outputs[i] = self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item()
         softmax = torch.nn.Softmax(dim=0)
