@@ -1716,22 +1716,10 @@ class hamster():
             torch.add(self.layers[0][:,:,i+1], self.layers[0][:,:,(i+2)], out=self.layers[0][:,:,i+2])
 
         
-        # check the predefined output neurons to see if they're ready to fire
-        # if they are, then return the action(s) to take
-        take_action = []
-        
-        #print(len(self.control_thresholds_pos))
-        #print(self.layers[0])
-        #print('layers[0]')
+        self.outputs = torch.zeros(size=(self.num_controls), device=self.device, dtype=torch.float32)
         for i in range(0, self.num_controls):
-            if (self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0]):
-                take_action.append(1)
-                self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
-            else:
-                if (self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() < self.control_thresholds_neg[i][0]):
-                    take_action.append(0)
-                else:
-                    take_action.append(-1)
+            self.outputs[i] = self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item()
+        torch.LogSoftmax(self.outputs, dim=0, out=self.outputs)
         
         # update the threshold and signal layers
         for i in range (1, 5):
@@ -1745,9 +1733,8 @@ class hamster():
         for i in range(13, 29):
             torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 1) / 2)], self.layers[(29 + (i - 13)*2)]))), torch.add(self.layers[int((i - 1) / 2)], self.layers[(30 + (i - 13)*2)]), out=self.layers[i])
 
-        self.outputs = take_action
-        
-        return take_action
+                
+        return self.outputs
 
     def backprop(self, guess, answer, constant=None):
         '''
