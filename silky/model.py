@@ -38,7 +38,7 @@ class ferret():
 
     
     # neuron layer
-    layer0 = 0
+    layers[0] = 0
     
     # threshold layers
     layer1 = 0
@@ -166,7 +166,7 @@ class ferret():
                 os.makefile(path + '/sensations')
                 os.makefile(path + '/thresholds_pos.pth')
                 os.makefile(path + '/thresholds_neg.pth')
-                os.makefile(path + '/layer0.pth')
+                os.makefile(path + '/layers[0].pth')
                 os.makefile(path + '/layer1.pth')
                 os.makefile(path + '/layer2.pth')
                 os.makefile(path + '/layer3.pth')
@@ -210,7 +210,7 @@ class ferret():
         np.save(path + '/sensations', self.sensations)
         torch.save(self.thresholds_pos, path + '/thresholds_pos.pth')
         torch.save(self.thresholds_neg, path + '/thresholds_neg.pth')
-        torch.save(self.layer0, path + '/layer0.pth')
+        torch.save(self.layers[0], path + '/layers[0].pth')
         torch.save(self.layer1, path + '/layer1.pth')
         torch.save(self.layer2, path + '/layer2.pth')
         torch.save(self.layer3, path + '/layer3.pth')
@@ -292,7 +292,7 @@ class ferret():
         self.sensations = np.load(path + '/sensations.npy')
         self.thresholds_pos = torch.load(path + '/thresholds_pos.pth')
         self.thresholds_neg = torch.load(path + '/thresholds_neg.pth')
-        self.layer0 = torch.load(path + '/layer0.pth')
+        self.layers[0] = torch.load(path + '/layers[0].pth')
         self.layer1 = torch.load(path + '/layer1.pth')
         self.layer2 = torch.load(path + '/layer2.pth')
         self.layer3 = torch.load(path + '/layer3.pth')
@@ -364,7 +364,7 @@ class ferret():
         self.neg_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         
     def clear(self):
-        self.layer0 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layers[0] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
@@ -416,7 +416,7 @@ class ferret():
         self.controls = model.controls
         self.thresholds_pos = model.thresholds_pos
         self.thresholds_neg = model.thresholds_neg
-        self.layer0 = model.layer0
+        self.layers[0] = model.layers[0]
         self.layer1 = model.layer1
         self.layer2 = model.layer2
         self.layer3 = model.layer3
@@ -579,12 +579,12 @@ class ferret():
 
         :Comments: 
         the personality layers are the only parts of the model that don't change over time. we initialize all the layers here,
-        from layer0 to emotion8 to personality8, but the personality layers we initialize to random values. These random values
+        from layers[0] to emotion8 to personality8, but the personality layers we initialize to random values. These random values
         should range from 1 to n for the positive personality layers, and 1 to 1/n for the negative personality layers. in order to 
         achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
         the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
         '''
-        self.layer0 = torch.tensor(data=1, device=self.device)
+        self.layers[0] = torch.tensor(data=1, device=self.device)
         self.layer1 = torch.tensor(data=1, device=self.device)
         self.layer2 = torch.tensor(data=1, device=self.device)
         self.layer3 = torch.tensor(data=1, device=self.device)
@@ -646,12 +646,12 @@ class ferret():
         self.dna31 = torch.tensor(data=1, device=self.device)
         self.dna32 = torch.tensor(data=1, device=self.device)
         '''
-        print(self.layer0)
+        print(self.layers[0])
         print(self.emotion1)
         print(self.personality1)
         '''
         # neuron layer
-        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layers[0] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         # threshold layers
         self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
@@ -720,7 +720,7 @@ class ferret():
         self.dna31 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.dna32 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         
-        #print(self.layer0)
+        #print(self.layers[0])
         #print(self.emotion1)
         #print(self.personality1)
         self.positive_firing= torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
@@ -830,11 +830,11 @@ class ferret():
         return
 
     def __pos_sensation(self, sense_num, amt):
-        torch.add(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.add(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
 
     def __neg_sensation(self, sense_num, amt):
-        torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.subtract(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
     
     def train(self, sense_num, amt, pos):    
@@ -1036,29 +1036,29 @@ class ferret():
         #torch.mul(input_tensor, self.bounds, out=input_tensor)
         #torch.add(input_tensor, torch.ones(size=input_image.size(), device=self.device), out=input_tensor)
         #print(input_tensor)
-        #print('layer0')
-        #print(self.layer0)o
+        #print('layers[0]')
+        #print(self.layers[0])o
         try:
-            torch.add(self.layer0[:, :, 0],  input_tensor[0,:,:], out=self.layer0[:, :, 0])
-            torch.add(self.layer0[:, :, 1],  input_tensor[1,:,:], out=self.layer0[:, :, 1])
-            torch.add(self.layer0[:, :, 2],  input_tensor[2,:,:], out=self.layer0[:, :, 2])
+            torch.add(self.layers[0][:, :, 0],  input_tensor[0,:,:], out=self.layers[0][:, :, 0])
+            torch.add(self.layers[0][:, :, 1],  input_tensor[1,:,:], out=self.layers[0][:, :, 1])
+            torch.add(self.layers[0][:, :, 2],  input_tensor[2,:,:], out=self.layers[0][:, :, 2])
         except:
-            torch.add(self.layer0[:, :, 0],  input_tensor, out=self.layer0[:, :, 0])
+            torch.add(self.layers[0][:, :, 0],  input_tensor, out=self.layers[0][:, :, 0])
 
 
         #print("1")
-        #print('layer0')
-        #print(self.layer0)
-        #print(self.layer0)
+        #print('layers[0]')
+        #print(self.layers[0])
+        #print(self.layers[0])
 
         #check which neurons are firing and which arent, do the stuff
-        torch.greater(self.layer0, self.layer1, out=self.positive_firing)
-        torch.less_equal(self.layer0, self.layer1, out=self.positive_resting)
-        torch.greater(self.layer0, self.layer2, out=self.negative_firing)
-        torch.less_equal(self.layer0, self.layer2, out=self.negative_resting)
+        torch.greater(self.layers[0], self.layer1, out=self.positive_firing)
+        torch.less_equal(self.layers[0], self.layer1, out=self.positive_resting)
+        torch.greater(self.layers[0], self.layer2, out=self.negative_firing)
+        torch.less_equal(self.layers[0], self.layer2, out=self.negative_resting)
         #print("2")
-        #print('layer0')
-        #print(self.layer0)
+        #print('layers[0]')
+        #print(self.layers[0])
 
         # keep track of the threshold values of the firing neurons
         torch.multiply(self.positive_firing, self.layer1, out=self.pos_fire_amt)
@@ -1099,45 +1099,45 @@ class ferret():
         #print('2 - 4')
         #print(self.pos_fire_amt_mult)
         #print(self.neg_fire_amt_mult)
-        #print('layer0')
-        #print(self.layer0)
+        #print('layers[0]')
+        #print(self.layers[0])
 
         # apply the firing values to each of the near neighbors
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.int16)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 2), out=temp)
-        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 2), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 0), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 0), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 1), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 1), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 2), out=temp)
-        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 2), out=temp)
-        torch.add(self.layer0, temp, out=self.layer0)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 2), out=temp)
+        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 2), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 0), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 0), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 1), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 1), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 2), out=temp)
+        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 2), out=temp)
+        torch.add(self.layers[0], temp, out=self.layers[0])
         '''print("3")
-        print('layer0')
-        print(self.layer0)'''
+        print('layers[0]')
+        print(self.layers[0])'''
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         for i in range(0, self.num_controls):
-            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
+            if (self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
                 self.outputs[i] = 1
-                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
+                self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
             else:
-                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
+                if (self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
                     self.outputs[i] = 0
                 else:
                     self.outputs[i] = -1
         
-        # update layer0 by decrementing all the firing neurons by their firing amount
-        torch.sub(self.layer0, self.pos_fire_amt, out=self.layer0)
-        torch.sub(self.layer0, self.neg_fire_amt, out=self.layer0)
-        #torch.mul(self.layer0, torch.logical_not(self.positive_firing), out=self.layer0)
-        #torch.mul(self.layer0, torch.logical_not(self.negative_firing), out=self.layer0)
+        # update layers[0] by decrementing all the firing neurons by their firing amount
+        torch.sub(self.layers[0], self.pos_fire_amt, out=self.layers[0])
+        torch.sub(self.layers[0], self.neg_fire_amt, out=self.layers[0])
+        #torch.mul(self.layers[0], torch.logical_not(self.positive_firing), out=self.layers[0])
+        #torch.mul(self.layers[0], torch.logical_not(self.negative_firing), out=self.layers[0])
 
         # update the threshold layers
         torch.add(torch.mul(self.positive_firing, self.emotion1), self.layer1, out=self.layer1)
@@ -1298,16 +1298,16 @@ class ferret():
                     dz = 0
                     # oloss should be the difference between the output neurons actual value and the closest value it could have had that would have satisfied the conditions we want, which in this case is for it to not fire.
                     # thus it should be the remaining value left after the neuron fired
-                    oloss = self.layer0[outx, outy, outz]
+                    oloss = self.layers[0][outx, outy, outz]
                     
                     # closs is a bit more complicated, its the values of the contact neuron and its dna that would have helped move the output neuron to the state it should have been in
                     # since the output fired when it shouldnt have, the closs should be something that would help minimize the oloss
                     # thus, when the output neuron shouldnt fire, the contact neurons shouldnt fire either... but only if their firing would have helped the output neuron not fire
                     # we will have to take the firing value of the contact neuron and 
-                    closs1 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)] 
-                    closs2 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
-                    closs3 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
-                    closs4 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
+                    closs1 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)] 
+                    closs2 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
+                    closs3 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
+                    closs4 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
 
                     nudge1 = cons / (oloss * closs1)
                     nudge2 = cons / (oloss * closs2)
@@ -1358,47 +1358,47 @@ class ferret():
                     dy = 0
                     dz = 0
 
-                    closs1 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)]
-                    closs2 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
-                    closs3 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
-                    closs4 = self.layer0[(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
+                    closs1 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)]
+                    closs2 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
+                    closs3 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
+                    closs4 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
                     '''
                     # after this we just repeat this process across the entire network.
                     # thing is, this whole process is incredibly slow in native python
                     # we need to run this using tensors instead.
                     # it should look like this:
-                    self.dna1 = torch.add(self.dna1, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna2 = torch.add(self.dna2, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna3 = torch.add(self.dna3, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna4 = torch.add(self.dna4, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna5 = torch.add(self.dna5, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna6 = torch.add(self.dna6, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna7 = torch.add(self.dna7, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna8 = torch.add(self.dna8, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna9 = torch.add(self.dna9, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna10 = torch.add(self.dna10, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna11 = torch.add(self.dna11, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna12 = torch.add(self.dna12, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna13 = torch.add(self.dna13, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna14 = torch.add(self.dna14, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna15 = torch.add(self.dna15, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna16 = torch.add(self.dna16, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna17 = torch.add(self.dna17, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna18 = torch.add(self.dna18, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna19 = torch.add(self.dna19, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna20 = torch.add(self.dna20, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna21 = torch.add(self.dna21, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna22 = torch.add(self.dna22, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna23 = torch.add(self.dna23, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna24 = torch.add(self.dna24, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna25 = torch.add(self.dna25, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna26 = torch.add(self.dna26, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna27 = torch.add(self.dna27, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna28 = torch.add(self.dna28, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
-                    self.dna29 = torch.add(self.dna29, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_firing))), ).to(dtype=torch.int16)
-                    self.dna30 = torch.add(self.dna30, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.positive_resting))), ).to(dtype=torch.int16)
-                    self.dna31 = torch.add(self.dna31, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_firing))), ).to(dtype=torch.int16)
-                    self.dna32 = torch.add(self.dna32, torch.div(cons, torch.mul(self.layer0, torch.mul(self.layer0, self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna1 = torch.add(self.dna1, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna2 = torch.add(self.dna2, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna3 = torch.add(self.dna3, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna4 = torch.add(self.dna4, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna5 = torch.add(self.dna5, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna6 = torch.add(self.dna6, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna7 = torch.add(self.dna7, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna8 = torch.add(self.dna8, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna9 = torch.add(self.dna9, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna10 = torch.add(self.dna10, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna11 = torch.add(self.dna11, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna12 = torch.add(self.dna12, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna13 = torch.add(self.dna13, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna14 = torch.add(self.dna14, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna15 = torch.add(self.dna15, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna16 = torch.add(self.dna16, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna17 = torch.add(self.dna17, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna18 = torch.add(self.dna18, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna19 = torch.add(self.dna19, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna20 = torch.add(self.dna20, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna21 = torch.add(self.dna21, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna22 = torch.add(self.dna22, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna23 = torch.add(self.dna23, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna24 = torch.add(self.dna24, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna25 = torch.add(self.dna25, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna26 = torch.add(self.dna26, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna27 = torch.add(self.dna27, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna28 = torch.add(self.dna28, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
+                    self.dna29 = torch.add(self.dna29, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                    self.dna30 = torch.add(self.dna30, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_resting))), ).to(dtype=torch.int16)
+                    self.dna31 = torch.add(self.dna31, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_firing))), ).to(dtype=torch.int16)
+                    self.dna32 = torch.add(self.dna32, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.negative_resting))), ).to(dtype=torch.int16)
 
                     # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
                     # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
@@ -1430,80 +1430,9 @@ class hamster():
 
     propensity = 100
     
-    # layers:
-    # neuron layer
-    layer0 = 0
-    
-    # threshold layers
-    layer1 = 0
-    layer2 = 0
-    
-    # signal layers
-    layer3 = 0
-    layer4 = 0
-    
-    # emotion layers
-    layer5 = 0
-    layer6 = 0
-    layer7 = 0
-    layer8 = 0
-    layer9 = 0
-    layer10 = 0
-    layer11 = 0
-    layer12 = 0
+    layers = [0] * 61
 
-    # personality layers
-    layer13 = 0
-    layer14 = 0
-    layer15 = 0
-    layer16 = 0
-    layer17 = 0
-    layer18 = 0
-    layer19 = 0
-    layer20 = 0
-    layer21 = 0
-    layer22 = 0
-    layer23 = 0
-    layer24 = 0
-    layer25 = 0
-    layer26 = 0
-    layer27 = 0
-    layer28 = 0
-
-
-    # dna layers
-    layer29 = 0
-    layer30 = 0
-    layer31 = 0
-    layer32 = 0
-    layer33 = 0
-    layer34 = 0
-    layer35 = 0
-    layer36 = 0
-    layer37 = 0
-    layer38 = 0
-    layer39 = 0
-    layer40 = 0
-    layer41 = 0
-    layer42 = 0
-    layer43 = 0
-    layer44 = 0
-    layer45 = 0
-    layer46 = 0
-    layer47 = 0
-    layer48 = 0
-    layer49 = 0
-    layer50 = 0
-    layer51 = 0
-    layer52 = 0
-    layer53 = 0
-    layer54 = 0
-    layer55 = 0
-    layer56 = 0
-    layer57 = 0
-    layer58 = 0
-    layer59 = 0
-    layer60 = 0
+    outputs = 0
 
     def __check_cuda(self):
         if torch.cuda.is_available():
@@ -1550,7 +1479,7 @@ class hamster():
             wegood = False
             newctl = 0
             while wegood == False:
-                newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), int((self.depth - 1) * .37))
+                newctl = (np.random.randint(low=1, high=self.width), np.random.randint(low=1, high=self.height), int(self.depth - 1))
                 wegood = True
                 for ctl in self.controls:
                     if ctl == newctl:
@@ -1572,195 +1501,13 @@ class hamster():
         return
     
     def __new_dna(self):
-        self.layer0 = torch.tensor(data=1, device=self.device)
-        self.layer1 = torch.tensor(data=1, device=self.device)
-        self.layer2 = torch.tensor(data=1, device=self.device)
-        self.layer3 = torch.tensor(data=1, device=self.device)
-        self.layer4 = torch.tensor(data=1, device=self.device)
-        self.layer5 = torch.tensor(data=1, device=self.device)
-        self.layer6 = torch.tensor(data=1, device=self.device)
-        self.layer7 = torch.tensor(data=1, device=self.device)
-        self.layer8 = torch.tensor(data=1, device=self.device)
-        self.layer9 = torch.tensor(data=1, device=self.device)
-        self.layer10 = torch.tensor(data=1, device=self.device)
-        self.layer11 = torch.tensor(data=1, device=self.device)
-        self.layer12 = torch.tensor(data=1, device=self.device)
-        self.layer13 = torch.tensor(data=1, device=self.device)
-        self.layer14 = torch.tensor(data=1, device=self.device)
-        self.layer15 = torch.tensor(data=1, device=self.device)
-        self.layer16 = torch.tensor(data=1, device=self.device)
-        self.layer17 = torch.tensor(data=1, device=self.device)
-        self.layer18 = torch.tensor(data=1, device=self.device)
-        self.layer19 = torch.tensor(data=1, device=self.device)
-        self.layer20 = torch.tensor(data=1, device=self.device)
-        self.layer21 = torch.tensor(data=1, device=self.device)
-        self.layer22 = torch.tensor(data=1, device=self.device)
-        self.layer23 = torch.tensor(data=1, device=self.device)
-        self.layer24 = torch.tensor(data=1, device=self.device)
-        self.layer25 = torch.tensor(data=1, device=self.device)
-        self.layer26 = torch.tensor(data=1, device=self.device)
-        self.layer27 = torch.tensor(data=1, device=self.device)
-        self.layer28 = torch.tensor(data=1, device=self.device)
-        self.layer29 = torch.tensor(data=1, device=self.device)
-        self.layer30 = torch.tensor(data=1, device=self.device)
-        self.layer31 = torch.tensor(data=1, device=self.device)
-        self.layer32 = torch.tensor(data=1, device=self.device)
-        self.layer33 = torch.tensor(data=1, device=self.device)
-        self.layer34 = torch.tensor(data=1, device=self.device)
-        self.layer35 = torch.tensor(data=1, device=self.device)
-        self.layer36 = torch.tensor(data=1, device=self.device)
-        self.layer37 = torch.tensor(data=1, device=self.device)
-        self.layer38 = torch.tensor(data=1, device=self.device)
-        self.layer39 = torch.tensor(data=1, device=self.device)
-        self.layer40 = torch.tensor(data=1, device=self.device)
-        self.layer41 = torch.tensor(data=1, device=self.device)
-        self.layer42 = torch.tensor(data=1, device=self.device)
-        self.layer43 = torch.tensor(data=1, device=self.device)
-        self.layer44 = torch.tensor(data=1, device=self.device)
-        self.layer45 = torch.tensor(data=1, device=self.device)
-        self.layer46 = torch.tensor(data=1, device=self.device)
-        self.layer47 = torch.tensor(data=1, device=self.device)
-        self.layer48 = torch.tensor(data=1, device=self.device)
-        self.layer49 = torch.tensor(data=1, device=self.device)
-        self.layer50 = torch.tensor(data=1, device=self.device)
-        self.layer51 = torch.tensor(data=1, device=self.device)
-        self.layer52 = torch.tensor(data=1, device=self.device)
-        self.layer53 = torch.tensor(data=1, device=self.device)
-        self.layer54 = torch.tensor(data=1, device=self.device)
-        self.layer55 = torch.tensor(data=1, device=self.device)
-        self.layer56 = torch.tensor(data=1, device=self.device)
-        self.layer57 = torch.tensor(data=1, device=self.device)
-        self.layer58 = torch.tensor(data=1, device=self.device)
-        self.layer59 = torch.tensor(data=1, device=self.device)
-        self.layer60 = torch.tensor(data=1, device=self.device)
-        
-        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer3 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer4 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer5 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer6 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer7 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer8 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer9 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer10 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer11 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer12 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer13 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer14 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer15 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer16 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer17 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer18 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer19 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer20 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer21 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer22 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer23 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer24 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer25 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer26 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer27 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer28 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer29 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer30 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer31 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer32 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer33 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer34 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer35 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer36 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer37 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer38 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer39 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer40 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer41 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer42 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer43 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer44 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer45 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer46 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer47 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer48 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer49 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer50 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer51 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer52 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer53 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer54 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer55 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer56 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer57 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer58 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer59 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer60 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        self.layer29 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer30 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer31 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer32 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer33 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer34 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer35 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer36 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer37 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer38 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer39 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer40 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer41 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer42 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer43 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer44 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer45 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer46 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer47 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer48 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer49 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer50 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer51 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer52 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer53 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer54 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer55 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer56 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer57 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer58 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer59 = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
-        random_gen.seed()
-        self.layer60 = torch.multiply(other=self.neg_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
+        for i in range(0, 61):
+            self.layers[i] = torch.tensor(data=1, device=self.device)
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        for i in range(29, 61):
+            random_gen = torch.Generator(device=self.device)
+            random_gen.seed()
+            self.layers[i] = torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)))
 
     def save(self, path):
         np.save(path + '/width', self.width)
@@ -1773,67 +1520,8 @@ class hamster():
         np.save(path + '/sensations', self.sensations)
         torch.save(self.control_thresholds_pos, path + '/control_thresholds_pos.pth')
         torch.save(self.control_thresholds_neg, path + '/control_thresholds_neg.pth')
-        torch.save(self.layer0, path + '/layer0.pth')
-        torch.save(self.layer1, path + '/layer1.pth')
-        torch.save(self.layer2, path + '/layer2.pth')
-        torch.save(self.layer3, path + '/layer3.pth')
-        torch.save(self.layer4, path + '/layer4.pth')
-        torch.save(self.layer5, path + '/layer5.pth')
-        torch.save(self.layer6, path + '/layer6.pth')
-        torch.save(self.layer7, path + '/layer7.pth')
-        torch.save(self.layer8, path + '/layer8.pth')
-        torch.save(self.layer9, path + '/layer9.pth')
-        torch.save(self.layer10, path + '/layer10.pth')
-        torch.save(self.layer11, path + '/layer11.pth')
-        torch.save(self.layer12, path + '/layer12.pth')
-        torch.save(self.layer13, path + '/layer13.pth')
-        torch.save(self.layer14, path + '/layer14.pth')
-        torch.save(self.layer15, path + '/layer15.pth')
-        torch.save(self.layer16, path + '/layer16.pth')
-        torch.save(self.layer17, path + '/layer17.pth')
-        torch.save(self.layer18, path + '/layer18.pth')
-        torch.save(self.layer19, path + '/layer19.pth')
-        torch.save(self.layer20, path + '/layer20.pth')
-        torch.save(self.layer21, path + '/layer21.pth')
-        torch.save(self.layer22, path + '/layer22.pth')
-        torch.save(self.layer23, path + '/layer23.pth')
-        torch.save(self.layer24, path + '/layer24.pth')
-        torch.save(self.layer25, path + '/layer25.pth')
-        torch.save(self.layer26, path + '/layer26.pth')
-        torch.save(self.layer27, path + '/layer27.pth')
-        torch.save(self.layer28, path + '/layer28.pth')
-        torch.save(self.layer29, path + '/layer29.pth')
-        torch.save(self.layer30, path + '/layer30.pth')
-        torch.save(self.layer31, path + '/layer31.pth')
-        torch.save(self.layer32, path + '/layer32.pth')
-        torch.save(self.layer33, path + '/layer33.pth')
-        torch.save(self.layer34, path + '/layer34.pth')
-        torch.save(self.layer35, path + '/layer35.pth')
-        torch.save(self.layer36, path + '/layer36.pth')
-        torch.save(self.layer37, path + '/layer37.pth')
-        torch.save(self.layer38, path + '/layer38.pth')
-        torch.save(self.layer39, path + '/layer39.pth')
-        torch.save(self.layer40, path + '/layer40.pth')
-        torch.save(self.layer41, path + '/layer41.pth')
-        torch.save(self.layer42, path + '/layer42.pth')
-        torch.save(self.layer43, path + '/layer43.pth')
-        torch.save(self.layer44, path + '/layer44.pth')
-        torch.save(self.layer45, path + '/layer45.pth')
-        torch.save(self.layer46, path + '/layer46.pth')
-        torch.save(self.layer47, path + '/layer47.pth')
-        torch.save(self.layer48, path + '/layer48.pth')
-        torch.save(self.layer49, path + '/layer49.pth')
-        torch.save(self.layer50, path + '/layer50.pth')
-        torch.save(self.layer51, path + '/layer51.pth')
-        torch.save(self.layer52, path + '/layer52.pth')
-        torch.save(self.layer53, path + '/layer53.pth')
-        torch.save(self.layer54, path + '/layer54.pth')
-        torch.save(self.layer55, path + '/layer55.pth')
-        torch.save(self.layer56, path + '/layer56.pth')
-        torch.save(self.layer57, path + '/layer57.pth')
-        torch.save(self.layer58, path + '/layer58.pth')
-        torch.save(self.layer59, path + '/layer59.pth')
-        torch.save(self.layer60, path + '/layer60.pth')
+        for i in range(0, 61):
+            torch.save(self.layers[i], path + '/layer' + str(i) + '.pth')
         return
 
     def load(self, path):
@@ -1848,67 +1536,8 @@ class hamster():
         self.sensations = np.load(path + '/sensations.npy')
         self.control_thresholds_pos = torch.load(path + '/control_thresholds_pos.pth')
         self.control_thresholds_neg = torch.load(path + '/control_thresholds_neg.pth')
-        self.layer0 = torch.load(path + '/layer0.pth')
-        self.layer1 = torch.load(path + '/layer1.pth')
-        self.layer2 = torch.load(path + '/layer2.pth')
-        self.layer3 = torch.load(path + '/layer3.pth')
-        self.layer4 = torch.load(path + '/layer4.pth')
-        self.layer5 = torch.load(path + '/layer5.pth')
-        self.layer6 = torch.load(path + '/layer6.pth')
-        self.layer7 = torch.load(path + '/layer7.pth')
-        self.layer8 = torch.load(path + '/layer8.pth')
-        self.layer9 = torch.load(path + '/layer9.pth')
-        self.layer10 = torch.load(path + '/layer10.pth')
-        self.layer11 = torch.load(path + '/layer11.pth')
-        self.layer12 = torch.load(path + '/layer12.pth')
-        self.layer13 = torch.load(path + '/layer13.pth')
-        self.layer14 = torch.load(path + '/layer14.pth')
-        self.layer15 = torch.load(path + '/layer15.pth')
-        self.layer16 = torch.load(path + '/layer16.pth')
-        self.layer17 = torch.load(path + '/layer17.pth')
-        self.layer18 = torch.load(path + '/layer18.pth')
-        self.layer19 = torch.load(path + '/layer19.pth')
-        self.layer20 = torch.load(path + '/layer20.pth')
-        self.layer21 = torch.load(path + '/layer21.pth')
-        self.layer22 = torch.load(path + '/layer22.pth')
-        self.layer23 = torch.load(path + '/layer23.pth')
-        self.layer24 = torch.load(path + '/layer24.pth')
-        self.layer25 = torch.load(path + '/layer25.pth')
-        self.layer26 = torch.load(path + '/layer26.pth')
-        self.layer27 = torch.load(path + '/layer27.pth')
-        self.layer28 = torch.load(path + '/layer28.pth')
-        self.layer29 = torch.load(path + '/layer29.pth')
-        self.layer30 = torch.load(path + '/layer30.pth')
-        self.layer31 = torch.load(path + '/layer31.pth')
-        self.layer32 = torch.load(path + '/layer32.pth')
-        self.layer33 = torch.load(path + '/layer33.pth')
-        self.layer34 = torch.load(path + '/layer34.pth')
-        self.layer35 = torch.load(path + '/layer35.pth')
-        self.layer36 = torch.load(path + '/layer36.pth')
-        self.layer37 = torch.load(path + '/layer37.pth')
-        self.layer38 = torch.load(path + '/layer38.pth')
-        self.layer39 = torch.load(path + '/layer39.pth')
-        self.layer40 = torch.load(path + '/layer40.pth')
-        self.layer41 = torch.load(path + '/layer41.pth')
-        self.layer42 = torch.load(path + '/layer42.pth')
-        self.layer43 = torch.load(path + '/layer43.pth')
-        self.layer44 = torch.load(path + '/layer44.pth')
-        self.layer45 = torch.load(path + '/layer45.pth')
-        self.layer46 = torch.load(path + '/layer46.pth')
-        self.layer47 = torch.load(path + '/layer47.pth')
-        self.layer48 = torch.load(path + '/layer48.pth')
-        self.layer49 = torch.load(path + '/layer49.pth')
-        self.layer50 = torch.load(path + '/layer50.pth')
-        self.layer51 = torch.load(path + '/layer51.pth')
-        self.layer52 = torch.load(path + '/layer52.pth')
-        self.layer53 = torch.load(path + '/layer53.pth')
-        self.layer54 = torch.load(path + '/layer54.pth')
-        self.layer55 = torch.load(path + '/layer55.pth')
-        self.layer56 = torch.load(path + '/layer56.pth')
-        self.layer57 = torch.load(path + '/layer57.pth')
-        self.layer58 = torch.load(path + '/layer58.pth')
-        self.layer59 = torch.load(path + '/layer59.pth')
-        self.layer60 = torch.load(path + '/layer60.pth')
+        for i in range(0, 61):
+            self.layers[i] = torch.load(path + '/layer' + str(i) + '.pth')
         return
         
     def __new_thresholds(self):
@@ -1930,11 +1559,11 @@ class hamster():
         return
 
     def __pos_sensation(self, sense_num, amt):
-        torch.add(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.add(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
 
     def __neg_sensation(self, sense_num, amt):
-        torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layer0[self.sensations[sense_num]])
+        torch.subtract(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
 
     def copy(self, model):
@@ -1955,100 +1584,15 @@ class hamster():
         self.controls = model.controls
         self.thresholds_pos = model.thresholds_pos
         self.thresholds_neg = model.thresholds_neg
-        self.layer0 = model.layer0
-        self.layer1 = model.layer1
-        self.layer2 = model.layer2
-        self.layer3 = model.layer3
-        self.layer4 = model.layer4
-        self.layer5 = model.layer5
-        self.layer6 = model.layer6
-        self.layer7 = model.layer7
-        self.layer8 = model.layer8
-        self.layer9 = model.layer9
-        self.layer10 = model.layer10
-        self.layer11 = model.layer11
-        self.layer12 = model.layer12
-        self.layer13 = model.layer13
-        self.layer14 = model.layer14
-        self.layer15 = model.layer15
-        self.layer16 = model.layer16
-        self.layer17 = model.layer17
-        self.layer18 = model.layer18
-        self.layer19 = model.layer19
-        self.layer20 = model.layer20
-        self.layer21 = model.layer21
-        self.layer22 = model.layer22
-        self.layer23 = model.layer23
-        self.layer24 = model.layer24
-        self.layer25 = model.layer25
-        self.layer26 = model.layer26
-        self.layer27 = model.layer27
-        self.layer28 = model.layer28
-        self.layer29 = model.layer29
-        self.layer30 = model.layer30
-        self.layer31 = model.layer31
-        self.layer32 = model.layer32
-        self.layer33 = model.layer33
-        self.layer34 = model.layer34
-        self.layer35 = model.layer35
-        self.layer36 = model.layer36
-        self.layer37 = model.layer37
-        self.layer38 = model.layer38
-        self.layer39 = model.layer39
-        self.layer40 = model.layer40
-        self.layer41 = model.layer41
-        self.layer42 = model.layer42
-        self.layer43 = model.layer43
-        self.layer44 = model.layer44
-        self.layer45 = model.layer45
-        self.layer46 = model.layer46
-        self.layer47 = model.layer47
-        self.layer48 = model.layer48
-        self.layer49 = model.layer49
-        self.layer50 = model.layer50
-        self.layer51 = model.layer51
-        self.layer52 = model.layer52
-        self.layer53 = model.layer53
-        self.layer54 = model.layer54
-        self.layer55 = model.layer55
-        self.layer56 = model.layer56
-        self.layer57 = model.layer57
-        self.layer58 = model.layer58
-        self.layer59 = model.layer59
-        self.layer60 = model.layer60
+        for i in range(0, 61):
+            self.layers[i] = model.layers[i]
+        
         return
 
     def clear(self):
-        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer3 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer4 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer5 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer6 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer7 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer8 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer9 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer10 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer11 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer12 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer13 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer14 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer15 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer16 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer17 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer18 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer19 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer20 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer21 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer22 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer23 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer24 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer25 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer26 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer27 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer28 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-
+        for i in range(0, 28):
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        return
     
     def train(self, sense_num, amt, pos):    
         '''
@@ -2107,240 +1651,15 @@ class hamster():
         torch.add(self.control_thresholds_pos, threshp, out=self.control_thresholds_pos)
         torch.add(self.control_thresholds_neg, threshn, out=self.control_thresholds_neg)
 
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), other=self.pos_propensity, out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer29, temp, out=self.layer29)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer30, temp, out=self.layer30)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer31, temp, out=self.layer31)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer32, temp, out=self.layer32)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer33, temp, out=self.layer33)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer34, temp, out=self.layer34)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer35, temp, out=self.layer35)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer36, temp, out=self.layer36)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer37, temp, out=self.layer37)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer38, temp, out=self.layer38)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer39, temp, out=self.layer39)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer40, temp, out=self.layer40)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer41, temp, out=self.layer41)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer42, temp, out=self.layer42)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer43, temp, out=self.layer43)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer44, temp, out=self.layer44)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer45, temp, out=self.layer45)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer46, temp, out=self.layer46)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer47, temp, out=self.layer47)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer48, temp, out=self.layer48)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer49, temp, out=self.layer49)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer50, temp, out=self.layer50)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer50, temp, out=self.layer50)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer52, temp, out=self.layer52)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer53, temp, out=self.layer53)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer54, temp, out=self.layer54)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer55, temp, out=self.layer55)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer56, temp, out=self.layer56)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer57, temp, out=self.layer57)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer58, temp, out=self.layer58)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer59, temp, out=self.layer59)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer60, temp, out=self.layer60)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer60, temp, out=self.layer60)
-        temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        random_gen = torch.Generator(device=self.device)
-        random_gen.seed()
-        torch.multiply(other=self.pos_propensity, input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), out=temp)
-        torch.divide(temp, fraction, out=temp)
-        torch.add(self.layer60, temp, out=self.layer60)
-        
-        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer3 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer4 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer5 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer6 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer7 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer8 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer9 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer10 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer11 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer12 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer13 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer14 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer15 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer16 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer17 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer18 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer19 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer20 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer21 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer22 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer23 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer24 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer25 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer26 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer27 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
-        self.layer28 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+        for i in range(29, 61):
+            temp = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
+            random_gen = torch.Generator(device=self.device)
+            random_gen.seed()
+            torch.multiply(input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float32, device=self.device)), other=self.pos_propensity, out=temp)
+            torch.divide(temp, fraction, out=temp)
+            torch.add(self.layers[i], temp, out=self.layers[i])
+        for i in range(0, 28):
+            self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float32, device=self.device)
         return
         
     def update(self, input_image):
@@ -2351,149 +1670,136 @@ class hamster():
         input_tensor = torch.tensor(data=1, device=self.device)
         
         input_tensor = torch.clone(input_image, ).detach()
+        input_tensor.to(dtype=torch.float32, device=self.device)
         #print(input_image.device)
         #print(input_tensor)
         #torch.div(input_tensor, 255, out=input_tensor)
         #torch.mul(input_tensor, self.bounds, out=input_tensor)
         #torch.add(input_tensor, torch.ones(size=input_image.size(), device=self.device), out=input_tensor)
         #print(input_tensor)
-        #print('layer0')
-        #print(self.layer0)o
+        #print('layers[0]')
+        #print(self.layers[0])o
         try:
-            torch.add(self.layer0[:, :, 0],  input_tensor[0, :, :], out=self.layer0[:, :, 0])
-            torch.add(self.layer0[:, :, 1],  input_tensor[1, :, :], out=self.layer0[:, :, 1])
-            torch.add(self.layer0[:, :, 2],  input_tensor[2, :, :], out=self.layer0[:, :, 2])
+            torch.add(self.layers[0][:, :, 0],  input_tensor[0, :, :], out=self.layers[0][:, :, 0])
+            torch.add(self.layers[0][:, :, 1],  input_tensor[1, :, :], out=self.layers[0][:, :, 1])
+            torch.add(self.layers[0][:, :, 2],  input_tensor[2, :, :], out=self.layers[0][:, :, 2])
         except:
-            torch.add(self.layer0[:, :, 0],  input_tensor[0, :, :], out=self.layer0[:, :, 0])
+            torch.add(self.layers[0][:, :, 0],  input_tensor[0, :, :], out=self.layers[0][:, :, 0])
 
-        # update layer0 based on the arctan function we're using, as well as inputs from the threshold and signal layers
-        torch.add(torch.add(torch.atan(torch.add(self.layer0, self.layer1)), self.layer3), torch.add(torch.atan(torch.add(self.layer0, self.layer2)), self.layer4))
+        # update layers[0] based on the arctan function we're using, as well as inputs from the threshold and signal layers
+        torch.add(torch.add(torch.atan(torch.add(self.layers[0], self.layers[1])), self.layers[3]), torch.add(torch.atan(torch.add(self.layers[0], self.layers[2])), self.layers[4]), out=self.layers[0])
 
         # do some rolls to simulate neurons sending messages to each other
+        '''
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.float32)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 0), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 1), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, 1, 2), out=temp)
-        torch.add(self.layer0, torch.roll(self.layer0, -1, 2), out=temp)
-        torch.add(self.layer0, temp, out=self.layer0)
-
-        '''print("3")
-        print('layer0')
-        print(self.layer0)'''
-        #print(self.layer0[:,:,3].shape())
-
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 2), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 2), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 0), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 1), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], 1, 2), out=temp)
+        torch.add(self.layers[0], torch.roll(self.layers[0], -1, 2), out=temp)
+        torch.add(self.layers[0], temp, out=self.layers[0])
         '''
-        # guess we're the outer sums factory now
-        self.layer0[:,:,3] = torch.sum(torch.kron(self.layer0[:,:,0], self.layer0[:,:,3]), (0, -1), True)
-        self.layer0[:,:,4] = torch.sum(torch.kron(self.layer0[:,:,1], self.layer0[:,:,4]), (0, -1), True)
-        self.layer0[:,:,5] = torch.sum(torch.kron(self.layer0[:,:,2], self.layer0[:,:,5]), (0, -1), True)
-        self.layer0[:,:,6] = torch.sum(torch.kron(self.layer0[:,:,3], self.layer0[:,:,6]), (0, -1), True)
-        self.layer0[:,:,7] = torch.sum(torch.kron(self.layer0[:,:,4], self.layer0[:,:,7]), (0, -1), True)
-        self.layer0[:,:,8] = torch.sum(torch.kron(self.layer0[:,:,5], self.layer0[:,:,8]), (0, -1), True)
-        self.layer0[:,:,9] = torch.sum(torch.kron(self.layer0[:,:,6], self.layer0[:,:,9]), (0, -1), True)
-        self.layer0[:,:,10] = torch.sum(torch.kron(self.layer0[:,:,7], self.layer0[:,:,10]), (0, -1), True)
-        self.layer0[:,:,11] = torch.sum(torch.kron(self.layer0[:,:,8], self.layer0[:,:,11]), (0, -1), True)
-        self.layer0[:,:,12] = torch.sum(torch.kron(self.layer0[:,:,9], self.layer0[:,:,12]), (0, -1), True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,10], self.layer0[:,:,13]), (0, -1), True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,11], self.layer0[:,:,13]), (0, -1), True)
-        self.layer0[:,:,13] = torch.sum(torch.kron(self.layer0[:,:,12], self.layer0[:,:,13]), (0, -1), True)
+        # so we're going to try using kron sums again... i want to propagate information forward from the input images through the whole network
+        # in one go... i think this way we can get results faster per turn than having to wait for the model to slowly propagate information through
+        # layer0...
+        # its going to be more resource intensive but i think in the long run it wont actually slow the overall process down.
+        for i in range(0, 3):
+            torch.add(torch.sum(torch.kron(self.layers[0][:, :, i], self.layers[0][:, :, (i+1)])), self.layers[0][:, :, (i+1)], out=self.layers[0][:, :, (i+1)])
 
-        for i in range(13, self.depth - 1):
-            self.layer0[:,:,(i + 1)] = torch.sum(torch.kron(self.layer0[:,:,i], self.layer0[:,:,(i + 1)]), (0, -1), True)
-        '''
+        for i in range(3, (self.depth - 1)/2):
+            i = i * 2
+            torch.add(torch.sum(torch.kron(self.layers[0][:, :, i], self.layers[0][:, :, (i+1)])), self.layers[0][:, :, (i+1)], out=self.layers[0][:, :, (i+1)])
+            torch.add(self.layers[0][:,:,i+1], self.layers[0][:,:,(i+2)], out=self.layers[0][:,:,i+2])
+
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         take_action = []
         
         #print(len(self.control_thresholds_pos))
-        #print(self.layer0)
-        #print('layer0')
+        #print(self.layers[0])
+        #print('layers[0]')
         for i in range(0, self.num_controls):
-            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0]):
+            if (self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.control_thresholds_pos[i][0]):
                 take_action.append(1)
-                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
+                self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.control_thresholds_pos[i][0]
             else:
-                if (self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() < self.control_thresholds_neg[i][0]):
+                if (self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() < self.control_thresholds_neg[i][0]):
                     take_action.append(0)
                 else:
                     take_action.append(-1)
         
         # update the threshold and signal layers
-        torch.add(torch.atan(torch.add(self.layer1, torch.add(self.layer0, self.layer5))), torch.add(self.layer1, self.layer6), out=self.layer0)
-        torch.add(torch.atan(torch.add(self.layer2, torch.add(self.layer0, self.layer7))), torch.add(self.layer2, self.layer8), out=self.layer0)
-        torch.add(torch.atan(torch.add(self.layer3, torch.add(self.layer0, self.layer9))), torch.add(self.layer3, self.layer10), out=self.layer0)
-        torch.add(torch.atan(torch.add(self.layer4, torch.add(self.layer0, self.layer11))), torch.add(self.layer4, self.layer12), out=self.layer0)
-        '''
-        torch.add(torch.atan(torch.add(self.layer1, torch.mul(self.layer0, self.layer5))), torch.mul(self.layer0, self.layer6), out=self.layer1)
-        torch.add(torch.atan(torch.add(self.layer2, torch.mul(self.layer0, self.layer7))), torch.mul(self.layer0, self.layer8), out=self.layer2)
-        torch.add(torch.atan(torch.add(self.layer3, torch.mul(self.layer0, self.layer9))), torch.mul(self.layer0, self.layer10), out=self.layer3)
-        torch.add(torch.atan(torch.add(self.layer4, torch.mul(self.layer0, self.layer11))), torch.mul(self.layer0, self.layer12), out=self.layer4)
-        '''
+        for i in range (1, 5):
+            torch.add(torch.atan(torch.add(self.layers[i], self.layers[0])), self.layers[5 + 2*(i-1)], torch.add(self.layers[i], self.layers[6 + 2*(i-1)]), out=self.layers[0])
 
         # update the emotion layers
-        torch.add(torch.atan(torch.add(self.layer5, torch.add(self.layer1, self.layer13))), torch.add(self.layer1, self.layer14), out=self.layer5)
-        torch.add(torch.atan(torch.add(self.layer6, torch.add(self.layer1, self.layer15))), torch.add(self.layer1, self.layer16), out=self.layer6)
-        torch.add(torch.atan(torch.add(self.layer7, torch.add(self.layer2, self.layer17))), torch.add(self.layer2, self.layer18), out=self.layer7)
-        torch.add(torch.atan(torch.add(self.layer8, torch.add(self.layer2, self.layer19))), torch.add(self.layer2, self.layer20), out=self.layer8)
-        torch.add(torch.atan(torch.add(self.layer9, torch.add(self.layer3, self.layer21))), torch.add(self.layer3, self.layer22), out=self.layer9)
-        torch.add(torch.atan(torch.add(self.layer10, torch.add(self.layer3, self.layer23))), torch.add(self.layer3, self.layer24), out=self.layer10)
-        torch.add(torch.atan(torch.add(self.layer11, torch.add(self.layer4, self.layer25))), torch.add(self.layer4, self.layer26), out=self.layer11)
-        torch.add(torch.atan(torch.add(self.layer12, torch.add(self.layer4, self.layer27))), torch.add(self.layer4, self.layer28), out=self.layer12)
-
-        '''
-        torch.add(torch.atan(torch.add(self.layer5, torch.mul(self.layer , self.layer13))), torch.mul(self.layer0, self.layer14), out=self.layer5)
-        torch.add(torch.atan(torch.add(self.layer6, torch.mul(self.layer6, self.layer15))), torch.mul(self.layer6, self.layer16), out=self.layer6)
-        torch.add(self.layer2, torch.add(torch.atan(torch.add(self.layer7, self.layer17)), self.layer18), out=self.layer7)
-        torch.add(self.layer2, torch.add(torch.atan(torch.add(self.layer8, self.layer19)), self.layer20), out=self.layer8)
-        torch.add(self.layer3, torch.add(torch.atan(torch.add(self.layer9, self.layer21)), self.layer22), out=self.layer9)
-        torch.add(self.layer3, torch.add(torch.atan(torch.add(self.layer10, self.layer23)), self.layer24), out=self.layer10)
-        torch.add(self.layer4, torch.add(torch.atan(torch.add(self.layer11, self.layer25)), self.layer26), out=self.layer11)
-        torch.add(self.layer4, torch.add(torch.atan(torch.add(self.layer12, self.layer27)), self.layer28), out=self.layer12)
-        '''
+        for i in range (5, 13):
+            torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 3)/2)], self.layers[(12 + (i - 5)*2)]))), torch.add(self.layers[int((i - 3)/2)], self.layers[(13 + (i - 5)*2)]), self.layers[i])
 
         # update the personality layers
-        torch.add(torch.atan(torch.add(self.layer13, torch.add(self.layer5, self.layer29))), torch.add(self.layer5, self.layer30), out=self.layer13)
-        torch.add(torch.atan(torch.add(self.layer14, torch.add(self.layer5, self.layer31))), torch.add(self.layer5, self.layer32), out=self.layer14)
-        torch.add(torch.atan(torch.add(self.layer15, torch.add(self.layer6, self.layer33))), torch.add(self.layer6, self.layer34), out=self.layer15)
-        torch.add(torch.atan(torch.add(self.layer16, torch.add(self.layer6, self.layer35))), torch.add(self.layer6, self.layer36), out=self.layer16)
-        torch.add(torch.atan(torch.add(self.layer17, torch.add(self.layer7, self.layer37))), torch.add(self.layer7, self.layer38), out=self.layer17)
-        torch.add(torch.atan(torch.add(self.layer18, torch.add(self.layer7, self.layer39))), torch.add(self.layer7, self.layer40), out=self.layer18)
-        torch.add(torch.atan(torch.add(self.layer19, torch.add(self.layer8, self.layer41))), torch.add(self.layer8, self.layer42), out=self.layer19)
-        torch.add(torch.atan(torch.add(self.layer20, torch.add(self.layer8, self.layer43))), torch.add(self.layer8, self.layer44), out=self.layer20)
-        torch.add(torch.atan(torch.add(self.layer21, torch.add(self.layer9, self.layer45))), torch.add(self.layer9, self.layer46), out=self.layer21)
-        torch.add(torch.atan(torch.add(self.layer22, torch.add(self.layer9, self.layer47))), torch.add(self.layer9, self.layer48), out=self.layer22)
-        torch.add(torch.atan(torch.add(self.layer23, torch.add(self.layer10, self.layer49))), torch.add(self.layer10, self.layer50), out=self.layer23)
-        torch.add(torch.atan(torch.add(self.layer24, torch.add(self.layer10, self.layer51))), torch.add(self.layer10, self.layer52), out=self.layer24)
-        torch.add(torch.atan(torch.add(self.layer25, torch.add(self.layer11, self.layer53))), torch.add(self.layer11, self.layer54), out=self.layer25)
-        torch.add(torch.atan(torch.add(self.layer26, torch.add(self.layer11, self.layer55))), torch.add(self.layer11, self.layer56), out=self.layer26)
-        torch.add(torch.atan(torch.add(self.layer27, torch.add(self.layer12, self.layer57))), torch.add(self.layer12, self.layer58), out=self.layer27)
-        torch.add(torch.atan(torch.add(self.layer28, torch.add(self.layer12, self.layer59))), torch.add(self.layer12, self.layer60), out=self.layer28)
-        '''
-        torch.add(self.layer5, torch.add(torch.atan(torch.add(self.layer14, self.layer31)), self.layer32), out=self.layer14)
-        torch.add(self.layer6, torch.add(torch.atan(torch.add(self.layer15, self.layer33)), self.layer34), out=self.layer15)
-        torch.add(self.layer6, torch.add(torch.atan(torch.add(self.layer16, self.layer35)), self.layer36), out=self.layer16)
-        torch.add(self.layer7, torch.add(torch.atan(torch.add(self.layer17, self.layer37)), self.layer38), out=self.layer17)
-        torch.add(self.layer7, torch.add(torch.atan(torch.add(self.layer18, self.layer39)), self.layer40), out=self.layer18)
-        torch.add(self.layer8, torch.add(torch.atan(torch.add(self.layer19, self.layer41)), self.layer42), out=self.layer19)
-        torch.add(self.layer8, torch.add(torch.atan(torch.add(self.layer20, self.layer43)), self.layer44), out=self.layer20)
-        torch.add(self.layer9, torch.add(torch.atan(torch.add(self.layer21, self.layer45)), self.layer46), out=self.layer21)
-        torch.add(self.layer9, torch.add(torch.atan(torch.add(self.layer22, self.layer47)), self.layer48), out=self.layer22)
-        torch.add(self.layer10, torch.add(torch.atan(torch.add(self.layer23, self.layer49)), self.layer50), out=self.layer23)
-        torch.add(self.layer10, torch.add(torch.atan(torch.add(self.layer24, self.layer51)), self.layer52), out=self.layer24)
-        torch.add(self.layer11, torch.add(torch.atan(torch.add(self.layer25, self.layer53)), self.layer54), out=self.layer25)
-        torch.add(self.layer11, torch.add(torch.atan(torch.add(self.layer26, self.layer55)), self.layer56), out=self.layer26)
-        torch.add(self.layer12, torch.add(torch.atan(torch.add(self.layer27, self.layer57)), self.layer58), out=self.layer27)
-        torch.add(self.layer12, torch.add(torch.atan(torch.add(self.layer28, self.layer59)), self.layer60), out=self.layer28)
-        '''
+        for i in range(13, 29):
+            torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 1) / 2)], self.layers[(29 + (i - 13)*2)]))), torch.add(self.layers[int((i - 1) / 2)], self.layers[(30 + (i - 13)*2)]), out=self.layers[i])
 
+        self.outputs = take_action
         
         return take_action
+
+    def backprop(self, guess, answer, constant=None):
+        '''
+        Backpropagate the model to adjust its dna values based on the answer it should have given.
+
+        :Parameters:
+        guess (list): the output of the model
+        answer (list): the answer the model should have given
+        constant (float): the constant to adjust the backpropagation by
+
+        :Returns:
+        none
+
+        :Comments: 
+        This function will be used to adjust the model's dna values based on the answer it should have given.
+        The model will adjust its dna values based on the difference between the answer it should have given
+        and the answer it actually gave. This will be done by nudging the dna values of the neurons that
+        contributed to the model's output. The amount that the dna values will be nud
+        '''
+
+        cons = 0.37
+        if constant != None: cons = constant
+
+        for i in range(0, len(self.outputs)):
+            if (guess[i] != answer[i]):
+                diff = int(abs(guess[i] - answer[i]))
+                if guess[i] == 0: cons = cons / 2
+
+                # self.dna1 = torch.add(self.dna1, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
+                # heres the actual homework we need to copy. this needs to be adapted for our puroses here. it wont work as is though, we dont have 
+                # records of which neurons fired or didnt in this model, since practically speaking they all fired to some degree. 
+
+                # one of the accomplishments of back propagation is that it very efficiently targets the parts of the network that contribute to 
+                # the error in the output. we will need to find a way to do something similar here.
+                # i think to start with we should find the absolute values of the neurons in layers[0]. we can decrement them the most and leave others alone, at least relatively so
+
+                # i think we want the decrement to be a function of value @ layers[0] ^ 2, so that it weights the decrement more towards the neurons that contributed the most,
+                # it should also be proportional to the abs size of the dna values, so that the dna values which contributed the most to the output are the ones that are most affected.
+                # and of course we include a constant cons to scale the intensity of the backpropagatiuon
+
+                # i suppose if i really want to take a gradient, i can do that if i change up how this model propagates value through layer0.
+                # if i use kron sums it might work...
+                # 
+                # yea... lets see if i can change up how this works a little bit...
+                # alright so ive got kron sums going now. now we can actually attribute the values in each of the outputs to a continuous function of the inputs. i should also remember
+                # to put the outputs on the final layer while im remembering it.
+
+                # nudge = cons / layer0 ^ 2 * dna
+
+                for k in range(29, 61):
+                    torch.mul(self.layers[k], torch.mul(torch.div(cons, torch.mul(torch.pow(torch.abs(self.layers[0]), .5), torch.pow(torch.abs(self.layers[k]), .5))), diff), out=self.layers[k])
+        return

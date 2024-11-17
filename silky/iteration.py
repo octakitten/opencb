@@ -9,6 +9,8 @@ from . import model as mdl
 from . import forest
 from . import game as gm
 
+from silky import train as tr
+
 def test011():
     '''
     :Parameters:
@@ -373,3 +375,8 @@ def run_velvet():
         if (iters < 5):
               break
         return
+
+def run_hamster():
+    opts = tr.optionsobj("", None, "./hamstertest1/", 64, 64, 10, 50, 200, 2)
+    tr.time_chamber(opts)
+    return
