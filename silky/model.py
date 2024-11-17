@@ -1713,7 +1713,7 @@ class hamster():
         for i in range(0, 3):
             torch.add(torch.sum(torch.kron(self.layers[0][:, :, i], self.layers[0][:, :, (i+1)])), self.layers[0][:, :, (i+1)], out=self.layers[0][:, :, (i+1)])
 
-        for i in range(3, (self.depth - 1)/2):
+        for i in range(3, int((self.depth - 1)/2)):
             i = i * 2
             torch.add(torch.sum(torch.kron(self.layers[0][:, :, i], self.layers[0][:, :, (i+1)])), self.layers[0][:, :, (i+1)], out=self.layers[0][:, :, (i+1)])
             torch.add(self.layers[0][:,:,i+1], self.layers[0][:,:,(i+2)], out=self.layers[0][:,:,i+2])
