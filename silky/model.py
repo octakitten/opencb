@@ -1760,7 +1760,7 @@ class hamster():
 
         for i in range(0, len(self.outputs)):
             if (guess[i] != answer[i]):
-                diff = int(abs(guess[i] - answer[i]))
+                diff = abs(guess[i] - answer[i])
                 if guess[i] == 0: cons = cons / 2
 
                 # self.dna1 = torch.add(self.dna1, torch.div(cons, torch.mul(self.layers[0], torch.mul(self.layers[0], self.positive_firing))), ).to(dtype=torch.int16)
