@@ -95,7 +95,11 @@ class dataset_loader(torch.utils.data.Dataset):
         if isinstance(data, np.ndarray):
             data = torch.from_numpy(data)
         transform = torchvision.transforms.Compose([torchvision.transforms.Resize((self.options.height, self.options.width))])
-        return transform(data), label
+        data = transform(data)
+        if torch.is_tensor(data) == False:
+            data = torch.tensor(data, dtype=torch.float32)
+        data = data.to("cuda")
+        return data, label
 
 def train(options):
     '''
