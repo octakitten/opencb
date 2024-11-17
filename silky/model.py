@@ -1683,6 +1683,9 @@ class hamster():
         except:
             torch.add(self.layers[0][:, :, 0],  input_tensor[0, :, :], out=self.layers[0][:, :, 0])
 
+        print('input tensor')
+        print(input_tensor)
+
         # update layers[0] based on the arctan function we're using, as well as inputs from the threshold and signal layers
         torch.add(torch.add(torch.atan(torch.add(self.layers[0], self.layers[1])), self.layers[3]), torch.add(torch.atan(torch.add(self.layers[0], self.layers[2])), self.layers[4]), out=self.layers[0])
 
@@ -1734,6 +1737,7 @@ class hamster():
         for i in range(13, 29):
             torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 1) / 2)], self.layers[(29 + (i - 13)*2)]))), torch.add(self.layers[int((i - 1) / 2)], self.layers[(30 + (i - 13)*2)]), out=self.layers[i])
 
+        print('layers[0]')
         print(self.layers[0])
         return self.outputs
 
