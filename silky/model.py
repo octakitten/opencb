@@ -1738,7 +1738,7 @@ class hamster():
         
         # update the threshold and signal layers
         for i in range (1, 5):
-            torch.add(torch.atan(torch.add(self.layers[i], self.layers[0])), self.layers[5 + 2*(i-1)], torch.add(self.layers[i], self.layers[6 + 2*(i-1)]), out=self.layers[0])
+            torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[0], self.layers[5 + 2*(i-1)]))), torch.add(self.layers[i], self.layers[6 + 2*(i-1)]), out=self.layers[0])
 
         # update the emotion layers
         for i in range (5, 13):
