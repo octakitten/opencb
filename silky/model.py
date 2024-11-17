@@ -1742,7 +1742,7 @@ class hamster():
 
         # update the emotion layers
         for i in range (5, 13):
-            torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 3)/2)], self.layers[(12 + (i - 5)*2)]))), torch.add(self.layers[int((i - 3)/2)], self.layers[(13 + (i - 5)*2)]), self.layers[i])
+            torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 3)/2)], self.layers[(12 + (i - 5)*2)]))), torch.add(self.layers[int((i - 3)/2)], self.layers[(13 + (i - 5)*2)]), out=self.layers[i])
 
         # update the personality layers
         for i in range(13, 29):
