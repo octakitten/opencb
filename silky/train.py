@@ -373,17 +373,13 @@ def train_hamster(options):
             # figure out a balance for as you work with training models
             if options.exposure == None: exposure_time = 5
             else: exposure_time = options.exposure
-            tally = torch.zeros(options.controls)
+            tally = np.zeros(options.controls)
             answer = label[i].item()
-            answerkey = torch.zeros(options.controls)
+            answerkey = np.zeros(options.controls)
             for k in range(0, exposure_time):
-                tally = torch.add(tally, mdl.update(data[i]).to("cpu"))
+                tally = tally + mdl.update(data[i])
                 answerkey[answer] += 1
-            
-            
             # see how the model did an log it.
-            tally = tally.numpy()
-            answerkey = answerkey.numpy()
             guess = np.argmax(tally)
             logging.info('{ "batch# : "' + str(i) + '" }')
             logging.info('{ "guess" : "' + str(guess) + '" }')
