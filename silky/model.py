@@ -1716,7 +1716,7 @@ class hamster():
             torch.add(self.layers[0][:,:,i+1], self.layers[0][:,:,(i+2)], out=self.layers[0][:,:,i+2])
 
         
-        self.outputs = torch.zeros(size=(self.num_controls), device=self.device, dtype=torch.float32)
+        self.outputs = torch.zeros(self.num_controls).to(dtype=torch.float32, device=self.device)
         for i in range(0, self.num_controls):
             self.outputs[i] = self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item()
         torch.LogSoftmax(self.outputs, dim=0, out=self.outputs)
