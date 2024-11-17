@@ -1734,7 +1734,7 @@ class hamster():
         for i in range(13, 29):
             torch.add(torch.atan(torch.add(self.layers[i], torch.add(self.layers[int((i - 1) / 2)], self.layers[(29 + (i - 13)*2)]))), torch.add(self.layers[int((i - 1) / 2)], self.layers[(30 + (i - 13)*2)]), out=self.layers[i])
 
-                
+        print(self.layers[0])
         return self.outputs
 
     def backprop(self, guess, answer, constant=None):
