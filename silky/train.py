@@ -98,7 +98,6 @@ class dataset_loader(torch.utils.data.Dataset):
         data = transform(data)
         if torch.is_tensor(data) == False:
             data = torch.tensor(data, dtype=torch.float32)
-        data = data.to("cuda")
         return data, label
 
 def train(options):
@@ -378,7 +377,7 @@ def train_hamster(options):
             answer = label[i].item()
             answerkey = torch.zeros(options.controls)
             for k in range(0, exposure_time):
-                tally = torch.add(tally, mdl.update(data[i].to("cuda")).to("cpu"))
+                tally = torch.add(tally, mdl.update(data[i]).to("cpu"))
                 answerkey[answer] += 1
             
             
