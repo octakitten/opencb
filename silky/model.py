@@ -1719,7 +1719,7 @@ class hamster():
         self.outputs = torch.zeros(self.num_controls).to(dtype=torch.float32, device=self.device)
         for i in range(0, self.num_controls):
             self.outputs[i] = self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item()
-        torch.nn.LogSoftmax(self.outputs, dim=0, out=self.outputs)
+        torch.nn.LogSoftmax(self.outputs, out=self.outputs)
         
         # update the threshold and signal layers
         for i in range (1, 5):
