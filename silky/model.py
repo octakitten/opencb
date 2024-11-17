@@ -38,7 +38,7 @@ class ferret():
 
     
     # neuron layer
-    layers[0] = 0
+    layer0 = 0
     
     # threshold layers
     layer1 = 0
@@ -210,7 +210,7 @@ class ferret():
         np.save(path + '/sensations', self.sensations)
         torch.save(self.thresholds_pos, path + '/thresholds_pos.pth')
         torch.save(self.thresholds_neg, path + '/thresholds_neg.pth')
-        torch.save(self.layers[0], path + '/layers[0].pth')
+        torch.save(self.layer0, path + '/layer0.pth')
         torch.save(self.layer1, path + '/layer1.pth')
         torch.save(self.layer2, path + '/layer2.pth')
         torch.save(self.layer3, path + '/layer3.pth')
@@ -292,7 +292,7 @@ class ferret():
         self.sensations = np.load(path + '/sensations.npy')
         self.thresholds_pos = torch.load(path + '/thresholds_pos.pth')
         self.thresholds_neg = torch.load(path + '/thresholds_neg.pth')
-        self.layers[0] = torch.load(path + '/layers[0].pth')
+        self.layer0 = torch.load(path + '/layer0.pth')
         self.layer1 = torch.load(path + '/layer1.pth')
         self.layer2 = torch.load(path + '/layer2.pth')
         self.layer3 = torch.load(path + '/layer3.pth')
@@ -364,7 +364,7 @@ class ferret():
         self.neg_fire_amt_mult = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         
     def clear(self):
-        self.layers[0] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer0 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer1 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer2 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer3 = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
@@ -416,7 +416,7 @@ class ferret():
         self.controls = model.controls
         self.thresholds_pos = model.thresholds_pos
         self.thresholds_neg = model.thresholds_neg
-        self.layers[0] = model.layers[0]
+        self.layer0 = model.layer0
         self.layer1 = model.layer1
         self.layer2 = model.layer2
         self.layer3 = model.layer3
@@ -584,7 +584,7 @@ class ferret():
         achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
         the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
         '''
-        self.layers[0] = torch.tensor(data=1, device=self.device)
+        self.layer0 = torch.tensor(data=1, device=self.device)
         self.layer1 = torch.tensor(data=1, device=self.device)
         self.layer2 = torch.tensor(data=1, device=self.device)
         self.layer3 = torch.tensor(data=1, device=self.device)
@@ -651,7 +651,7 @@ class ferret():
         print(self.personality1)
         '''
         # neuron layer
-        self.layers[0] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
+        self.layer0 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         # threshold layers
         self.layer1 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         self.layer2 = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
@@ -830,11 +830,11 @@ class ferret():
         return
 
     def __pos_sensation(self, sense_num, amt):
-        torch.add(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
+        torch.add(self.layer0[self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
 
     def __neg_sensation(self, sense_num, amt):
-        torch.subtract(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
+        torch.subtract(self.layer0[self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
     
     def train(self, sense_num, amt, pos):    
@@ -1039,11 +1039,11 @@ class ferret():
         #print('layers[0]')
         #print(self.layers[0])o
         try:
-            torch.add(self.layers[0][:, :, 0],  input_tensor[0,:,:], out=self.layers[0][:, :, 0])
-            torch.add(self.layers[0][:, :, 1],  input_tensor[1,:,:], out=self.layers[0][:, :, 1])
-            torch.add(self.layers[0][:, :, 2],  input_tensor[2,:,:], out=self.layers[0][:, :, 2])
+            torch.add(self.layer0[:, :, 0],  input_tensor[0,:,:], out=self.layer0[:, :, 0])
+            torch.add(self.layer0[:, :, 1],  input_tensor[1,:,:], out=self.layer0[:, :, 1])
+            torch.add(self.layer0[:, :, 2],  input_tensor[2,:,:], out=self.layer0[:, :, 2])
         except:
-            torch.add(self.layers[0][:, :, 0],  input_tensor, out=self.layers[0][:, :, 0])
+            torch.add(self.layer0[:, :, 0],  input_tensor, out=self.layer0[:, :, 0])
 
 
         #print("1")
@@ -1052,10 +1052,10 @@ class ferret():
         #print(self.layers[0])
 
         #check which neurons are firing and which arent, do the stuff
-        torch.greater(self.layers[0], self.layer1, out=self.positive_firing)
-        torch.less_equal(self.layers[0], self.layer1, out=self.positive_resting)
-        torch.greater(self.layers[0], self.layer2, out=self.negative_firing)
-        torch.less_equal(self.layers[0], self.layer2, out=self.negative_resting)
+        torch.greater(self.layer0, self.layer1, out=self.positive_firing)
+        torch.less_equal(self.layer0, self.layer1, out=self.positive_resting)
+        torch.greater(self.layer0, self.layer2, out=self.negative_firing)
+        torch.less_equal(self.layer0, self.layer2, out=self.negative_reting)
         #print("2")
         #print('layers[0]')
         #print(self.layers[0])
@@ -1104,19 +1104,19 @@ class ferret():
 
         # apply the firing values to each of the near neighbors
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.int16)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 0), out=temp)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 0), out=temp)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 1), out=temp)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 1), out=temp)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, 1, 2), out=temp)
-        torch.add(self.layers[0], torch.roll(self.pos_fire_amt_mult, -1, 2), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 0), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 0), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 1), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 1), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, 1, 2), out=temp)
-        torch.sub(self.layers[0], torch.roll(self.neg_fire_amt_mult, -1, 2), out=temp)
-        torch.add(self.layers[0], temp, out=self.layers[0])
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 0), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 0), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 1), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 1), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, 1, 2), out=temp)
+        torch.add(self.layer0, torch.roll(self.pos_fire_amt_mult, -1, 2), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 0), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 0), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 1), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 1), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, 1, 2), out=temp)
+        torch.sub(self.layer0, torch.roll(self.neg_fire_amt_mult, -1, 2), out=temp)
+        torch.add(self.layer0, temp, out=self.layers[0])
         '''print("3")
         print('layers[0]')
         print(self.layers[0])'''
@@ -1124,9 +1124,9 @@ class ferret():
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
         for i in range(0, self.num_controls):
-            if (self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
+            if (self.layer0[self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
                 self.outputs[i] = 1
-                self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
+                self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layer0[(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
             else:
                 if (self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
                     self.outputs[i] = 0
@@ -1134,8 +1134,8 @@ class ferret():
                     self.outputs[i] = -1
         
         # update layers[0] by decrementing all the firing neurons by their firing amount
-        torch.sub(self.layers[0], self.pos_fire_amt, out=self.layers[0])
-        torch.sub(self.layers[0], self.neg_fire_amt, out=self.layers[0])
+        torch.sub(self.layer0, self.pos_fire_amt, out=self.layer0)
+        torch.sub(self.layer0, self.neg_fire_amt, out=self.layer0)
         #torch.mul(self.layers[0], torch.logical_not(self.positive_firing), out=self.layers[0])
         #torch.mul(self.layers[0], torch.logical_not(self.negative_firing), out=self.layers[0])
 
