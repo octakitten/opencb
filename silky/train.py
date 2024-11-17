@@ -377,7 +377,7 @@ def train_hamster(options):
             answer = label[i].item()
             answerkey = np.zeros(options.controls)
             for k in range(0, exposure_time):
-                tally = tally + mdl.update(data[i])
+                tally = tally + np.array(mdl.update(data[i]))
                 answerkey[answer] += 1
             # see how the model did an log it.
             guess = np.argmax(tally)
