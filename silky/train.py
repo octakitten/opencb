@@ -92,6 +92,8 @@ class dataset_loader(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         item = self.dataset[idx]
         data, label = item["image"], item["label"]
+        if isinstance(data, np.ndarray):
+            data = torch.from_numpy(data)
         transform = torchvision.transforms.Compose([torchvision.transforms.Resize((self.options.height, self.options.width))])
         return transform(data), label
 
