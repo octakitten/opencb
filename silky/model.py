@@ -412,7 +412,7 @@ class ferret():
         #check which neurons are firing and which arent, do the stuff
         torch.greater(self.layers[0], self.layers[1], out=self.firing[0])
         torch.less_equal(self.layers[0], self.layers[1], out=self.firing[1])
-        torch.lesser(self.layers[0], self.layers[2], out=self.firing[2])
+        torch.less(self.layers[0], self.layers[2], out=self.firing[2])
         torch.greater_equal(self.layers[0], self.layers[2], out=self.firing[3])
 
         # keep track of the threshold values of the firing neurons
