@@ -424,7 +424,7 @@ class ferret():
 
         # use the firing multipliers to change the output values of the firing neurons
         torch.add(self.firing[0], self.layers[3], out=self.firing[7])
-        torch.sub(self.firing[2], self.layers[4], out=self.firing[8[)
+        torch.sub(self.firing[2], self.layers[4], out=self.firing[8])
 
         # apply the firing values to each of the near neighbors
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.int16)
