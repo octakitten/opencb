@@ -380,8 +380,8 @@ def run_ferret():
     opts = tr.optionsobj("", None, "./ferrettest1/", 256, 256, 200, 50, 200, 2, 400)
     percent = 0.0
     while (percent < .95):
-        tr.train_hamster(opts)
-        percent = tr.test_hamster(opts)
+        tr.train(opts)
+        percent = tr.test(opts)
     return
 
 def run_hamster():
