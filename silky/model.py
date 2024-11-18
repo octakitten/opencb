@@ -1430,7 +1430,7 @@ class hamster():
 
     propensity = 100
     
-    layers = [0] * 61
+    layers = []
 
     outputs = 0
 
@@ -1502,7 +1502,7 @@ class hamster():
     
     def __new_dna(self):
         for i in range(0, 61):
-            self.layers[i] = torch.tensor(data=1, device=self.device)
+            self.layers.append(torch.tensor(data=1, device=self.device))
             self.layers[i] = torch.zeros(size=(self.width, self.height, self.depth), dtype=torch.float64, device=self.device)
         for i in range(29, 61):
             random_gen = torch.Generator(device=self.device)
@@ -1537,7 +1537,7 @@ class hamster():
         self.control_thresholds_pos = torch.load(path + '/control_thresholds_pos.pth')
         self.control_thresholds_neg = torch.load(path + '/control_thresholds_neg.pth')
         for i in range(0, 61):
-            self.layers[i] = torch.load(path + '/layer' + str(i) + '.pth')
+            self.layers.append(torch.load(path + '/layer' + str(i) + '.pth'))
         return
         
     def __new_thresholds(self):
