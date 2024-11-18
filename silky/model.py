@@ -421,8 +421,8 @@ class ferret():
         # apply the firing values to each of the near neighbors
         temp = torch.zeros(size=(self.width, self.height, self.depth), device=self.device, dtype=torch.int16)
         for i in range(0, 4):
-            torch.add(self.layers[0], torch.roll(self.firing[7], (-1 ** i), int(i/2), out=temp))
-            torch.sub(self.layers[0], torch.roll(self.firing[8], (-1 ** i), int(i/2), out=temp))
+            torch.add(self.layers[0], torch.roll(self.firing[7], (-1 ** i), int(i/2)), out=temp)
+            torch.sub(self.layers[0], torch.roll(self.firing[8], (-1 ** i), int(i/2)), out=temp)
         
         # check the predefined output neurons to see if they're ready to fire
         # if they are, then return the action(s) to take
