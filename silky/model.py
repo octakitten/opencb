@@ -255,11 +255,11 @@ class ferret():
         achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
         the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
         '''
-        for i in range(0, 60):
+        for i in range(0, 61):
             self.layers.append(torch.tensor(data=1, device=self.device))
-        for i in range(0, 60):
+        for i in range(0, 61):
             self.layers[i] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
-        for i in range(29, 60):
+        for i in range(29, 61):
             self.layer0 = torch.tensor(data=1, device=self.device)
             random_gen = torch.Generator(device=self.device)
             random_gen.seed()
@@ -351,7 +351,7 @@ class ferret():
         torch.divide(model.thresholds_neg, fraction, out=model.thresholds_neg)
         torch.divide(self.thresholds_pos, degree + 1, out=self.thresholds_pos)
         torch.divide(self.thresholds_neg, degree + 1, out=self.thresholds_neg)
-        for i in range(29, 60):
+        for i in range(29, 61):
             temp = torch.tensor(data=1, device=self.device)
             random_gen = torch.Generator(device=self.device)
             random_gen.seed()
