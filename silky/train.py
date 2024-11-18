@@ -10,7 +10,7 @@ import random
 def time_chamber(options = None):
     print("Here we go...")
     if options == None:
-        options = optionsobj("Maysee/tiny-imagenet", "", 64, 64, 200, 500, 200, 2)
+        options = optionsobj("Maysee/tiny-imagenet", None, "", 64, 64, 200, 500, 200, 2, 600)
     percent = 0.0
     while percent < .95:
         train(options)

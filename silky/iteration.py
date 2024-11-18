@@ -376,6 +376,14 @@ def run_velvet():
               break
         return
 
+def run_ferret():
+    opts = tr.optionsobj("", None, "./ferrettest1/", 256, 256, 200, 50, 200, 2, 400)
+    percent = 0.0
+    while (percent < .95):
+        tr.train_hamster(opts)
+        percent = tr.test_hamster(opts)
+    return
+
 def run_hamster():
     opts = tr.optionsobj("", None, "./hamstertest1/", 64, 64, 10, 50, 200, 2, 10)
     percent = 0.0
