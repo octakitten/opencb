@@ -437,8 +437,8 @@ class ferret():
                     self.outputs[i] = -1
         
         # update layers[0] by decrementing all the firing neurons by their firing amount
-        torch.sub(self.layer[0], self.firing[5], out=self.layer[0])
-        torch.sub(self.layer[0], self.firing[6], out=self.layer[0])
+        torch.sub(self.layers[0], self.firing[5], out=self.layers[0])
+        torch.sub(self.layers[0], self.firing[6], out=self.layers[0])
 
         # update the threshold layers
         for i in range(0, 8):
