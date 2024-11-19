@@ -127,7 +127,7 @@ class ferret():
         
     def clear(self):
         for i in range(0, 28):
-            self.layers.append(torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device))
+            self.layers[i] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         return
         
     def copy(self, model):
