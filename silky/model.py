@@ -448,7 +448,7 @@ class ferret():
         # and then update them according to the personality values
         
         for i in range(0, 16):
-            torch.add(torch.mul(self.firing[((i+1) % 4) - 1], self.layers[13 + i]), self.layers[int(i/4) + 5], out=self.layers[int(i/4) + 5])
+            torch.add(torch.mul(self.firing[i % 4], self.layers[13 + i]), self.layers[int(i/4) + 5], out=self.layers[int(i/4) + 5])
         
         # now update the personality values according to their associated dna values
         
@@ -531,55 +531,57 @@ class ferret():
         for i in range(0, len(self.outputs)):
             if (guess[i] != answer[i]):
                 diff = int(abs(guess[i] - answer[i]))
-                for j in range(0, diff):
-                    if guess[i] == 0: cons = cons / 2
-                    # if the output was 1 and it should have been 0, then we need to nudge the dna values
-                    # of the contact neurons in the direction that would have made the output neuron not fire
-                    # if (self.outputs[i] == 1):
-                    # first, we need to find the contact neurons and nudge them in the right direction
-                    # to make the output neuron not fire
-                    '''
-                    cons = 1
-                    outx = self.controls[i][0]
-                    outy = self.controls[i][1]
-                    outz = self.controls[i][2]
-                    dx = 1
-                    dy = 0
-                    dz = 0
-                    # oloss should be the difference between the output neurons actual value and the closest value it could have had that would have satisfied the conditions we want, which in this case is for it to not fire.
-                    # thus it should be the remaining value left after the neuron fired
-                    oloss = self.layers[0][outx, outy, outz]
-                    
-                    # closs is a bit more complicated, its the values of the contact neuron and its dna that would have helped move the output neuron to the state it should have been in
-                    # since the output fired when it shouldnt have, the closs should be something that would help minimize the oloss
-                    # thus, when the output neuron shouldnt fire, the contact neurons shouldnt fire either... but only if their firing would have helped the output neuron not fire
-                    # we will have to take the firing value of the contact neuron and 
-                    closs1 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)] 
-                    closs2 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
-                    closs3 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
-                    closs4 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
+                if diff != 0:
+                    cons = cons / diff
+                if guess[i] == 0: 
+                    cons = cons / 2
+                # if the output was 1 and it should have been 0, then we need to nudge the dna values
+                # of the contact neurons in the direction that would have made the output neuron not fire
+                # if (self.outputs[i] == 1):
+                # first, we need to find the contact neurons and nudge them in the right direction
+                # to make the output neuron not fire
+                '''
+                cons = 1
+                outx = self.controls[i][0]
+                outy = self.controls[i][1]
+                outz = self.controls[i][2]
+                dx = 1
+                dy = 0
+                dz = 0
+                # oloss should be the difference between the output neurons actual value and the closest value it could have had that would have satisfied the conditions we want, which in this case is for it to not fire.
+                # thus it should be the remaining value left after the neuron fired
+                oloss = self.layers[0][outx, outy, outz]
+                
+                # closs is a bit more complicated, its the values of the contact neuron and its dna that would have helped move the output neuron to the state it should have been in
+                # since the output fired when it shouldnt have, the closs should be something that would help minimize the oloss
+                # thus, when the output neuron shouldnt fire, the contact neurons shouldnt fire either... but only if their firing would have helped the output neuron not fire
+                # we will have to take the firing value of the contact neuron and 
+                closs1 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.positive_firing[(outx + dx), (outy + dy), (outz + dz)] 
+                closs2 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.posiitive_resting[(outx + dx), (outy + dy), (outa + dz)])
+                closs3 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_firing[(outx + dx), (outy + dy), (outz + dz)])
+                closs4 = self.layers[0][(outx + dx), (outy + dy), (outz + dz)] * (self.negative_resting[(outx + dx), (outy + dy), (outz + dz)])
 
-                    nudge1 = cons / (oloss * closs1)
-                    nudge2 = cons / (oloss * closs2)
-                    nudge3 = cons / (oloss * closs3)
-                    nudge4 = cons / (oloss * closs4)
+                nudge1 = cons / (oloss * closs1)
+                nudge2 = cons / (oloss * closs2)
+                nudge3 = cons / (oloss * closs3)
+                nudge4 = cons / (oloss * closs4)
 
-                    self.dna1[(outx + dx), (outy + dy), (outz + dz)] += nudge1
-                    self.dna2[(outx + dx), (outy + dy), (outz + dz)] += nudge2
-                    self.dna3[(outx + dx), (outy + dy), (outz + dz)] += nudge3
-                    self.dna4[(outx + dx), (outy + dy), (outz + dz)] += nudge4
-                    '''
-                    # after this we just repeat this process across the entire network.
-                    # thing is, this whole process is incredibly slow in native python
-                    # we need to run this using tensors instead.
-                    # it should look like this:
-                    for i in range(0, 32):
-                        self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.sqrt(torch.mul(self.layers[0], self.firing[((i+1) % 4) - 1]))), ).to(dtype=torch.int16)
+                self.dna1[(outx + dx), (outy + dy), (outz + dz)] += nudge1
+                self.dna2[(outx + dx), (outy + dy), (outz + dz)] += nudge2
+                self.dna3[(outx + dx), (outy + dy), (outz + dz)] += nudge3
+                self.dna4[(outx + dx), (outy + dy), (outz + dz)] += nudge4
+                '''
+                # after this we just repeat this process across the entire network.
+                # thing is, this whole process is incredibly slow in native python
+                # we need to run this using tensors instead.
+                # it should look like this:
+                for i in range(0, 32):
+                    self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.mul(self.layers[29+1], torch.mul(self.layers[0], self.firing[i % 4]))), ).to(dtype=torch.int16)
 
-                    # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
-                    # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
-                    # it wont work well if you set it above 1 since that could have unintended effects, and setting it to a negative value
-                    # will just have the effect of driving the model's training further from the desired results instead. 
+                # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
+                # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
+                # it wont work well if you set it above 1 since that could have unintended effects, and setting it to a negative value
+                # will just have the effect of driving the model's training further from the desired results instead. 
             return
 
 
