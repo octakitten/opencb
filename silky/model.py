@@ -575,8 +575,9 @@ class ferret():
                 # thing is, this whole process is incredibly slow in native python
                 # we need to run this using tensors instead.
                 # it should look like this:
+
                 for i in range(0, 32):
-                    self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.mul(self.layers[29+1], torch.mul(self.layers[0], self.firing[i % 4]))), ).to(dtype=torch.int16)
+                    self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.mul(self.layers[29+i], torch.mul(self.layers[0], self.firing[i % 4]))), ).to(dtype=torch.int16)
 
                 # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
                 # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
