@@ -448,7 +448,7 @@ class ferret():
         # and then update them according to the personality values
         
         for i in range(0, 16):
-            torch.add(torch.mul(self.firing[i % 4], self.layers[13 + i]), self.layers[int(i/4) + 5], out=self.layers[int(i/4) + 5])
+            torch.add(torch.mul(self.firing[((i+1) % 4) - 1], self.layers[13 + i]), self.layers[int(i/4) + 5], out=self.layers[int(i/4) + 5])
         
         # now update the personality values according to their associated dna values
         
@@ -574,7 +574,7 @@ class ferret():
                     # we need to run this using tensors instead.
                     # it should look like this:
                     for i in range(0, 32):
-                        self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.sqrt(torch.mul(self.layers[0], self.firing[i % 4]))), ).to(dtype=torch.int16)
+                        self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.sqrt(torch.mul(self.layers[0], self.firing[((i+1) % 4) - 1]))), ).to(dtype=torch.int16)
 
                     # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
                     # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.
