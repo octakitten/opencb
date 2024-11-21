@@ -428,11 +428,11 @@ class ferret():
         # if they are, then return the action(s) to take
         for i in range(0, self.num_controls):
             if (self.layers[0][self.controls[i][0], self.controls[i][1], self.controls[i][2]].item() > self.thresholds_pos[i, 0].item()):
-                self.outputs[i] = 1
+                self.outputs[i] = True
                 self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])] = self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() - self.thresholds_pos[i,0]
             else:
                 if (self.layers[0][(self.controls[i][0], self.controls[i][1], self.controls[i][2])].item() > self.thresholds_neg[i,0].item()):
-                    self.outputs[i] = 0
+                    self.outputs[i] = False
                 else:
                     self.outputs[i] = -1
         

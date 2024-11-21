@@ -231,10 +231,10 @@ def test014(dir):
     
     return
 
-def run_general_dev():
+def run_ferret_forest():
     iters = 0
     prev_iters = 10000
-    path = sys.path[0] + '/general_dev/saved_models'
+    path = sys.path[0] + '/ferret_forest/saved_models'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
     model = mdl.ferret()
@@ -242,7 +242,8 @@ def run_general_dev():
     first_attempt = True
     while (True):
         iters = 0
-        prev_model = 0
+        prev_mindx = 0
+        prev_mindy = 0
         if (os.path.exists(vic_path) & first_attempt):
             try:
                 model.load(vic_path)
@@ -282,14 +283,13 @@ def run_general_dev():
               else:
                     break
               if (first_game_attempt):
-                    prev_model = model
+                    prev_mindx = model.min_dx
+                    prev_mindy = model.min_dy
                     first_game_attempt = False
               else:
-                    if (model.min_dx + model.min_dy ) < (prev_model.min_dx + prev_model.min_dy):
-                        prev_model = model
+                    if (model.min_dx + model.min_dy ) < (prev_mindx + prev_mindy):
                         permute_degree = 10
                     else:
-                        model = prev_model
                         permute_degree = 5
               if (iters % 100 == 0):
                     print('saving in progress, this may take a moment... ...')
@@ -303,13 +303,13 @@ def run_general_dev():
         if (iters < 5):
             break
 
-def run_velvet():
+def run_hamster():
     iters = 0
     prev_iters = 10000
     path = sys.path[0] + '/velvet/saved_models'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
-    model = mdl.velvet()
+    model = mdl.hamster()
     params = ( 255, 255, 255, 500, 4, 3 )
     first_attempt = True
     while (True):
