@@ -237,7 +237,7 @@ def run_general_dev():
     path = sys.path[0] + '/general_dev/saved_models'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
-    model = mdl.general_dev2()
+    model = mdl.ferret()
     params = ( 255, 255, 255, 1000, 4, 3 )
     first_attempt = True
     while (True):

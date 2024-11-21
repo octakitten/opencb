@@ -527,12 +527,32 @@ class ferret():
         # direction.
         cons = 0.37
         if constant != None: cons = constant
+        # ok, we need a normalizing factor here. 
+        # the problem is that the guess values range from 0 to N, but we need them in a distribution
+        # that has certain properties. namely, we need rangemin to be = to 1 / rangemax. and we need to 
+        # somehow get there from running softmax over the outputs array, so we're starting from a range
+        # of 0 to 1. the problem is, we need the average value of the outputs array to be 1. so, with
+        # softmax we're starting with an average of 0.5, so we can add 0.5 and then... do something 
+        # let me set up our requirements here...
+        # 
+        # min = 1/max
+        # dataavg = 1
+        # dataavg = sum(data) / len(data)
+        # .5 * N = 1 / 1.5 * N
+        # N(1) = 1
+        # N(0) = 1 /  N(1.5)
+        # N(1.5) = 1 / N(0)
+        # 
+
+        scalingconst = 1.15470053838
+        diff = torch.zeros(self.num_controls, device=self.device)
+        diff = torch.sub(answer, guess)
+        scalefactors = torch.Softmax(diff)
+        scalefactors = torch.add(scalefactors, 0.5)
+        scalefactors = torch.mul(scalefactors, scalingconst)
 
         for i in range(0, len(self.outputs)):
             if (guess[i] != answer[i]):
-                diff = int(abs(guess[i] - answer[i]))
-                if diff != 0:
-                    cons = cons / diff
                 if guess[i] == 0: 
                     cons = cons / 2
                 # if the output was 1 and it should have been 0, then we need to nudge the dna values
@@ -577,7 +597,7 @@ class ferret():
                 # it should look like this:
 
                 for i in range(0, 32):
-                    self.layers[29+i] = torch.add(self.layers[29+i], torch.mul(cons, torch.mul(self.layers[29+i], torch.mul(self.layers[0], self.firing[i % 4]))), ).to(dtype=torch.int16)
+                    self.layers[29+i] = torch.add(torch.mul(scalefactors[i], self.layers[29+i], torch.mul(cons, torch.mul(self.layers[29+i], torch.mul(self.layers[0], self.firing[i % 4])))), ).to(dtype=torch.int16)
 
                 # and there we go! the only thing left to note is the inclusion of a scaling factor "cons" in the equations. you should be
                 # able to set cons to a value between 0 and 1 to slow down the backprop process's effect per use of the function.

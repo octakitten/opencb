@@ -208,7 +208,6 @@ def train(options):
                 tolerance += 20
                 last_win = 0
             else:
-                mdl.clear()
                 if tolerance < 5:
                     mdl.permute(1, permute_fraction)
                     tolerance += 20
@@ -216,6 +215,7 @@ def train(options):
                 cons = 0.1
                 mdl.backprop(answerkey, tally, cons)
                 mdl.permute(1, tolerance)
+                mdl.clear()
                 if tolerance > 5: 
                     tolerance -= 1
     logging.info('Run ending...')
