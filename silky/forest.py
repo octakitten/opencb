@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from . import screen
+from . import model as mdl
 
 class forest():
     __DEBUG = False
