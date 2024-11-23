@@ -235,7 +235,7 @@ def test014(dir):
 def run_ferret_forest():
     iters = 0
     prev_iters = 10000
-    path = sys.path[0] + '/ferret_forest/saved_models'
+    path = os.getcwd() + '/ferret_forest'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
     model = mdl.ferret()
