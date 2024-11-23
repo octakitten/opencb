@@ -289,7 +289,7 @@ class ferret():
         return
 
     def __neg_sensation(self, sense_num, amt):
-        torch.subtract(self.layer[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
+        torch.subtract(self.layers[0][self.sensations[sense_num]], amt, out=self.layers[0][self.sensations[sense_num]])
         return
     
     def sense(self, sense_num, amt, pos):    
