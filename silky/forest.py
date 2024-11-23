@@ -3,6 +3,7 @@ import torch
 from . import screen
 
 class forest():
+    __DEBUG = False
     # the condition the blob has to meet to win the game
     victory_condition = False
     loss_condition = False
@@ -144,12 +145,16 @@ class forest():
         # convert that to an appropriate action for this game
         x, y = 0, 0
         if action[0]:
+            if self.__DEBUG: print("right 1")
             x += 1 
         if action[1]:
+            if self.__DEBUG: print("left 1")
             x += -1
         if action[2]:
+            if self.__DEBUG: print("up 1")
             y += 1
         if action[3]:
+            if self.__DEBUG: print("down 1")
             y += -1
         return x, y
     
@@ -208,6 +213,7 @@ class forest():
                 combo = 0
             
             if combo > max_combo:
+                if self.__DEBUG: print("combo break")
                 break
 
             prev = act
@@ -218,15 +224,20 @@ class forest():
             x = np.abs(x - self.victory_x)
             y = np.abs(y - self.victory_y)
             if (x < prev_x):
+                if self.__DEBUG: print("sense 0 positive sent")
                 self.blob.train(0, 255, True)
             if ( x > prev_x):
+                if self.__DEBUG: print("sense 0 negative sent")
                 self.blob.train(0, 255, False)
             if (y < prev_y):
+                if self.__DEBUG: print("sense 1 positive sent")
                 self.blob.train(1, 255, True)
             if (y > prev_y):
+                if self.__DEBUG: print("sense 1 negative sent")
                 self.blob.train(1, 255, False)
                 
             if (self.__check_close_to_tree(self.player_location_x, self.player_location_y) == True):
+                if self.__DEBUG: print("sense 2 negative sent")
                 self.blob.train(2, 1000, False)
             
             if (x + y < self.min_dx + self.min_dy):
@@ -248,11 +259,11 @@ class forest():
 
         # otherwise we lose, and just do nothing with it.
         if (self.victory_condition == True):
-            print("victory! it took this many turns:")
-            print(iter)
+            if self.__DEBUG: print("victory! it took this many turns:")
+            if self.__DEBUG: print(iter)
             return True
         else:
-            print("defeat! after this many turns:")
-            print(iter)
+            if self.__DEBUG: print("defeat! after this many turns:")
+            if self.__DEBUG: print(iter)
             #screen.save(self.game_screen, 'end_screen')
         return False

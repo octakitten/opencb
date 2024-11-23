@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import os
+import logging
 
 class ferret():
         
@@ -60,6 +61,9 @@ class ferret():
         else:
             self.device = torch.device('cpu')
         return
+
+    def __setup_log_files(self):
+         
     
     def save(self, path):
         '''

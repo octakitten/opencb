@@ -5,7 +5,6 @@ import numpy as np
 import logging
 from . import model
 import os
-import random
 
 def time_chamber(options = None):
     print("Here we go...")
