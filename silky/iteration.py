@@ -272,7 +272,6 @@ def run_ferret_forest():
 
         game = forest.forest(model)
         first_game_attempt = True
-        model = 0
         while (True):
               permute_degree = 2
               if (first_game_attempt == False):
