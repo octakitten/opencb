@@ -144,16 +144,16 @@ class forest():
         # decide on the action to take based on the input and 
         # convert that to an appropriate action for this game
         x, y = 0, 0
-        if action[0]:
+        if action[0] == 1:
             if self.__DEBUG: print("right 1")
             x += 1 
-        if action[1]:
+        if action[1] == 1:
             if self.__DEBUG: print("left 1")
             x += -1
-        if action[2]:
+        if action[2] == 1:
             if self.__DEBUG: print("up 1")
             y += 1
-        if action[3]:
+        if action[3] == 1:
             if self.__DEBUG: print("down 1")
             y += -1
         return x, y
@@ -192,7 +192,7 @@ class forest():
         max_iter = 1000
 
         # the previous action taken
-        prev = 0
+        prev = torch.zeros(self.blob.num_controls).to(dtype=torch.float64, device=self.blob.device)
         # how many times the previous action has been the same as the current one
         combo = 0
         # how many times we'll allow it to combo the same action in a row
@@ -207,7 +207,7 @@ class forest():
         # play the game until victory or until either combo gets too high or iterations finish
         while ((self.victory_condition == False) & (self.loss_condition == False)):
             act = self.blob.update(self.game_screen)
-            if prev == act:
+            if torch.equals(act, prev):
                 combo += 1
             else:
                 combo = 0
