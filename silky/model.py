@@ -259,7 +259,6 @@ class ferret():
         for i in range(0, 61):
             self.layers[i] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         for i in range(29, 61):
-            self.layers[0] = torch.tensor(data=1, device=self.device)
             random_gen = torch.Generator(device=self.device)
             random_gen.seed()
             self.layers[i] = torch.multiply(other=self.pos_propensity[0,0], input=torch.sub(other=0.5, input=torch.rand(size=(self.width, self.height, self.depth), generator=random_gen, dtype=torch.float64, device=self.device))).to(dtype=torch.int16)
