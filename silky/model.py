@@ -876,8 +876,8 @@ class hamster():
         #torch.mul(input_tensor, self.bounds, out=input_tensor)
         #torch.add(input_tensor, torch.ones(size=input_image.size(), device=self.device), out=input_tensor)
         #print(input_tensor)
-        #print('layers[0]')
-        #print(self.layers[0])o
+        print('layers[0]')
+        #print(self.layers[0])
         try:
             torch.add(self.layers[0][:, :, 0],  input_tensor[0, :, :], out=self.layers[0][:, :, 0])
             torch.add(self.layers[0][:, :, 1],  input_tensor[1, :, :], out=self.layers[0][:, :, 1])
