@@ -207,7 +207,7 @@ class forest():
         # play the game until victory or until either combo gets too high or iterations finish
         while ((self.victory_condition == False) & (self.loss_condition == False)):
             act = self.blob.update(self.game_screen)
-            if torch.equals(act, prev):
+            if torch.equal(act, prev):
                 combo += 1
             else:
                 combo = 0
