@@ -37,8 +37,8 @@ class ferret():
     # array of those neurons
     sensations = []
 
-    layers = [0] * 60
-    firings = [0] * 8
+    layers = [1] * 61
+    firings = [0] * 9
 
     # range of propensity to fire for personality layers
     pos_propensity = 0
