@@ -62,9 +62,6 @@ class ferret():
             self.device = torch.device('cpu')
         return
 
-    def __setup_log_files(self):
-         
-    
     def save(self, path):
         '''
         Save a model to a file.
