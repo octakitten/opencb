@@ -393,7 +393,7 @@ class ferret():
         
         input_tensor = torch.clone(input_image, ).detach().to(dtype=torch.int16, device=self.device)
 
-        print(self.layers[0])
+        #print(self.layers[0])
 
         if input_tensor.ndim == 3:
             torch.add(self.layers[0][:, :, 0],  input_tensor[0,:,:], out=self.layers[0][:, :, 0])

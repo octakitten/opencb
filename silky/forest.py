@@ -4,7 +4,7 @@ from . import screen
 from . import model as mdl
 
 class forest():
-    __DEBUG = False
+    __DEBUG = True
     # the condition the blob has to meet to win the game
     victory_condition = False
     loss_condition = False
