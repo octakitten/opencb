@@ -284,23 +284,23 @@ def run_ferret_forest():
               else:
                     break
               if (first_game_attempt):
-                    prev_mindx = game.blob.min_dx
-                    prev_mindy = game.blob.min_dy
+                    prev_mindx = model.min_dx
+                    prev_mindy = model.min_dy
                     first_game_attempt = False
               else:
-                    if (game.blob.min_dx + game.blob.min_dy ) < (prev_mindx + prev_mindy):
+                    if (model.min_dx + model.min_dy ) < (prev_mindx + prev_mindy):
                         permute_degree = 10
                     else:
                         permute_degree = 5
               if (iters % 100 == 0):
                     print('saving in progress, this may take a moment... ...')
-                    game.blob.save(prog_path)
-              game.blob.permute(1, permute_degree)
+                    model.save(prog_path)
+              model.permute(1, permute_degree)
         print('victory! a winning model was found! it took this many iterations:')
         print(iters)
         if (iters < prev_iters):
               prev_iters = iters
-              game.blob.save(vic_path)
+              model.save(vic_path)
         if (iters < 5):
             break
 
