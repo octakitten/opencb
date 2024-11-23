@@ -395,12 +395,14 @@ class ferret():
         input_tensor = torch.tensor(data=1, device=self.device)
         
         input_tensor = torch.clone(input_image, ).detach().to(dtype=torch.int16, device=self.device)
-        try:
+        if input_tensor.ndim == 3:
             torch.add(self.layers[0][:, :, 0],  input_tensor[0,:,:], out=self.layers[0][:, :, 0])
             torch.add(self.layers[0][:, :, 1],  input_tensor[1,:,:], out=self.layers[0][:, :, 1])
             torch.add(self.layers[0][:, :, 2],  input_tensor[2,:,:], out=self.layers[0][:, :, 2])
-        except:
+        elif input_tensor.ndim == 1:
             torch.add(self.layers[0][:, :, 0],  input_tensor, out=self.layers[0][:, :, 0])
+        else:
+            print("Unexpected number of input tensor dimensions!")
 
         #check which neurons are firing and which arent, do the stuff
         torch.greater(self.layers[0], self.layers[1], out=self.firing[0])
