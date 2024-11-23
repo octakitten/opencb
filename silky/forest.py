@@ -225,20 +225,20 @@ class forest():
             y = np.abs(y - self.victory_y)
             if (x < prev_x):
                 if self.__DEBUG: print("sense 0 positive sent")
-                self.blob.train(0, 255, True)
+                self.blob.sense(0, 255, True)
             if ( x > prev_x):
                 if self.__DEBUG: print("sense 0 negative sent")
-                self.blob.train(0, 255, False)
+                self.blob.sense(0, 255, False)
             if (y < prev_y):
                 if self.__DEBUG: print("sense 1 positive sent")
-                self.blob.train(1, 255, True)
+                self.blob.sense(1, 255, True)
             if (y > prev_y):
                 if self.__DEBUG: print("sense 1 negative sent")
-                self.blob.train(1, 255, False)
+                self.blob.sense(1, 255, False)
                 
             if (self.__check_close_to_tree(self.player_location_x, self.player_location_y) == True):
                 if self.__DEBUG: print("sense 2 negative sent")
-                self.blob.train(2, 1000, False)
+                self.blob.sense(2, 1000, False)
             
             if (x + y < self.min_dx + self.min_dy):
                 self.min_dx = x
