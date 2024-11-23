@@ -37,8 +37,8 @@ class ferret():
     # array of those neurons
     sensations = []
 
-    layers = []
-    firings = []
+    layers = [0] * 60
+    firings = [0] * 8
 
     # range of propensity to fire for personality layers
     pos_propensity = 0
@@ -256,8 +256,6 @@ class ferret():
         achieve this, we first generate random values between 0 and 1, then for the positive layers we multiply by n and add 1, and for
         the negative layers we divide by n and subtract from 1. This will give us the desired range of values for the personality layers.
         '''
-        for i in range(0, 61):
-            self.layers.append(torch.tensor(data=1, device=self.device))
         for i in range(0, 61):
             self.layers[i] = torch.zeros((self.width, self.height, self.depth), dtype=torch.int16, device=self.device)
         for i in range(29, 61):
