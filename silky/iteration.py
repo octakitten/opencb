@@ -238,39 +238,37 @@ def run_ferret_forest():
     path = os.getcwd() + '/ferret_forest'
     vic_path = path + '/victory'
     prog_path = path + '/in_progress'
-    model = mdl.ferret()
     params = ( 255, 255, 255, 1000, 4, 3 )
     first_attempt = True
     while (True):
         iters = 0
         prev_mindx = 0
         prev_mindy = 0
+        game = None
         if (os.path.exists(vic_path) & first_attempt):
             try:
-                model.load(vic_path)
+                game = forest.forest(params, path)
                 print('loading model from disk... ')
             except:
                 print('unable to load a winning model...')
                 try:
-                    model.load(prog_path)
+                    game = forest.forest(params, path)
                     print('loading an in-progress model from disk...')
                 except:
                     print('unable to load an in-progress model')
                     print('creating a new model...')
-                    model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+                    game = forest.forest(params)
         elif (os.path.exists(prog_path) & first_attempt):
             try:
-              model.load(prog_path)
-              print('loading an in-progress model from disk...')
+                game = forest.forest(params, path)
+                print('loading an in-progress model from disk...')
             except:
                 print('unable to load an in-progress model')
                 print('creating a new model')
-                model.create(params[0], params[1], params[2], params[3], params[4], params[5])
+                game = forest.forest(params)
         elif (first_attempt):
-              print('creating a new model...')
-              model.create(params[0], params[1], params[2], params[3], params[4], params[5])
-
-        game = forest.forest(model)
+            print('creating a new model...')
+            game = forest.forest(params)
         first_game_attempt = True
         while (True):
               permute_degree = 2
@@ -284,23 +282,23 @@ def run_ferret_forest():
               else:
                     break
               if (first_game_attempt):
-                    prev_mindx = model.min_dx
-                    prev_mindy = model.min_dy
+                    prev_mindx = game.blob.min_dx
+                    prev_mindy = game.blob.min_dy
                     first_game_attempt = False
               else:
-                    if (model.min_dx + model.min_dy ) < (prev_mindx + prev_mindy):
+                    if (game.blob.min_dx + game.blob.min_dy ) < (prev_mindx + prev_mindy):
                         permute_degree = 10
                     else:
                         permute_degree = 5
               if (iters % 100 == 0):
                     print('saving in progress, this may take a moment... ...')
-                    model.save(prog_path)
-              model.permute(1, permute_degree)
+                    game.blob.save(prog_path)
+              game.blob.permute(1, permute_degree)
         print('victory! a winning model was found! it took this many iterations:')
         print(iters)
         if (iters < prev_iters):
               prev_iters = iters
-              model.save(vic_path)
+              game.blob.save(vic_path)
         if (iters < 5):
             break
 
@@ -377,7 +375,7 @@ def run_hamster():
               break
         return
 
-def run_ferret():
+def train_ferret():
     opts = tr.optionsobj("", None, "./ferrettest1/", 256, 256, 200, 50, 200, 2, 400)
     percent = 0.0
     while (percent < .95):
@@ -385,7 +383,7 @@ def run_ferret():
         percent = tr.test(opts)
     return
 
-def run_hamster():
+def train_hamster():
     opts = tr.optionsobj("", None, "./hamstertest1/", 64, 64, 10, 50, 200, 2, 10)
     percent = 0.0
     while (percent < .95):
